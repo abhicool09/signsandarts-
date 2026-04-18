@@ -1,0 +1,8 @@
+{
+  "name": "signsandarts",
+  "version": "1.0.0",
+  "description": "Signs and Arts LED Sign Boards",
+  "dependencies": {
+    "razorpay": "^2.9.2"
+  }
+}
