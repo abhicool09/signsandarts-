@@ -241,7 +241,7 @@
       <img src="size.png" alt="Clinic LED Sign Board Size 18x18 inch" id="mi4">
       <button class="vid-overlay" onclick="openVid()">&#9654; Watch Video</button>
     </div>
-    <div class="thumb-strip">
+    <div class="thumb-strip" id="thumbStrip">
       <img src="main.jpg" class="thumb active" onclick="switchMain(0)" alt="Main">
       <img src="perspective.jpg" class="thumb" onclick="switchMain(1)" alt="Perspective">
       <img src="lit.jpg" class="thumb" onclick="switchMain(2)" alt="Lit">
@@ -490,11 +490,55 @@
 <script>
   var currentVariant = { size: '18"×18"', price: 2689 };
 
+  // Variant image sets
+  var variantImages = {
+    '18': {
+      images: ['main.jpg', 'perspective.jpg', 'lit.jpg', 'features.png', 'size.png'],
+      alts: ['Clinic Plus LED Sign Board Red White 18x18', 'Perspective View', 'Fully Lit', 'Features', 'Size Chart 18x18']
+    },
+    '24': {
+      images: ['main-24.png', 'front-24.png', 'perspective-24.png', 'overview-24.png', 'features-24.png', 'size-24.png'],
+      alts: ['Clinic Plus LED Sign Board Red White 24x24', 'Front View', 'Perspective View', 'Full Overview', 'Features', 'Size Chart 24x24']
+    }
+  };
+
   function selectVar(size, price, btn) {
     currentVariant = { size: size, price: price };
     document.getElementById('pdPrice').innerHTML = '&#8377;' + price.toLocaleString('en-IN');
     document.querySelectorAll('.vbtn').forEach(function(b){ b.classList.remove('active'); });
     btn.classList.add('active');
+
+    // Switch images based on variant
+    var key = size.includes('24') ? '24' : '18';
+    var vimgs = variantImages[key];
+
+    // Update main gallery images
+    var wrap = document.querySelector('.main-img-wrap');
+    var oldImgs = wrap.querySelectorAll('img');
+    oldImgs.forEach(function(img){ img.remove(); });
+
+    vimgs.images.forEach(function(src, i) {
+      var img = document.createElement('img');
+      img.src = src;
+      img.alt = vimgs.alts[i];
+      img.id = 'mi' + i;
+      if (i === 0) img.classList.add('active');
+      wrap.insertBefore(img, wrap.querySelector('.vid-overlay'));
+    });
+
+    // Update thumbnails
+    var strip = document.getElementById('thumbStrip');
+    var oldThumbs = strip.querySelectorAll('img.thumb');
+    oldThumbs.forEach(function(t){ t.remove(); });
+
+    vimgs.images.forEach(function(src, i) {
+      var thumb = document.createElement('img');
+      thumb.src = src;
+      thumb.alt = vimgs.alts[i];
+      thumb.className = 'thumb' + (i === 0 ? ' active' : '');
+      thumb.onclick = (function(idx){ return function(){ switchMain(idx); }; })(i);
+      strip.insertBefore(thumb, strip.querySelector('.yt-thumb-btn'));
+    });
   }
 
   function switchMain(idx) {
