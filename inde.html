@@ -1333,25 +1333,6 @@
   }
 
   // ── VARIANT SELECTOR ─────────────────────────────────────────────────────
-  var variantImages = {
-    'clinic': {
-      '18"×18"': [
-        '/clinic-led-sign-board/main.jpg',
-        '/clinic-led-sign-board/perspective.jpg',
-        '/clinic-led-sign-board/lit.jpg',
-        '/clinic-led-sign-board/features.png',
-        '/clinic-led-sign-board/size.png'
-      ],
-      '24"×24"': [
-        '/clinic-led-sign-board/main-24.png',
-        '/clinic-led-sign-board/perspective-24.png',
-        '/clinic-led-sign-board/front-24.png',
-        '/clinic-led-sign-board/features-24.png',
-        '/clinic-led-sign-board/size-24.png'
-      ]
-    }
-  };
-
   function selectVariant(pid, size, price, btn) {
     btn.closest('.variant-btns').querySelectorAll('.vbtn').forEach(function(b){ b.classList.remove('active'); });
     btn.classList.add('active');
@@ -1365,18 +1346,6 @@
       };
       var name = (names[pid] || pid) + ' ' + size;
       atcBtn.onclick = function(){ addToCart({id: pid + '-' + size, name: name, price: price, qty: 1}); };
-    }
-    // Swap gallery images if variant image set exists
-    if (variantImages[pid] && variantImages[pid][size]) {
-      var srcs = variantImages[pid][size];
-      var gallery = document.getElementById(pid + 'gallery');
-      if (gallery) {
-        var mainImgs = gallery.querySelectorAll('img');
-        mainImgs.forEach(function(img, i){ if (srcs[i]) img.src = srcs[i]; });
-      }
-      var thumbs = document.querySelectorAll('#' + pid + 'gallery ~ .gallery-thumbs .gthumb');
-      thumbs.forEach(function(t, i){ if (srcs[i]) t.src = srcs[i]; });
-      switchImg(pid, 0);
     }
   }
 
