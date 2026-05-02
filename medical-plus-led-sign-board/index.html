@@ -688,11 +688,37 @@
   // ── PRODUCT STATE ─────────────────────────────────────────────────────────
   var currentVariant = { size: '18"×18"', price: 2689 };
 
+  var variantImages = {
+    '18"×18"': [
+      'main.jpg',
+      'size.png',
+      'features.png',
+      'overview.png',
+      'led.jpg'
+    ],
+    '24"×24"': [
+      'main-24.png',
+      'perspective-24.png',
+      'front-24.png',
+      'features-24.png',
+      'size-24.png'
+    ]
+  };
+
   function selectVar(size, price, btn) {
     currentVariant = { size: size, price: price };
     document.getElementById('pdPrice').innerHTML = '&#8377;' + price.toLocaleString('en-IN');
     document.querySelectorAll('.vbtn').forEach(function(b){ b.classList.remove('active'); });
     btn.classList.add('active');
+    // Swap gallery images
+    if (variantImages[size]) {
+      var srcs = variantImages[size];
+      var mainImgs = document.querySelectorAll('.main-img-wrap img');
+      mainImgs.forEach(function(img, i){ if (srcs[i]) img.src = srcs[i]; });
+      var thumbs = document.querySelectorAll('.thumb-strip .thumb');
+      thumbs.forEach(function(t, i){ if (srcs[i]) t.src = srcs[i]; });
+      switchMain(0);
+    }
   }
 
   // ── IMAGE GALLERY ─────────────────────────────────────────────────────────
