@@ -654,6 +654,60 @@
       </div>
     </div>
 
+    <!-- PHARMACY PLUS LED SIGN BOARD -->
+    <div class="pc show" data-cat="medical" id="prod-pharmacy-plus">
+      <div class="pgallery" id="pharmacygallery">
+        <img src="/pharmacy-plus-led-sign/main.jpg" alt="Pharmacy Plus LED Sign Board Green 18x18" class="active" id="phimg0">
+        <img src="/pharmacy-plus-led-sign/perspective.jpg" alt="Pharmacy LED Sign Board Perspective View" id="phimg1">
+        <img src="/pharmacy-plus-led-sign/front.jpg" alt="Pharmacy LED Sign Board Front View" id="phimg2">
+        <img src="/pharmacy-plus-led-sign/features.png" alt="Pharmacy LED Sign Board Features" id="phimg3">
+        <img src="/pharmacy-plus-led-sign/size.jpg" alt="Pharmacy LED Sign Board Size" id="phimg4">
+        <div class="bdg bnew" style="position:absolute;top:10px;left:10px;">New</div>
+      </div>
+      <button class="gallery-playbtn" onclick="openVideo('QvGj9jg-vN0')">
+        &#9654; Watch Video
+      </button>
+      <div class="gallery-thumbs">
+        <img src="/pharmacy-plus-led-sign/main.jpg" class="gthumb active" onclick="switchImg('pharmacy',0)" alt="Main">
+        <img src="/pharmacy-plus-led-sign/perspective.jpg" class="gthumb" onclick="switchImg('pharmacy',1)" alt="Perspective">
+        <img src="/pharmacy-plus-led-sign/front.jpg" class="gthumb" onclick="switchImg('pharmacy',2)" alt="Front">
+        <img src="/pharmacy-plus-led-sign/features.png" class="gthumb" onclick="switchImg('pharmacy',3)" alt="Features">
+        <img src="/pharmacy-plus-led-sign/size.jpg" class="gthumb" onclick="switchImg('pharmacy',4)" alt="Size">
+        <div class="yt-thumb" onclick="openVideo('QvGj9jg-vN0')" title="Watch Video">
+          <span class="yt-play">&#9654;</span>
+        </div>
+      </div>
+      <div class="pb">
+        <div class="pct">Pharmacy</div>
+        <a href="/pharmacy-plus-led-sign/" style="text-decoration:none;"><div class="pnm" style="color:#111;">Pharmacy Plus LED Sign Board &mdash; Green, Double Sided</div></a>
+        <div class="pds">Ultra bright green pixel LED cross sign for pharmacies & medical stores. Iron frame construction — weatherproof and rainproof. Blinking LEDs attract customers. Fast & easy installation with hook, nut & bolt included. Just plug in to any 230V socket!</div>
+        <div class="psps">
+          <span class="stg">Pixel LED</span>
+          <span class="stg">Double Sided</span>
+          <span class="stg">Iron Frame</span>
+          <span class="stg">Weatherproof</span>
+          <span class="stg">Plug &amp; Play</span>
+        </div>
+        <div style="margin-top:.7rem;">
+          <div class="variant-label">Select Size</div>
+          <div class="variant-btns">
+            <button class="vbtn active" onclick="selectVariant('pharmacy','18&quot;&#xD7;18&quot;',2689,this)">18"&#xD7;18" &mdash; &#8377;2,689</button>
+            <button class="vbtn" onclick="selectVariant('pharmacy','24&quot;&#xD7;24&quot;',5489,this)">24"&#xD7;24" &mdash; &#8377;5,489</button>
+          </div>
+        </div>
+      </div>
+      <div style="padding:.5rem 1.1rem 0;">
+        <a href="/pharmacy-plus-led-sign/" style="display:block;text-align:center;font-size:.72rem;font-weight:700;color:#777;letter-spacing:1px;padding:.4rem;border:1px solid #e8e8e8;border-radius:3px;transition:all .2s;" onmouseover="this.style.borderColor='#111';this.style.color='#111'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#777'">View Full Details &rarr;</a>
+      </div>
+      <div class="pf">
+        <div class="ppr" id="pharmacyprice">&#8377;2,689 <small>incl. GST</small></div>
+        <div class="pbts">
+          <button class="batc" id="pharmacyatc" onclick="addToCart({id:'pharmacy-plus',name:'Pharmacy Plus LED Sign Board — Green 18x18',price:2689,qty:1})">&#43; Add to Cart</button>
+          <a href="https://wa.me/919392878946?text=Hi%2C%20I%20want%20Pharmacy%20Plus%20LED%20Sign%20Board%20Green%20Double%20Sided" class="bwa" target="_blank">&#128242;</a>
+        </div>
+      </div>
+    </div>
+
     <!-- P6 -->
     <div class="pc show" data-cat="xerox">
       <div class="pi">
@@ -1365,6 +1419,22 @@
         '/clinic-led-sign-board/features-24.png',
         '/clinic-led-sign-board/size-24.png'
       ]
+    },
+    'pharmacy': {
+      '18"×18"': [
+        '/pharmacy-plus-led-sign/main.jpg',
+        '/pharmacy-plus-led-sign/perspective.jpg',
+        '/pharmacy-plus-led-sign/front.jpg',
+        '/pharmacy-plus-led-sign/features.png',
+        '/pharmacy-plus-led-sign/size.jpg'
+      ],
+      '24"×24"': [
+        '/pharmacy-plus-led-sign/main-24.png',
+        '/pharmacy-plus-led-sign/perspective-24.png',
+        '/pharmacy-plus-led-sign/front-24.png',
+        '/pharmacy-plus-led-sign/features-24.png',
+        '/pharmacy-plus-led-sign/size-24.png'
+      ]
     }
   };
 
@@ -1377,7 +1447,8 @@
     if (atcBtn) {
       var names = {
         'p1': 'Medical Plus LED Sign Board — Green',
-        'clinic': 'Clinic Plus LED Sign Board — Red White'
+        'clinic': 'Clinic Plus LED Sign Board — Red White',
+        'pharmacy': 'Pharmacy Plus LED Sign Board — Green'
       };
       var name = (names[pid] || pid) + ' ' + size;
       atcBtn.onclick = function(){ addToCart({id: pid + '-' + size, name: name, price: price, qty: 1}); };
