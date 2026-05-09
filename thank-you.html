@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Confirmed! | Signs and Arts</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <style>
+    :root{--blue:#111111;--red:#c0392b;--green:#1e8a44;--gold:#c9a84c;--g50:#fafafa;--g100:#f5f5f5;--g200:#e8e8e8;--g400:#cccccc;--g600:#777777;--g800:#333333;--text:#111111;--radius:4px;--radius-lg:8px;}
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'DM Sans',sans-serif;color:var(--text);background:#fff;line-height:1.6;min-height:100vh;display:flex;flex-direction:column;}
+    a{text-decoration:none;color:inherit;}
+    .topbar{background:#000;color:rgba(255,255,255,.75);border-bottom:1px solid #222;font-size:.73rem;font-weight:500;padding:.45rem 5%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem;}
+    .tbl,.tbr{display:flex;gap:1.5rem;align-items:center;flex-wrap:wrap;}
+    .tbi{display:flex;align-items:center;gap:.4rem;}
+    .tdot{width:6px;height:6px;border-radius:50%;background:#4fc3f7;flex-shrink:0;}
+    .topbar a{color:#fff;font-weight:600;}
+    header{background:#fff;border-bottom:1px solid #e8e8e8;position:sticky;top:0;z-index:999;box-shadow:0 2px 10px rgba(0,0,0,.07);}
+    .hi{padding:.8rem 5%;display:flex;align-items:center;justify-content:space-between;gap:1rem;}
+    .logo{display:flex;flex-direction:column;line-height:1.1;}
+    .ln{font-family:'Playfair Display',serif;font-size:1.7rem;font-weight:700;color:#111;letter-spacing:1px;}
+    .ln span{color:var(--red);}
+    .ls{font-size:.6rem;font-weight:500;letter-spacing:3px;text-transform:uppercase;color:#999;margin-top:3px;}
+    nav{display:flex;gap:.2rem;}
+    nav a{padding:.45rem .9rem;font-size:.82rem;font-weight:600;color:var(--g800);border-radius:var(--radius);transition:all .2s;}
+    nav a:hover{background:#f5f5f5;color:#111;}
+    .bwah{display:flex;align-items:center;gap:.4rem;background:#25D366;color:#fff;padding:.5rem 1rem;border-radius:var(--radius);font-size:.8rem;font-weight:700;letter-spacing:.5px;transition:background .2s;}
+    .bwah:hover{background:#1da851;}
+    .hero{background:linear-gradient(135deg,#0a0a0a 0%,#1a1a1a 60%,#111 100%);color:#fff;padding:4rem 5%;text-align:center;position:relative;overflow:hidden;}
+    .hero::before{content:'';position:absolute;right:-80px;top:-80px;width:380px;height:380px;border-radius:50%;background:rgba(255,255,255,.03);}
+    .hbadge{display:inline-block;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.5);border-radius:2px;font-size:.7rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:.4rem 1.2rem;margin-bottom:1.4rem;color:#c9a84c;}
+    .check-wrap{width:72px;height:72px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.4rem;box-shadow:0 0 0 12px rgba(30,138,68,.18),0 0 0 24px rgba(30,138,68,.07);animation:popIn .5s cubic-bezier(.34,1.56,.64,1) both;}
+    @keyframes popIn{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+    .check-wrap svg{width:36px;height:36px;stroke:#fff;fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;}
+    .check-wrap svg path{stroke-dasharray:60;stroke-dashoffset:60;animation:drawCheck .4s .45s ease forwards;}
+    @keyframes drawCheck{to{stroke-dashoffset:0}}
+    .hero h1{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,4vw,2.6rem);font-weight:700;margin-bottom:.6rem;}
+    .hero h1 em{font-style:normal;color:#c9a84c;}
+    .hero p{color:rgba(255,255,255,.75);font-size:.95rem;max-width:480px;margin:0 auto 1.5rem;}
+    .order-pill{display:inline-flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);border-radius:2px;padding:.5rem 1.2rem;color:rgba(255,255,255,.85);font-size:.8rem;font-weight:600;letter-spacing:.5px;}
+    .order-pill strong{color:#c9a84c;}
+    .trust{background:#fff;border-bottom:1px solid #e8e8e8;border-top:1px solid #e8e8e8;padding:1rem 5%;display:flex;justify-content:center;gap:2.5rem;flex-wrap:wrap;}
+    .ti{display:flex;align-items:center;gap:.5rem;font-size:.78rem;font-weight:600;color:var(--g800);}
+    .tick{width:20px;height:20px;background:#111;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-weight:800;flex-shrink:0;}
+    .wrap{max-width:760px;margin:0 auto;padding:2.5rem 5% 3rem;flex:1;}
+    .obox{background:#fafafa;border:1px solid var(--g200);border-radius:var(--radius-lg);padding:1.4rem 1.6rem;margin-bottom:2rem;}
+    .obox-title{font-size:.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;}
+    .orow{display:flex;justify-content:space-between;align-items:center;padding:.55rem 0;border-bottom:1px solid var(--g200);font-size:.85rem;}
+    .orow:last-child{border-bottom:none;}
+    .orow .lbl{color:var(--g600);}
+    .orow .val{font-weight:700;color:var(--text);}
+    .orow .val.gold{color:var(--gold);}
+    .sec-title{font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--text);margin-bottom:1.2rem;}
+    .steps{display:flex;flex-direction:column;gap:.8rem;margin-bottom:2rem;}
+    .step{display:flex;gap:1rem;align-items:flex-start;background:#fff;border:1px solid var(--g200);border-radius:var(--radius-lg);padding:1rem 1.2rem;transition:border-color .2s,box-shadow .2s;}
+    .step:hover{border-color:#ccc;box-shadow:0 4px 20px rgba(0,0,0,.06);}
+    .snum{width:32px;height:32px;min-width:32px;background:#111;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;}
+    .sbody h3{font-size:.88rem;font-weight:700;color:var(--text);margin-bottom:.2rem;}
+    .sbody p{font-size:.8rem;color:var(--g600);line-height:1.55;}
+    .ctas{display:flex;gap:.8rem;flex-wrap:wrap;margin-bottom:1.5rem;}
+    .btn-wa{display:flex;align-items:center;justify-content:center;gap:.5rem;background:#25D366;color:#fff;font-weight:700;font-size:.85rem;padding:.8rem 1.6rem;border-radius:var(--radius);flex:1;min-width:180px;letter-spacing:.5px;transition:background .2s;}
+    .btn-wa:hover{background:#1da851;}
+    .btn-home{display:flex;align-items:center;justify-content:center;gap:.5rem;background:#111;color:#fff;font-weight:700;font-size:.85rem;padding:.8rem 1.6rem;border-radius:var(--radius);flex:1;min-width:180px;letter-spacing:.5px;transition:background .2s;}
+    .btn-home:hover{background:#c9a84c;}
+    .warranty-strip{background:var(--green);padding:.9rem 1.4rem;border-radius:var(--radius-lg);display:flex;align-items:center;gap:.8rem;color:#fff;font-size:.82rem;}
+    .policy-strip{margin-top:1.5rem;background:#1e8a44;padding:1rem 1.4rem;border-radius:var(--radius-lg);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+    .psi{display:flex;align-items:center;gap:.4rem;color:#fff;font-size:.78rem;font-weight:600;}
+    footer{background:#0a0a0a;color:rgba(255,255,255,.5);padding:2rem 5%;}
+    .fgrid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:2rem;margin-bottom:1.5rem;}
+    .fln{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;color:#fff;margin-bottom:.6rem;}
+    .fln span{color:var(--red);}
+    .fds{font-size:.78rem;line-height:1.7;color:rgba(255,255,255,.45);margin-bottom:.8rem;}
+    .ftm{font-size:.72rem;color:var(--gold);font-weight:600;letter-spacing:.5px;}
+    .fcol h4{font-size:.75rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:.8rem;}
+    .fcol ul{list-style:none;}
+    .fcol ul li{margin-bottom:.4rem;}
+    .fcol ul li a{font-size:.82rem;color:rgba(255,255,255,.6);transition:color .2s;}
+    .fcol ul li a:hover{color:#fff;}
+    .fbot{border-top:1px solid rgba(255,255,255,.08);padding-top:1.2rem;display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem;}
+    .fcp{font-size:.75rem;color:rgba(255,255,255,.35);}
+    .fcp strong{color:rgba(255,255,255,.6);}
+    @media(max-width:600px){.fgrid{grid-template-columns:1fr;}.ctas{flex-direction:column;}.topbar{font-size:.68rem;}.tbl{gap:.8rem;}nav{display:none;}}
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="tbl">
+    <div class="tbi"><div class="tdot"></div> Free Delivery Pan India</div>
+    <div class="tbi"><div class="tdot"></div> Plug &amp; Play — No Electrician Needed</div>
+    <div class="tbi"><div class="tdot"></div> 3-Month Warranty</div>
+  </div>
+  <div class="tbr"><a href="https://wa.me/919392878946" target="_blank">&#128242; +91 93928 78946</a></div>
+</div>
+
+<header>
+  <div class="hi">
+    <a href="/" class="logo">
+      <div class="ln">Signs <span>&amp;</span> Arts</div>
+      <div class="ls">LED Sign Boards &mdash; India</div>
+    </a>
+    <nav>
+      <a href="/#products">Products</a>
+      <a href="/#why">About</a>
+      <a href="/#contact">Contact</a>
+    </nav>
+    <a href="https://wa.me/919392878946?text=Hi%20Signs%20and%20Arts%2C%20I%20want%20to%20order%20an%20LED%20sign%20board" class="bwah" target="_blank">&#128242; WhatsApp Order</a>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hbadge">Order Confirmed</div>
+  <div class="check-wrap">
+    <svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+  </div>
+  <h1>Thank You for Your <em>Order!</em></h1>
+  <p>Your LED sign board is being prepared for dispatch. You'll hear from us very soon.</p>
+  <div class="order-pill">Order ID: <strong id="orderId">—</strong></div>
+</div>
+
+<div class="trust">
+  <div class="ti"><div class="tick">✓</div> Dispatch within 24 hrs</div>
+  <div class="ti"><div class="tick">✓</div> Pan India Delivery</div>
+  <div class="ti"><div class="tick">✓</div> 3-Month Warranty</div>
+  <div class="ti"><div class="tick">✓</div> GST Invoice Included</div>
+  <div class="ti"><div class="tick">✓</div> Plug &amp; Play</div>
+</div>
+
+<div class="wrap">
+
+  <div class="obox">
+    <div class="obox-title">Order Summary</div>
+    <div class="orow"><span class="lbl">Product</span><span class="val" id="prodName">LED Sign Board</span></div>
+    <div class="orow"><span class="lbl">Amount Paid</span><span class="val gold" id="amtPaid">—</span></div>
+    <div class="orow"><span class="lbl">GST Invoice</span><span class="val">Included</span></div>
+    <div class="orow"><span class="lbl">Delivery</span><span class="val">2–7 working days · Pan India</span></div>
+    <div class="orow"><span class="lbl">Support</span><span class="val">+91 93928 78946 (10am–8pm)</span></div>
+  </div>
+
+  <p class="sec-title">What happens next?</p>
+  <div class="steps">
+    <div class="step">
+      <div class="snum">1</div>
+      <div class="sbody">
+        <h3>Order Processing</h3>
+        <p>We verify your payment and prepare your sign board — usually within a few hours of placing the order.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="snum">2</div>
+      <div class="sbody">
+        <h3>Dispatch within 24 hours</h3>
+        <p>Your order is packed and handed to our courier partner. You'll receive a tracking number via WhatsApp.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="snum">3</div>
+      <div class="sbody">
+        <h3>Delivery in 2–7 working days</h3>
+        <p>Pan India delivery to your doorstep. Just plug it into any 230V socket — no electrician needed!</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="ctas">
+    <a href="#" id="waLink" class="btn-wa" target="_blank">&#128242; Message Us on WhatsApp</a>
+    <a href="/" class="btn-home">&#8592; Back to Home</a>
+  </div>
+
+  <div class="warranty-strip">
+    <span style="font-size:1.3rem;">🛡️</span>
+    <span>Your sign board comes with a <strong>3-month warranty</strong> against manufacturing defects. Contact us at <strong>hello@signsandarts.in</strong> for any issues.</span>
+  </div>
+
+  <div class="policy-strip">
+    <div class="psi">↩️ &nbsp;7-Day Return Policy</div>
+    <div class="psi">📦 Free Replacement on Defects</div>
+    <div class="psi">🧾 GST Invoice on Every Order</div>
+    <a href="/refund.html" style="background:#fff;color:#1e8a44;padding:.45rem 1rem;border-radius:4px;font-size:.78rem;font-weight:700;white-space:nowrap;">View Full Policy →</a>
+  </div>
+
+</div>
+
+<footer>
+  <div class="fgrid">
+    <div>
+      <div class="fln">Signs <span>&amp;</span> Arts</div>
+      <p class="fds">India's trusted LED sign board brand for medical stores, pharmacies, xerox shops, dental clinics and restaurants. Plug and play, ready-made, waterproof LED signage with pan India delivery.</p>
+      <div class="ftm">&#8482; Trademark Registered Brand</div>
+    </div>
+    <div class="fcol">
+      <h4>Products</h4>
+      <ul>
+        <li><a href="/#products">Medical LED Boards</a></li>
+        <li><a href="/#products">Pharmacy LED Boards</a></li>
+        <li><a href="/#products">Clinic LED Boards</a></li>
+        <li><a href="/#products">Xerox Shop Boards</a></li>
+        <li><a href="/#products">Dental LED Boards</a></li>
+      </ul>
+    </div>
+    <div class="fcol">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="/refund.html">Return Policy</a></li>
+        <li><a href="/terms.html">Terms &amp; Conditions</a></li>
+        <li><a href="https://wa.me/919392878946" target="_blank">WhatsApp Us</a></li>
+        <li><a href="mailto:hello@signsandarts.in">hello@signsandarts.in</a></li>
+        <li><a href="tel:+919392878946">+91 93928 78946</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="fbot">
+    <div class="fcp">&#169; 2025 <strong>Signs and Arts</strong>. All rights reserved. Trademark Registered.</div>
+    <div class="fcp">Made with love for Indian shop owners &middot; signsandarts.in</div>
+  </div>
+</footer>
+
+<script>
+  var p = new URLSearchParams(window.location.search);
+  var orderId = p.get('order_id') || '—';
+  var product = p.get('product')  || 'LED Sign Board';
+  var amount  = p.get('amount');
+  document.getElementById('orderId').textContent  = orderId;
+  document.getElementById('prodName').textContent = decodeURIComponent(product);
+  document.getElementById('amtPaid').textContent  = amount ? '₹' + Number(amount).toLocaleString('en-IN') : '—';
+  document.getElementById('waLink').href = 'https://wa.me/919392878946?text=Hi%2C%20I%20just%20placed%20an%20order%20on%20signsandarts.in.%20Order%20ID%3A%20' + encodeURIComponent(orderId);
+</script>
+</body>
+</html>
