@@ -1332,7 +1332,7 @@
                 cart = [];
                 updateCartUI();
                 const productName = orderData.items.map(function(i){ return i.name; }).join(', ');
-                window.location.href = '/thank-you?order_id=' + encodeURIComponent(orderId) + '&product=' + encodeURIComponent(productName) + '&amount=' + orderData.amount;
+                window.location.href = '/thank-you?order_id=' + encodeURIComponent(orderId) + '&product=' + encodeURIComponent(productName) + '&amount=' + orderData.total;
               } else {
                 alert('Payment received but verification failed. Please WhatsApp us with Order ID: ' + orderId);
               }
