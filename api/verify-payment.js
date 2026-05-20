@@ -42,6 +42,9 @@ module.exports = async (req, res) => {
   const { orderId, orderData } = req.body;
   if (!orderId) return res.status(400).json({ error: 'Order ID required' });
 
+  const isCOD = orderData && orderData.isCOD === true;
+  const codAdvance = isCOD ? 200 : 0;
+
   // ── 1. Verify payment with Cashfree ──────────────────────────────────────
   try {
     const cfResponse = await fetch(`https://api.cashfree.com/pg/orders/${orderId}/payments`, {
@@ -68,14 +71,17 @@ module.exports = async (req, res) => {
       return res.status(400).json({ error: 'Payment not successful' });
     }
 
+    // For COD: verify advance amount (₹200) was paid
+    if (isCOD && successPayment.payment_amount < codAdvance) {
+      return res.status(400).json({ error: 'COD advance payment amount mismatch' });
+    }
+
     // ── 2. Create Shiprocket Order ──────────────────────────────────────────
     let srToken;
     try {
       srToken = await getShiprocketToken();
     } catch (err) {
       console.error('Shiprocket login failed:', err.message);
-      // Payment was successful — return success even if Shiprocket fails
-      // Order can be created manually in Shiprocket dashboard
       return res.status(200).json({
         success: true,
         order_id: orderId,
@@ -118,7 +124,11 @@ module.exports = async (req, res) => {
           tax: '',
           hsn: 9405,
         })),
-        payment_method: 'Prepaid',
+        // COD: Shiprocket collects remaining amount on delivery
+        // Prepaid: full amount already paid online
+        payment_method: isCOD ? 'COD' : 'Prepaid',
+        // For COD, Shiprocket collects (total - ₹200 advance already paid)
+        cod_charges: isCOD ? orderData.total - codAdvance : 0,
         shipping_charges: 0,
         giftwrap_charges: 0,
         transaction_charges: 0,
@@ -138,6 +148,7 @@ module.exports = async (req, res) => {
       success: true,
       order_id: orderId,
       payment_id: successPayment.cf_payment_id,
+      payment_method: isCOD ? 'COD' : 'Prepaid',
       shiprocket: srData,
     });
 

@@ -222,10 +222,21 @@
   var orderId = p.get('order_id') || '—';
   var product = p.get('product')  || 'LED Sign Board';
   var amount  = p.get('amount');
+  var isCOD   = p.get('cod') === '1';
+
   document.getElementById('orderId').textContent  = orderId;
   document.getElementById('prodName').textContent = decodeURIComponent(product);
-  document.getElementById('amtPaid').textContent  = amount ? '₹' + Number(amount).toLocaleString('en-IN') : '—';
-  document.getElementById('waLink').href = 'https://wa.me/919392878946?text=Hi%2C%20I%20just%20placed%20an%20order%20on%20signsandarts.in.%20Order%20ID%3A%20' + encodeURIComponent(orderId);
+
+  if (isCOD) {
+    document.getElementById('amtPaid').textContent = '₹200 advance paid · ₹' + (Number(amount) - 200).toLocaleString('en-IN') + ' on delivery';
+    // Update step 3 text for COD
+    var steps = document.querySelectorAll('.sbody p');
+    if (steps[2]) steps[2].textContent = 'Delivery in 2–7 working days. Pay the remaining amount to the delivery person when your sign board arrives!';
+  } else {
+    document.getElementById('amtPaid').textContent = amount ? '₹' + Number(amount).toLocaleString('en-IN') : '—';
+  }
+
+  document.getElementById('waLink').href = 'https://wa.me/919392878946?text=Hi%2C%20I%20just%20placed%20a%20' + (isCOD ? 'COD%20' : '') + 'order%20on%20signsandarts.in.%20Order%20ID%3A%20' + encodeURIComponent(orderId);
 </script>
 </body>
 </html>

@@ -5,7 +5,7 @@ module.exports = async (req, res) => {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { amount, orderId, customerName, customerEmail, customerPhone } = req.body;
+  const { amount, orderId, customerName, customerEmail, customerPhone, isCOD } = req.body;
 
   if (!amount || amount < 1) {
     return res.status(400).json({ error: 'Invalid amount' });
@@ -22,7 +22,7 @@ module.exports = async (req, res) => {
       },
       body: JSON.stringify({
         order_id: orderId || 'SA-' + Date.now(),
-        order_amount: amount,
+        order_amount: amount, // ₹200 for COD advance, full amount for online
         order_currency: 'INR',
         customer_details: {
           customer_id: 'CUST-' + Date.now(),
@@ -33,7 +33,9 @@ module.exports = async (req, res) => {
         order_meta: {
           notify_url: 'https://signsandarts.in/api/verify-payment',
         },
-        order_note: 'Signs and Arts LED Sign Board Order',
+        order_note: isCOD
+          ? 'COD Order — ₹200 advance. Remaining paid on delivery. Signs and Arts'
+          : 'Signs and Arts LED Sign Board Order',
       }),
     });
 
