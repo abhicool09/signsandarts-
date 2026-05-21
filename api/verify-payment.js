@@ -97,6 +97,28 @@ module.exports = async (req, res) => {
 
     const now = new Date();
     const orderDate = now.toISOString().split('T')[0] + ' ' + now.toTimeString().split(' ')[0];
+    const shippingAddress = {
+      name: String(orderData.name || '').trim(),
+      address: String(orderData.address || '').trim(),
+      city: String(orderData.city || '').trim(),
+      state: String(orderData.state || '').trim(),
+      pincode: String(orderData.pincode || '').trim(),
+      email: String(orderData.email || '').trim(),
+      phone: String(orderData.phone || '').trim(),
+    };
+
+    if (!shippingAddress.name || !shippingAddress.address || !shippingAddress.city || !shippingAddress.state || !shippingAddress.pincode || !shippingAddress.phone) {
+      return res.status(200).json({
+        success: true,
+        order_id: orderId,
+        payment_id: successPayment.cf_payment_id,
+        shiprocket_status: 'failed',
+        shiprocket_error: 'Missing shipping address fields required by Shiprocket',
+        missing_fields: Object.keys(shippingAddress).filter(key => !shippingAddress[key] && key !== 'email'),
+        note: 'Payment successful! Please create Shiprocket order manually for Order ID: ' + orderId,
+      });
+    }
+
     const codAdvance = isCOD ? Number(orderData.codAdvance || 200) : 0;
     const itemTotal = orderData.items.reduce((sum, item) => sum + Number(item.price || 0) * Number(item.qty || 1), 0);
     const codBalance = isCOD ? Math.max(Number(orderData.total || 0) - codAdvance, 1) : Number(orderData.total || 0);
@@ -124,15 +146,15 @@ module.exports = async (req, res) => {
         order_id: orderId,
         order_date: orderDate,
         pickup_location: 'Primary',
-        billing_customer_name: orderData.name,
+        billing_customer_name: shippingAddress.name,
         billing_last_name: '',
-        billing_address: orderData.address,
-        billing_city: orderData.city,
-        billing_pincode: orderData.pincode,
-        billing_state: orderData.state,
+        billing_address: shippingAddress.address,
+        billing_city: shippingAddress.city,
+        billing_pincode: shippingAddress.pincode,
+        billing_state: shippingAddress.state,
         billing_country: 'India',
-        billing_email: orderData.email,
-        billing_phone: orderData.phone,
+        billing_email: shippingAddress.email || 'customer@signsandarts.in',
+        billing_phone: shippingAddress.phone,
         shipping_is_billing: true,
         order_items: shiprocketItems,
         payment_method: isCOD ? 'COD' : 'Prepaid',

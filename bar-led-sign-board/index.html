@@ -337,6 +337,7 @@
     <div class="form-group"><label>Email Address *</label><input type="email" id="custEmail" placeholder="your@email.com"></div>
     <div class="form-group"><label>Delivery Address *</label><input type="text" id="custAddr" placeholder="House/Flat, Street, Area"></div>
     <div class="form-group"><label>City *</label><input type="text" id="custCity" placeholder="City"></div>
+    <div class="form-group"><label>State *</label><input type="text" id="custState" placeholder="State"></div>
     <div class="form-group"><label>PIN Code *</label><input type="text" id="custPin" placeholder="6-digit PIN code"></div>
     <button class="btn-pay" id="payBtn" onclick="initiatePayment()">&#128274; Pay &#8377;2,287 Securely</button>
     <button class="btn-close-modal" onclick="closeCheckout()">Cancel</button>
@@ -394,20 +395,21 @@
     var email=document.getElementById('custEmail').value.trim();
     var addr=document.getElementById('custAddr').value.trim();
     var city=document.getElementById('custCity').value.trim();
+    var state=document.getElementById('custState').value.trim();
     var pin=document.getElementById('custPin').value.trim();
-    if(!name||!phone||!email||!addr||!city||!pin){alert('Please fill all fields.');return;}
+    if(!name||!phone||!email||!addr||!city||!state||!pin){alert('Please fill all fields.');return;}
     if(!/^\d{10}$/.test(phone)){alert('Enter a valid 10-digit phone number.');return;}
     if(!/^\d{6}$/.test(pin)){alert('Enter a valid 6-digit PIN code.');return;}
     var isCOD = payMode==='cod';
     var payAmount = isCOD ? 200 : 2287;
     var orderId='SA-'+Date.now();
-    var orderData={name:name,phone:phone,email:email,address:addr+', '+city+' - '+pin,items:[{id:'bar-led',name:'Bar LED Sign Board — Multicolor 18x12',price:2287,qty:1}],total:2287,isCOD:isCOD,codAdvance:isCOD?200:0};
+    var orderData={name:name,phone:phone,email:email,address:addr,city:city,state:state,pincode:pin,items:[{id:'bar-led',name:'Bar LED Sign Board — Multicolor 18x12',price:2287,qty:1}],total:2287,isCOD:isCOD,codAdvance:isCOD?200:0};
     try{
       var res=await fetch('/api/create-order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({amount:payAmount,orderId:orderId,customerName:name,customerEmail:email,customerPhone:phone,isCOD:isCOD})});
       var data=await res.json();
       if(!data.payment_session_id){alert('Could not initiate payment. Please try WhatsApp order.');return;}
       var cashfree=Cashfree({mode:'production'});
-      cashfree.checkout({paymentSessionId:data.payment_session_id,returnUrl:'https://signsandarts.in/thank-you?order_id='+encodeURIComponent(orderId)+'&product='+encodeURIComponent('Bar LED Sign Board')+'&amount=2287'+(isCOD?'&cod=1':'')}).then(async function(result){
+      cashfree.checkout({paymentSessionId:data.payment_session_id,redirectTarget:'_modal'}).then(async function(result){
         if(result.error){alert('Payment failed: '+result.error.message);return;}
         var verifyRes=await fetch('/api/verify-payment',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({orderId:orderId,orderData:orderData})});
         var verifyData=await verifyRes.json();
