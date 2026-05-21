@@ -78,6 +78,9 @@
       color:#fff;font-size:1.3rem;opacity:.7;transition:all .2s;
     }
     .yt-thumb-btn:hover{border-color:var(--black);opacity:1;}
+    .videos-row{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-top:.8rem;}
+    .vid-btn{background:var(--black);color:#fff;border:none;border-radius:var(--radius);padding:.65rem .8rem;font-family:'DM Sans',sans-serif;font-size:.85rem;font-weight:700;cursor:pointer;transition:all .2s;}
+    .vid-btn:hover{background:var(--gold);}
 
     /* ── RIGHT: PRODUCT DETAILS ── */
     .detail-col{}
@@ -321,6 +324,10 @@
       <img src="features.png" class="thumb" onclick="switchMain(3)" alt="Features">
       <img src="size.jpg" class="thumb" onclick="switchMain(4)" alt="Size">
       <button class="yt-thumb-btn" onclick="openVid()" title="Watch Video">&#9654;</button>
+    </div>
+    <div class="videos-row">
+      <button class="vid-btn" onclick="openVid('QvGj9jg-vN0')">&#9654; Video 1</button>
+      <button class="vid-btn" onclick="openVid('iqzemJ-Al3U')">&#9654; Video 2</button>
     </div>
   </div>
 
@@ -746,8 +753,9 @@
   }
 
   // ── VIDEO ─────────────────────────────────────────────────────────────────
-  function openVid() {
-    document.getElementById('vidFrame').src = 'https://www.youtube.com/embed/QvGj9jg-vN0?autoplay=1&rel=0';
+  function openVid(videoId) {
+    videoId = videoId || 'QvGj9jg-vN0';
+    document.getElementById('vidFrame').src = 'https://www.youtube.com/embed/' + videoId + '?autoplay=1&rel=0';
     document.getElementById('vidModal').classList.add('open');
     document.body.style.overflow = 'hidden';
   }
