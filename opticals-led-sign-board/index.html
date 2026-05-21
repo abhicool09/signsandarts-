@@ -110,6 +110,12 @@
     .form-group input:focus{outline:none;border-color:#111;}
     .os-item,.os-total{display:flex;justify-content:space-between;font-size:.82rem;padding:.4rem 0;border-bottom:1px solid var(--g200);}
     .os-total{font-weight:700;border-bottom:none;padding-top:.6rem;}
+    .payment-toggle{display:flex;gap:.5rem;margin:.8rem 0;}
+    .ptbtn{flex:1;padding:.7rem;border:1px solid var(--g200);background:#fff;border-radius:var(--radius);font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;}
+    .ptbtn.active{background:#111;color:#fff;border-color:#111;}
+    .ptbtn.cod-btn.active{background:#e67e22;border-color:#e67e22;}
+    .cod-info{background:#fff8e8;border:1px solid #f0d49a;border-radius:var(--radius);padding:.65rem .8rem;font-size:.78rem;color:#7a4a00;margin:.8rem 0;display:none;}
+    .cod-info.show{display:block;}
     .btn-pay{background:#111;color:#fff;border:none;border-radius:var(--radius);padding:.9rem;font-size:.88rem;font-weight:700;cursor:pointer;width:100%;margin-top:1rem;}
     .btn-pay:hover{background:var(--gold);}
     .btn-close-modal{background:none;border:1px solid var(--g200);border-radius:var(--radius);padding:.6rem;font-size:.8rem;cursor:pointer;width:100%;margin-top:.5rem;color:var(--g800);}
@@ -331,7 +337,12 @@
     <div class="form-group"><label>City *</label><input type="text" id="custCity" placeholder="City"></div>
     <div class="form-group"><label>State *</label><input type="text" id="custState" placeholder="State"></div>
     <div class="form-group"><label>PIN Code *</label><input type="text" id="custPin" placeholder="6-digit PIN code"></div>
-    <button class="btn-pay" onclick="initiatePayment()">&#128274; Pay &#8377;6,330 Securely</button>
+    <div class="payment-toggle">
+      <button class="ptbtn active" id="btnOnline" onclick="setPayMode('online')">&#128274; Pay Online</button>
+      <button class="ptbtn cod-btn" id="btnCOD" onclick="setPayMode('cod')">&#128666; Cash on Delivery</button>
+    </div>
+    <div class="cod-info" id="codInfo">&#9432; <strong>COD:</strong> Pay <strong>&#8377;200 advance</strong> now. Remaining amount is paid to the delivery person.</div>
+    <button class="btn-pay" id="payBtn" onclick="initiatePayment()">&#128274; Pay &#8377;6,330 Securely</button>
     <button class="btn-close-modal" onclick="closeCheckout()">Cancel</button>
   </div>
 </div>
@@ -353,7 +364,20 @@
       document.body.style.overflow='';
     }
   }
-  function openCheckout(){document.getElementById('checkoutModal').classList.add('open');document.body.style.overflow='hidden';}
+  var payMode = 'online';
+  function setPayMode(mode){
+    payMode = mode;
+    document.getElementById('btnOnline').classList.toggle('active', mode === 'online');
+    document.getElementById('btnCOD').classList.toggle('active', mode === 'cod');
+    document.getElementById('codInfo').classList.toggle('show', mode === 'cod');
+    var btn = document.getElementById('payBtn');
+    if (btn) {
+      btn.innerHTML = mode === 'cod' ? '&#128666; Pay &#8377;200 Advance &amp; Place COD Order' : '&#128274; Pay &#8377;6,330 Securely';
+      btn.style.background = mode === 'cod' ? '#e67e22' : '';
+    }
+  }
+
+  function openCheckout(){payMode='online';setPayMode('online');document.getElementById('checkoutModal').classList.add('open');document.body.style.overflow='hidden';}
   function closeCheckout(){document.getElementById('checkoutModal').classList.remove('open');document.body.style.overflow='';}
   async function initiatePayment(){
     var name=document.getElementById('custName').value.trim();
@@ -366,10 +390,12 @@
     if(!name||!phone||!email||!addr||!city||!state||!pin){alert('Please fill all fields.');return;}
     if(!/^\d{10}$/.test(phone)){alert('Enter a valid 10-digit phone number.');return;}
     if(!/^\d{6}$/.test(pin)){alert('Enter a valid 6-digit PIN code.');return;}
+    var isCOD=payMode==='cod';
+    var payAmount=isCOD?200:6330;
     var orderId='SA-'+Date.now();
-    var orderData={name:name,phone:phone,email:email,address:addr,city:city,state:state,pincode:pin,items:[{id:'opticals-led',name:'Opticals LED Sign Board — Red & White 24x18',price:6330,qty:1}],total:6330};
+    var orderData={name:name,phone:phone,email:email,address:addr,city:city,state:state,pincode:pin,items:[{id:'opticals-led',name:'Opticals LED Sign Board — Red & White 24x18',price:6330,qty:1}],total:6330,isCOD:isCOD,codAdvance:isCOD?200:0};
     try{
-      var res=await fetch('/api/create-order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({amount:6330,orderId:orderId,customerName:name,customerEmail:email,customerPhone:phone})});
+      var res=await fetch('/api/create-order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({amount:payAmount,orderId:orderId,customerName:name,customerEmail:email,customerPhone:phone,isCOD:isCOD})});
       var data=await res.json();
       if(!data.payment_session_id){alert('Could not initiate payment. Please try WhatsApp order.');return;}
       var cashfree=Cashfree({mode:'production'});
@@ -377,7 +403,7 @@
         if(result.error){alert('Payment failed: '+result.error.message);return;}
         var verifyRes=await fetch('/api/verify-payment',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({orderId:orderId,orderData:orderData})});
         var verifyData=await verifyRes.json();
-        if(verifyData.success){window.location.href='/thank-you?order_id='+encodeURIComponent(orderId)+'&product='+encodeURIComponent('Opticals LED Sign Board')+'&amount=6330';}
+        if(verifyData.success){window.location.href='/thank-you?order_id='+encodeURIComponent(orderId)+'&product='+encodeURIComponent('Opticals LED Sign Board')+'&amount=6330'+(isCOD?'&cod=1':'');}
         else{alert('Payment received! WhatsApp us with Order ID: '+orderId);}
       });
     }catch(e){alert('Error: '+e.message+'. Please try WhatsApp order.');}

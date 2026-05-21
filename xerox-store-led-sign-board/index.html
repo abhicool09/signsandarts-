@@ -242,6 +242,12 @@
     .btn-pay{width:100%;background:var(--black);color:#fff;border:none;padding:.9rem;border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;transition:all .25s;margin-top:.5rem;letter-spacing:.5px;}
     .btn-pay:hover{background:var(--gold);}
     .btn-pay:disabled{background:var(--g400);cursor:not-allowed;}
+    .payment-toggle{display:flex;gap:.5rem;margin:.8rem 0;}
+    .ptbtn{flex:1;padding:.7rem;border:1px solid var(--g200);background:#fff;border-radius:var(--radius);font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;}
+    .ptbtn.active{background:#111;color:#fff;border-color:#111;}
+    .ptbtn.cod-btn.active{background:#e67e22;border-color:#e67e22;}
+    .cod-info{background:#fff8e8;border:1px solid #f0d49a;border-radius:var(--radius);padding:.65rem .8rem;font-size:.78rem;color:#7a4a00;margin-bottom:.9rem;display:none;}
+    .cod-info.show{display:block;}
     .secure-note{text-align:center;font-size:.72rem;color:var(--g600);margin-top:.6rem;}
 
     /* Success */
@@ -649,6 +655,11 @@
     </div>
     <div class="modal-body">
       <div class="order-summary" id="orderSummary"></div>
+      <div class="payment-toggle">
+        <button class="ptbtn active" id="btnOnline" onclick="setPayMode('online')">&#128274; Pay Online</button>
+        <button class="ptbtn cod-btn" id="btnCOD" onclick="setPayMode('cod')">&#128666; Cash on Delivery</button>
+      </div>
+      <div class="cod-info" id="codInfo">&#9432; <strong>COD:</strong> Pay <strong>&#8377;200 advance</strong> now. Remaining amount is paid to the delivery person.</div>
       <div class="form-row">
         <div class="form-group"><label>Full Name *</label><input type="text" id="fname" placeholder="Your full name"></div>
         <div class="form-group"><label>Phone Number *</label><input type="tel" id="fphone" placeholder="10-digit mobile"></div>
@@ -755,11 +766,47 @@
   }
 
   // ── CHECKOUT ──────────────────────────────────────────────────────────────
-  function openCheckout() {
+  var payMode = 'online';
+
+  function getCodAdvance() { return 200; }
+  function getPaymentButtonText() {
+    return payMode === 'cod'
+      ? '&#128666; Pay &#8377;' + getCodAdvance() + ' Advance &amp; Place COD Order'
+      : '&#128274; Pay Securely with Cashfree';
+  }
+  function setPayMode(mode) {
+    payMode = mode;
+    document.getElementById('btnOnline').classList.toggle('active', mode === 'online');
+    document.getElementById('btnCOD').classList.toggle('active', mode === 'cod');
+    document.getElementById('codInfo').classList.toggle('show', mode === 'cod');
+    document.getElementById('payBtn').innerHTML = getPaymentButtonText();
+    document.getElementById('payBtn').style.background = mode === 'cod' ? '#e67e22' : '';
+    updateOrderSummary();
+  }
+  function updateOrderSummary() {
     var summary = document.getElementById('orderSummary');
-    summary.innerHTML = '<div class="os-title">Order Summary</div>' +
-      '<div class="os-item"><span>Xerox Store LED Sign Board — White &amp; Red ' + currentVariant.size + ' x1</span><span>&#8377;' + currentVariant.price.toLocaleString('en-IN') + '</span></div>' +
-      '<div class="os-total"><span>Total Payable</span><span>&#8377;' + currentVariant.price.toLocaleString('en-IN') + '</span></div>';
+    var advance = getCodAdvance();
+    var remaining = Math.max(currentVariant.price - advance, 0);
+    if (payMode === 'cod') {
+      summary.innerHTML = '<div class="os-title">Order Summary</div>' +
+        '<div class="os-item"><span>Xerox Store LED Sign Board &mdash; White &amp; Red ' + currentVariant.size + ' x1</span><span>&#8377;' + currentVariant.price.toLocaleString('en-IN') + '</span></div>' +
+        '<div class="os-item" style="color:#e67e22;font-weight:600;"><span>COD Advance (pay now)</span><span>&#8377;' + advance.toLocaleString('en-IN') + '</span></div>' +
+        '<div class="os-item" style="color:#777;"><span>Remaining (pay on delivery)</span><span>&#8377;' + remaining.toLocaleString('en-IN') + '</span></div>' +
+        '<div class="os-total"><span>Total Order Value</span><span>&#8377;' + currentVariant.price.toLocaleString('en-IN') + '</span></div>';
+    } else {
+      summary.innerHTML = '<div class="os-title">Order Summary</div>' +
+        '<div class="os-item"><span>Xerox Store LED Sign Board &mdash; White &amp; Red ' + currentVariant.size + ' x1</span><span>&#8377;' + currentVariant.price.toLocaleString('en-IN') + '</span></div>' +
+        '<div class="os-total"><span>Total Payable</span><span>&#8377;' + currentVariant.price.toLocaleString('en-IN') + '</span></div>';
+    }
+  }
+  function openCheckout() {
+    payMode = 'online';
+    document.getElementById('btnOnline').classList.add('active');
+    document.getElementById('btnCOD').classList.remove('active');
+    document.getElementById('codInfo').classList.remove('show');
+    document.getElementById('payBtn').innerHTML = getPaymentButtonText();
+    document.getElementById('payBtn').style.background = '';
+    updateOrderSummary();
     document.getElementById('checkoutModal').classList.add('open');
     document.body.style.overflow = 'hidden';
   }
@@ -799,6 +846,9 @@
     if (!validateForm()) return;
     var btn = document.getElementById('payBtn');
     btn.disabled = true; btn.textContent = 'Creating order...';
+    var isCOD = payMode === 'cod';
+    var codAdvance = isCOD ? getCodAdvance() : 0;
+    var payAmount = isCOD ? codAdvance : currentVariant.price;
     var orderId = 'SA-' + Date.now();
     var orderData = {
       name: document.getElementById('fname').value.trim(),
@@ -810,21 +860,23 @@
       pincode: document.getElementById('fpincode').value.trim(),
       items: [{ id:'xerox-store', name:'Xerox Store LED Sign Board — White & Red '+currentVariant.size, price:currentVariant.price, qty:1 }],
       total: currentVariant.price,
+      isCOD: isCOD,
+      codAdvance: codAdvance,
     };
     try {
       var res = await fetch('/api/create-order', {
         method:'POST', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ amount: currentVariant.price, orderId: orderId, customerName: orderData.name, customerEmail: orderData.email, customerPhone: orderData.phone }),
+        body: JSON.stringify({ amount: payAmount, orderId: orderId, customerName: orderData.name, customerEmail: orderData.email, customerPhone: orderData.phone, isCOD: isCOD }),
       });
       var cfOrder = await res.json();
       if (!cfOrder.payment_session_id) throw new Error(cfOrder.error || 'Failed to create order');
-      btn.disabled = false; btn.innerHTML = '&#128274; Pay Securely with Cashfree';
+      btn.disabled = false; btn.innerHTML = getPaymentButtonText();
       var script = document.createElement('script');
       script.src = 'https://sdk.cashfree.com/js/v3/cashfree.js';
       script.onload = async function() {
         var cashfree = await window.Cashfree({ mode:'production' });
         cashfree.checkout({ paymentSessionId: cfOrder.payment_session_id, redirectTarget: '_modal' }).then(async function(result) {
-          if (result.error) { btn.disabled=false; btn.innerHTML='&#128274; Pay Securely with Cashfree'; alert('Payment failed. Please try again or WhatsApp us.'); return; }
+          if (result.error) { btn.disabled=false; btn.innerHTML=getPaymentButtonText(); alert('Payment failed. Please try again or WhatsApp us.'); return; }
           if (result.paymentDetails) {
             var verifyRes = await fetch('/api/verify-payment', {
               method:'POST', headers:{'Content-Type':'application/json'},
@@ -841,7 +893,7 @@
       };
       document.head.appendChild(script);
     } catch(err) {
-      btn.disabled=false; btn.innerHTML='&#128274; Pay Securely with Cashfree';
+      btn.disabled=false; btn.innerHTML=getPaymentButtonText();
       alert('Something went wrong. Please WhatsApp us at +91 93928 78946');
     }
   }
