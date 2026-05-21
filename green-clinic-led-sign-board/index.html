@@ -74,7 +74,7 @@
     .badge{padding:.25rem .75rem;border-radius:2px;font-size:.65rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
     .badge-new{background:#444;color:#fff;}
     .badge-tm{background:var(--gold);color:#fff;}
-    .prod-title{font-family:'Playfair Display',serif;font-size:1.7rem;font-weight:700;color:var(--green);line-height:1.25;margin-bottom:.7rem;}
+    .prod-title{font-family:'Playfair Display',serif;font-size:1.7rem;font-weight:700;color:var(--black);line-height:1.25;margin-bottom:.7rem;}
     .prod-rating{display:flex;align-items:center;gap:.6rem;margin-bottom:1rem;padding-bottom:1rem;border-bottom:1px solid var(--g200);}
     .stars{color:#f59e0b;font-size:1rem;}
     .rating-num{font-size:.85rem;font-weight:600;}
@@ -188,9 +188,12 @@
     .btn-pay{width:100%;background:var(--black);color:#fff;border:none;padding:.9rem;border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;transition:all .25s;margin-top:.5rem;letter-spacing:.5px;}
     .btn-pay:hover{background:var(--gold);}
     .btn-pay:disabled{background:var(--g400);cursor:not-allowed;}
-    .btn-cod{width:100%;background:var(--green);color:#fff;border:none;padding:.9rem;border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;transition:all .25s;margin-top:.5rem;letter-spacing:.5px;}
-    .btn-cod:hover{background:#166c35;}
-    .btn-cod:disabled{background:var(--g400);cursor:not-allowed;}
+    .payment-toggle{display:flex;gap:.6rem;margin-bottom:1.2rem;}
+    .ptbtn{flex:1;padding:.7rem;border:1.5px solid var(--g200);border-radius:var(--radius);background:#fff;font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:700;cursor:pointer;transition:all .2s;text-align:center;color:var(--black);}
+    .ptbtn.active{border-color:var(--black);background:var(--black);color:#fff;}
+    .cod-info{background:#fff8f0;border:1px solid #f0c080;border-radius:var(--radius);padding:.8rem 1rem;font-size:.82rem;color:#8a5200;margin-bottom:1rem;display:none;}
+    .cod-info.show{display:block;}
+    .cod-info strong{color:#c77b00;}
     .secure-note{text-align:center;font-size:.72rem;color:var(--g600);margin-top:.6rem;}
 
     .success-modal{background:#fff;border-radius:var(--radius-lg);padding:2.5rem 2rem;text-align:center;max-width:420px;width:100%;}
@@ -456,6 +459,13 @@
     </div>
     <div class="modal-body">
       <div class="order-summary" id="orderSummary"></div>
+      <div class="payment-toggle">
+        <button class="ptbtn active" id="btnOnline" onclick="setPayMode('online')">&#128274; Pay Online</button>
+        <button class="ptbtn" id="btnCOD" onclick="setPayMode('cod')">&#128666; Cash on Delivery</button>
+      </div>
+      <div class="cod-info" id="codInfo">
+        <strong>&#9432; COD Order:</strong> Pay <strong>&#8377;200 advance</strong> now to confirm your order. Remaining amount is paid to the delivery person when your sign board arrives.
+      </div>
       <div class="form-row">
         <div class="form-group"><label>Full Name *</label><input type="text" id="fname" placeholder="Your full name"></div>
         <div class="form-group"><label>Phone Number *</label><input type="tel" id="fphone" placeholder="10-digit mobile"></div>
@@ -473,7 +483,6 @@
       </div>
       <div class="form-group"><label>Pincode *</label><input type="text" id="fpincode" placeholder="6-digit pincode" maxlength="6"></div>
       <button class="btn-pay" id="payBtn" onclick="initiatePayment()">&#128274; Pay Securely with Cashfree</button>
-      <button class="btn-cod" id="codBtn" onclick="initiatePayment('cod')">&#128666; COD: Pay &#8377;200 Advance</button>
       <p class="secure-note">&#128274; 100% Secure &middot; UPI / Cards / Net Banking &middot; COD orders pay only &#8377;200 advance</p>
     </div>
   </div>
@@ -493,6 +502,7 @@
 
 <script>
   var currentVariant = { size: '18"×18"', price: 2689 };
+  var payMode = 'online';
 
   // Variant image sets
   var variantImages = {
@@ -573,11 +583,40 @@
     if (!isOpen) item.classList.add('open');
   }
 
-  function openCheckout() {
+  function setPayMode(mode) {
+    payMode = mode;
+    document.getElementById('btnOnline').classList.toggle('active', mode === 'online');
+    document.getElementById('btnCOD').classList.toggle('active', mode === 'cod');
+    document.getElementById('codInfo').classList.toggle('show', mode === 'cod');
+    var btn = document.getElementById('payBtn');
+    btn.innerHTML = mode === 'cod'
+      ? '&#128666; Pay &#8377;200 Advance &amp; Place COD Order'
+      : '&#128274; Pay Securely with Cashfree';
+    updateOrderSummary();
+  }
+
+  function updateOrderSummary() {
     var summary = document.getElementById('orderSummary');
-    summary.innerHTML = '<div class="os-title">Order Summary</div>' +
-      '<div class="os-item"><span>Clinic LED Sign Board — Green ' + currentVariant.size + ' x1</span><span>&#8377;' + currentVariant.price.toLocaleString('en-IN') + '</span></div>' +
-      '<div class="os-total"><span>Total Payable</span><span>&#8377;' + currentVariant.price.toLocaleString('en-IN') + '</span></div>';
+    if (payMode === 'cod') {
+      summary.innerHTML = '<div class="os-title">Order Summary</div>' +
+        '<div class="os-item"><span>Clinic LED Sign Board — Green ' + currentVariant.size + ' x1</span><span>&#8377;' + currentVariant.price.toLocaleString('en-IN') + '</span></div>' +
+        '<div class="os-item" style="color:#c77b00;font-weight:600;"><span>COD Advance (pay now)</span><span>&#8377;200</span></div>' +
+        '<div class="os-item" style="color:#777;"><span>Remaining (pay on delivery)</span><span>&#8377;' + Math.max(currentVariant.price - 200, 0).toLocaleString('en-IN') + '</span></div>' +
+        '<div class="os-total"><span>Total Order Value</span><span>&#8377;' + currentVariant.price.toLocaleString('en-IN') + '</span></div>';
+    } else {
+      summary.innerHTML = '<div class="os-title">Order Summary</div>' +
+        '<div class="os-item"><span>Clinic LED Sign Board — Green ' + currentVariant.size + ' x1</span><span>&#8377;' + currentVariant.price.toLocaleString('en-IN') + '</span></div>' +
+        '<div class="os-total"><span>Total Payable</span><span>&#8377;' + currentVariant.price.toLocaleString('en-IN') + '</span></div>';
+    }
+  }
+
+  function openCheckout() {
+    payMode = 'online';
+    document.getElementById('btnOnline').classList.add('active');
+    document.getElementById('btnCOD').classList.remove('active');
+    document.getElementById('codInfo').classList.remove('show');
+    document.getElementById('payBtn').innerHTML = '&#128274; Pay Securely with Cashfree';
+    updateOrderSummary();
     document.getElementById('checkoutModal').classList.add('open');
     document.body.style.overflow = 'hidden';
   }
@@ -607,15 +646,12 @@
     return true;
   }
 
-  async function initiatePayment(mode) {
+  async function initiatePayment() {
     if (!validateForm()) return;
-    var isCOD = mode === 'cod';
+    var isCOD = payMode === 'cod';
     var btn = document.getElementById('payBtn');
-    var codBtn = document.getElementById('codBtn');
-    var activeBtn = isCOD ? codBtn : btn;
     btn.disabled = true;
-    if (codBtn) codBtn.disabled = true;
-    activeBtn.textContent = 'Creating order...';
+    btn.textContent = 'Creating order...';
     var payAmount = isCOD ? 200 : currentVariant.price;
     var orderId = 'SA-' + Date.now();
     var orderData = {
@@ -635,19 +671,18 @@
     try {
       var res = await fetch('/api/create-order', {
         method:'POST', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ amount: payAmount, orderId: orderId, customerName: orderData.name, customerEmail: orderData.email, customerPhone: orderData.phone }),
+        body: JSON.stringify({ amount: payAmount, orderId: orderId, customerName: orderData.name, customerEmail: orderData.email, customerPhone: orderData.phone, isCOD: isCOD }),
       });
       var cfOrder = await res.json();
       if (!cfOrder.payment_session_id) throw new Error(cfOrder.error || 'Failed to create order');
-      btn.disabled = false; if (codBtn) codBtn.disabled = false;
-      btn.innerHTML = '&#128274; Pay Securely with Cashfree';
-      if (codBtn) codBtn.innerHTML = '&#128666; COD: Pay &#8377;200 Advance';
+      btn.disabled = false;
+      btn.innerHTML = isCOD ? '&#128666; Pay &#8377;200 Advance &amp; Place COD Order' : '&#128274; Pay Securely with Cashfree';
       var script = document.createElement('script');
       script.src = 'https://sdk.cashfree.com/js/v3/cashfree.js';
       script.onload = async function() {
         var cashfree = await window.Cashfree({ mode:'production' });
         cashfree.checkout({ paymentSessionId: cfOrder.payment_session_id, redirectTarget: '_modal' }).then(async function(result) {
-          if (result.error) { btn.disabled=false; if (codBtn) codBtn.disabled=false; btn.innerHTML='&#128274; Pay Securely with Cashfree'; if (codBtn) codBtn.innerHTML='&#128666; COD: Pay &#8377;200 Advance'; alert('Payment failed. Please try again or WhatsApp us.'); return; }
+          if (result.error) { btn.disabled=false; btn.innerHTML = isCOD ? '&#128666; Pay &#8377;200 Advance &amp; Place COD Order' : '&#128274; Pay Securely with Cashfree'; alert('Payment failed. Please try again or WhatsApp us.'); return; }
           if (result.paymentDetails) {
             var verifyRes = await fetch('/api/verify-payment', {
               method:'POST', headers:{'Content-Type':'application/json'},
@@ -664,7 +699,7 @@
       };
       document.head.appendChild(script);
     } catch(err) {
-      btn.disabled=false; if (codBtn) codBtn.disabled=false; btn.innerHTML='&#128274; Pay Securely with Cashfree'; if (codBtn) codBtn.innerHTML='&#128666; COD: Pay &#8377;200 Advance';
+      btn.disabled=false; btn.innerHTML = isCOD ? '&#128666; Pay &#8377;200 Advance &amp; Place COD Order' : '&#128274; Pay Securely with Cashfree';
       alert('Something went wrong. Please WhatsApp us at +91 93928 78946');
     }
   }
