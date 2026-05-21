@@ -1,9 +1,11 @@
-const crypto = require('crypto');
-
 async function getShiprocketToken() {
   const email = process.env.SHIPROCKET_EMAIL;
   const password = process.env.SHIPROCKET_PASSWORD;
-  
+
+  if (!email || !password) {
+    throw new Error('Shiprocket credentials are not configured');
+  }
+
   console.log('Attempting Shiprocket login with email:', email);
   
   const response = await fetch('https://apiv2.shiprocket.in/v1/external/auth/login', {
@@ -41,6 +43,12 @@ module.exports = async (req, res) => {
 
   const { orderId, orderData } = req.body;
   if (!orderId) return res.status(400).json({ error: 'Order ID required' });
+  if (!orderData || !Array.isArray(orderData.items) || orderData.items.length === 0) {
+    return res.status(400).json({ error: 'Order data with items is required' });
+  }
+  if (!process.env.CASHFREE_APP_ID || !process.env.CASHFREE_SECRET_KEY) {
+    return res.status(500).json({ error: 'Cashfree credentials are not configured' });
+  }
 
   // COD flag — only addition to original
   const isCOD = orderData && orderData.isCOD === true;
@@ -89,6 +97,22 @@ module.exports = async (req, res) => {
 
     const now = new Date();
     const orderDate = now.toISOString().split('T')[0] + ' ' + now.toTimeString().split(' ')[0];
+    const codAdvance = isCOD ? Number(orderData.codAdvance || 200) : 0;
+    const itemTotal = orderData.items.reduce((sum, item) => sum + Number(item.price || 0) * Number(item.qty || 1), 0);
+    const codBalance = isCOD ? Math.max(Number(orderData.total || 0) - codAdvance, 1) : Number(orderData.total || 0);
+    const codRatio = isCOD && itemTotal > 0 ? codBalance / itemTotal : 1;
+    const shiprocketItems = orderData.items.map(item => ({
+      name: item.name + (isCOD ? ' (COD balance)' : ''),
+      sku: 'SKU-' + item.id,
+      units: Number(item.qty || 1),
+      selling_price: Math.max(Math.round(Number(item.price || 0) * codRatio), 1),
+      discount: 0,
+      tax: '',
+      hsn: 9405,
+    }));
+    const shiprocketSubTotal = shiprocketItems.reduce((sum, item) => {
+      return sum + item.selling_price * item.units;
+    }, 0);
 
     const srRes = await fetch('https://apiv2.shiprocket.in/v1/external/orders/create/adhoc', {
       method: 'POST',
@@ -110,22 +134,14 @@ module.exports = async (req, res) => {
         billing_email: orderData.email,
         billing_phone: orderData.phone,
         shipping_is_billing: true,
-        order_items: orderData.items.map(item => ({
-          name: item.name,
-          sku: 'SKU-' + item.id,
-          units: item.qty,
-          selling_price: item.price,
-          discount: 0,
-          tax: '',
-          hsn: 9405,
-        })),
+        order_items: shiprocketItems,
         payment_method: isCOD ? 'COD' : 'Prepaid',
-        cod_charges: isCOD ? (orderData.total - 200) : 0,
+        cod_charges: 0,
         shipping_charges: 0,
         giftwrap_charges: 0,
         transaction_charges: 0,
         total_discount: 0,
-        sub_total: orderData.total,
+        sub_total: shiprocketSubTotal,
         length: 60,
         breadth: 50,
         height: 15,
@@ -136,10 +152,22 @@ module.exports = async (req, res) => {
     const srData = await srRes.json();
     console.log('Shiprocket order response:', JSON.stringify(srData).substring(0, 200));
 
+    if (!srRes.ok || srData.errors || srData.status_code >= 400) {
+      return res.status(200).json({
+        success: true,
+        order_id: orderId,
+        payment_id: successPayment.cf_payment_id,
+        shiprocket_status: 'failed',
+        shiprocket_error: srData,
+        note: 'Payment successful! Please create Shiprocket order manually for Order ID: ' + orderId,
+      });
+    }
+
     return res.status(200).json({
       success: true,
       order_id: orderId,
       payment_id: successPayment.cf_payment_id,
+      shiprocket_status: 'created',
       shiprocket: srData,
     });
 

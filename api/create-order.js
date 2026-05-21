@@ -11,6 +11,10 @@ module.exports = async (req, res) => {
     return res.status(400).json({ error: 'Invalid amount' });
   }
 
+  if (!process.env.CASHFREE_APP_ID || !process.env.CASHFREE_SECRET_KEY) {
+    return res.status(500).json({ error: 'Cashfree credentials are not configured' });
+  }
+
   try {
     const response = await fetch('https://api.cashfree.com/pg/orders', {
       method: 'POST',
@@ -31,7 +35,7 @@ module.exports = async (req, res) => {
           customer_phone: customerPhone || '9999999999',
         },
         order_meta: {
-          notify_url: 'https://signsandarts.in/api/verify-payment',
+          return_url: 'https://signsandarts.in/thank-you.html?order_id={order_id}',
         },
         order_note: isCOD
           ? 'COD Order — ₹200 advance. Remaining paid on delivery. Signs and Arts'

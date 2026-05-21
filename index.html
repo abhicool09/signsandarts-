@@ -1343,13 +1343,14 @@
 
   function updateOrderSummary() {
     const total = getTotal();
+    const advance = total <= 10 ? 1 : 200;
     const summary = document.getElementById('orderSummary');
     if (payMode === 'cod') {
       summary.innerHTML = `
         <div class="os-title">Order Summary</div>
         ${cart.map(i => `<div class="os-item"><span>${i.name} x${i.qty}</span><span>&#8377;${(i.price*i.qty).toLocaleString('en-IN')}</span></div>`).join('')}
-        <div class="os-item" style="color:#e67e22;font-weight:600;"><span>COD Advance (pay now)</span><span>&#8377;200</span></div>
-        <div class="os-item" style="color:#777;"><span>Remaining (pay on delivery)</span><span>&#8377;${(total-200).toLocaleString('en-IN')}</span></div>
+        <div class="os-item" style="color:#e67e22;font-weight:600;"><span>COD Advance (pay now)</span><span>&#8377;${advance.toLocaleString('en-IN')}</span></div>
+        <div class="os-item" style="color:#777;"><span>Remaining (pay on delivery)</span><span>&#8377;${(total-advance).toLocaleString('en-IN')}</span></div>
         <div class="os-total"><span>Total Order Value</span><span>&#8377;${total.toLocaleString('en-IN')}</span></div>
       `;
     } else {
@@ -1453,7 +1454,9 @@
       }
 
       btn.disabled = false;
-      btn.innerHTML = isCOD ? 'btn.innerHTML = isCOD ? '&#128666; Pay &#8377;200 Advance &amp; Place COD Order' : '&#128274; Pay Securely with Cashfree'#128666; Pay btn.innerHTML = isCOD ? '&#128666; Pay &#8377;200 Advance &amp; Place COD Order' : '&#128274; Pay Securely with Cashfree'#8377;' + codAdvance + ' Advance &amp; Place COD Order' : 'btn.innerHTML = isCOD ? '&#128666; Pay &#8377;200 Advance &amp; Place COD Order' : '&#128274; Pay Securely with Cashfree'#128274; Pay Securely with Cashfree';
+      btn.innerHTML = isCOD
+        ? '&#128666; Pay &#8377;' + codAdvance + ' Advance &amp; Place COD Order'
+        : '&#128274; Pay Securely with Cashfree';
 
       const script = document.createElement('script');
       script.src = 'https://sdk.cashfree.com/js/v3/cashfree.js';
@@ -1465,7 +1468,9 @@
         }).then(async function(result) {
           if (result.error) {
             btn.disabled = false;
-            btn.innerHTML = isCOD ? 'btn.innerHTML = isCOD ? '&#128666; Pay &#8377;200 Advance &amp; Place COD Order' : '&#128274; Pay Securely with Cashfree'#128666; Pay btn.innerHTML = isCOD ? '&#128666; Pay &#8377;200 Advance &amp; Place COD Order' : '&#128274; Pay Securely with Cashfree'#8377;' + codAdvance + ' Advance &amp; Place COD Order' : 'btn.innerHTML = isCOD ? '&#128666; Pay &#8377;200 Advance &amp; Place COD Order' : '&#128274; Pay Securely with Cashfree'#128274; Pay Securely with Cashfree';
+            btn.innerHTML = isCOD
+              ? '&#128666; Pay &#8377;' + codAdvance + ' Advance &amp; Place COD Order'
+              : '&#128274; Pay Securely with Cashfree';
             alert('Payment failed: ' + result.error.message + '. Please try again or WhatsApp us.');
             return;
           }
@@ -1495,7 +1500,9 @@
 
     } catch (err) {
       btn.disabled = false;
-      btn.innerHTML = isCOD ? 'btn.innerHTML = isCOD ? '&#128666; Pay &#8377;200 Advance &amp; Place COD Order' : '&#128274; Pay Securely with Cashfree'#128666; Pay btn.innerHTML = isCOD ? '&#128666; Pay &#8377;200 Advance &amp; Place COD Order' : '&#128274; Pay Securely with Cashfree'#8377;' + codAdvance + ' Advance &amp; Place COD Order' : 'btn.innerHTML = isCOD ? '&#128666; Pay &#8377;200 Advance &amp; Place COD Order' : '&#128274; Pay Securely with Cashfree'#128274; Pay Securely with Cashfree';
+      btn.innerHTML = isCOD
+        ? '&#128666; Pay &#8377;' + codAdvance + ' Advance &amp; Place COD Order'
+        : '&#128274; Pay Securely with Cashfree';
       alert('Something went wrong: ' + err.message + '. Please try again or WhatsApp us.');
       console.error(err);
     }
