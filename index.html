@@ -368,6 +368,9 @@
       font-family:'DM Sans',sans-serif;
     }
     .gallery-playbtn:hover{background:#c9a84c;color:#fff;}
+    .card-videos-row{display:flex;gap:.5rem;padding:.55rem 1.1rem 0;}
+    .card-video-btn{flex:1;background:#111;color:#fff;border:none;border-radius:4px;padding:.5rem .55rem;font-family:'DM Sans',sans-serif;font-size:.72rem;font-weight:700;cursor:pointer;transition:background .2s;}
+    .card-video-btn:hover{background:#c9a84c;}
     @media(max-width:900px){.fgrid{grid-template-columns:1fr 1fr;}}
     @media(max-width:680px){nav,.bwah{display:none;}.hbg{display:flex;}.fgrid{grid-template-columns:1fr;}.trust{gap:1rem;}.form-row{grid-template-columns:1fr;}}
   </style>
@@ -666,9 +669,13 @@
         <img src="/xerox-store-led-sign-board/size.jpg" class="gthumb" onclick="switchImg('xerox',2)" alt="Size">
         <img src="/xerox-store-led-sign-board/features.jpg" class="gthumb" onclick="switchImg('xerox',3)" alt="Features">
         <img src="/xerox-store-led-sign-board/overview.jpg" class="gthumb" onclick="switchImg('xerox',4)" alt="Overview">
-        <div class="yt-thumb" onclick="openVideo('-fKlbUaWFO4')" title="Watch Video">
+        <div class="yt-thumb" onclick="openVideo('-fKlbUaWFO4')" title="Watch Video 1">
           <span class="yt-play">&#9654;</span>
         </div>
+      </div>
+      <div class="card-videos-row">
+        <button class="card-video-btn" onclick="openVideo('-fKlbUaWFO4')">&#9654; Video 1</button>
+        <button class="card-video-btn" onclick="openVideo('btrMrYWxEqU')">&#9654; Video 2</button>
       </div>
       <div class="pb">
         <div class="pct">Xerox / Stationery</div>

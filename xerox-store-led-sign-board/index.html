@@ -78,6 +78,9 @@
       color:#fff;font-size:1.3rem;opacity:.7;transition:all .2s;
     }
     .yt-thumb-btn:hover{border-color:var(--black);opacity:1;}
+    .videos-row{display:flex;gap:.7rem;margin-top:1rem;}
+    .vid-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:.4rem;background:#111;color:#fff;border:none;border-radius:var(--radius);padding:.7rem;font-size:.82rem;font-weight:700;cursor:pointer;transition:background .2s;font-family:'DM Sans',sans-serif;}
+    .vid-btn:hover{background:var(--gold);}
 
     /* ── RIGHT: PRODUCT DETAILS ── */
     .detail-col{}
@@ -312,7 +315,7 @@
       <img src="size.jpg" alt="Xerox Store LED Sign Board Size 18x12 inch" id="mi2">
       <img src="features.jpg" alt="Xerox Store LED Sign Board Features Hook Mount" id="mi3">
       <img src="overview.jpg" alt="Xerox Store LED Sign Board Full Overview Specs" id="mi4">
-      <button class="vid-overlay" onclick="openVid()">&#9654; Watch Video</button>
+      <button class="vid-overlay" onclick="openVid('-fKlbUaWFO4')">&#9654; Watch Video</button>
     </div>
     <div class="thumb-strip">
       <img src="main.jpg" class="thumb active" onclick="switchMain(0)" alt="Main">
@@ -320,7 +323,11 @@
       <img src="size.jpg" class="thumb" onclick="switchMain(2)" alt="Size">
       <img src="features.jpg" class="thumb" onclick="switchMain(3)" alt="Features">
       <img src="overview.jpg" class="thumb" onclick="switchMain(4)" alt="Overview">
-      <button class="yt-thumb-btn" onclick="openVid()" title="Watch Video">&#9654;</button>
+      <button class="yt-thumb-btn" onclick="openVid('-fKlbUaWFO4')" title="Watch Video 1">&#9654;</button>
+    </div>
+    <div class="videos-row">
+      <button class="vid-btn" onclick="openVid('-fKlbUaWFO4')">&#9654; Video 1 &mdash; Product Demo</button>
+      <button class="vid-btn" onclick="openVid('btrMrYWxEqU')">&#9654; Video 2 &mdash; Installed View</button>
     </div>
   </div>
 
@@ -745,8 +752,8 @@
   }
 
   // ── VIDEO ─────────────────────────────────────────────────────────────────
-  function openVid() {
-    document.getElementById('vidFrame').src = 'https://www.youtube.com/embed/-fKlbUaWFO4?autoplay=1&rel=0';
+  function openVid(videoId) {
+    document.getElementById('vidFrame').src = 'https://www.youtube.com/embed/' + videoId + '?autoplay=1&rel=0';
     document.getElementById('vidModal').classList.add('open');
     document.body.style.overflow = 'hidden';
   }
