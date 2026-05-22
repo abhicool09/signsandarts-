@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bar LED Sign Board — Multicolor, 18"×12" | Signs and Arts</title>
-  <meta name="description" content="Buy Bar LED Sign Board 18x12 inch — Multicolor LED bar mugs graphic. Double Sided, Steel alloy frame, waterproof, plug & play. Perfect for bars, restaurants, pubs & hotels. Pan India delivery.">
+  <meta name="description" content="Buy Bar LED Sign Board 18x12 inch — Multicolor LED bar mugs graphic. Single sided indoor and double sided outdoor variants. Plug and play. Perfect for bars, restaurants, pubs and hotels. Pan India delivery.">
   <meta name="keywords" content="bar LED sign board India, bar sign board LED, pub LED sign board, restaurant LED sign board India, bar neon sign board, bar shop sign LED India">
   <link rel="canonical" href="https://signsandarts.in/bar-led-sign-board">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-PNNB88PBN3"></script>
@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Product","name":"Bar LED Sign Board — Multicolor, 18×12 inch","description":"Multicolor LED bar sign with beer mugs graphic. Double sided for bars, restaurants, pubs. Steel alloy frame, waterproof, 18x12 inch.","brand":{"@type":"Brand","name":"Signs and Arts"},"offers":{"@type":"Offer","price":"2287","priceCurrency":"INR","availability":"https://schema.org/InStock"},"image":"https://signsandarts.in/bar-led-sign-board/main.jpg"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Product","name":"Bar LED Sign Board — Multicolor, 18×12 inch","description":"Multicolor LED bar sign with beer mugs graphic. Single sided indoor and double sided outdoor variants for bars, restaurants and pubs.","brand":{"@type":"Brand","name":"Signs and Arts"},"offers":{"@type":"Offer","price":"1829","priceCurrency":"INR","availability":"https://schema.org/InStock"},"image":"https://signsandarts.in/bar-led-sign-board/main.jpg"}</script>
   <style>
     :root{--blue:#111111;--red:#c0392b;--green:#1e8a44;--gold:#c9a84c;--g50:#fafafa;--g100:#f5f5f5;--g200:#e8e8e8;--g400:#cccccc;--g600:#777777;--g800:#333333;--text:#111111;--radius:4px;--radius-lg:8px;}
     *{margin:0;padding:0;box-sizing:border-box;}
@@ -187,7 +187,7 @@
       <span class="badge badge-new">New</span>
       <span class="badge badge-tm">&#8482; Trademark Registered</span>
     </div>
-    <h1 class="prod-title">Bar LED Sign Board &mdash; Multicolor, Double Sided</h1>
+    <h1 class="prod-title">Bar LED Sign Board &mdash; Multicolor</h1>
     <div class="prod-rating">
       <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
       <span class="rating-num">4.8</span>
@@ -196,15 +196,16 @@
 
     <div class="prod-price-box">
       <div class="price-label">Price</div>
-      <div class="price-main" id="pdPrice">&#8377;2,287</div>
+      <div class="price-main" id="pdPrice">&#8377;1,829</div>
       <div class="price-gst">Inclusive of all taxes &amp; GST</div>
-      <div class="price-save">You save &#8377;1,512 (40%) vs MRP &#8377;3,799</div>
+      <div class="price-save" id="priceSave">Single sided indoor variant selected</div>
     </div>
 
     <div style="margin-bottom:1rem;">
-      <div class="kf-title">Size</div>
+      <div class="kf-title">Variant</div>
       <div class="vbtns">
-        <button class="vbtn active">18"&#xD7;12" &nbsp;—&nbsp; &#8377;2,287</button>
+        <button class="vbtn active" onclick="selectVar('Single Sided - Indoor', 1829, this)">Single Sided - Indoor &nbsp;&mdash;&nbsp; &#8377;1,829</button>
+        <button class="vbtn" onclick="selectVar('Double Sided - Outdoor', 2287, this)">Double Sided - Outdoor &nbsp;&mdash;&nbsp; &#8377;2,287</button>
       </div>
     </div>
 
@@ -214,19 +215,19 @@
     <ul class="kf-list">
       <li><span class="kf-icon">&#10003;</span> Plug &amp; play — connect to any 230V socket, no electrician needed</li>
       <li><span class="kf-icon">&#10003;</span> Multicolor LED — orange mugs, green palm, white mug, red BAR text</li>
-      <li><span class="kf-icon">&#10003;</span> Double sided — visible from both directions</li>
+      <li><span class="kf-icon">&#10003;</span> Available as single sided indoor or double sided outdoor variant</li>
       <li><span class="kf-icon">&#10003;</span> High-quality steel alloy frame — waterproof construction</li>
       <li><span class="kf-icon">&#10003;</span> Blinking LED flasher — attracts customers automatically</li>
       <li><span class="kf-icon">&#10003;</span> Can be hung with chain or cord (included)</li>
       <li><span class="kf-icon">&#10003;</span> Perfect for bars, restaurants, pubs, hotels &amp; cafes</li>
-      <li><span class="kf-icon">&#10003;</span> Size: 18" × 12" (45cm × 30cm / 1.5 feet × 1 foot)</li>
+      <li><span class="kf-icon">&#10003;</span> Size: 18" &#xD7; 12" (45cm &#xD7; 30cm / 1.5 feet &#xD7; 1 foot)</li>
       <li><span class="kf-icon">&#10003;</span> 3-month warranty against manufacturing defects</li>
     </ul>
 
     <hr class="section-divider">
 
     <div class="buy-btns">
-      <button class="btn-buy" onclick="openCheckout()">&#9889; Buy Now — &#8377;2,287</button>
+      <button class="btn-buy" id="buyNowBtn" onclick="openCheckout()">&#9889; Buy Now &mdash; &#8377;1,829</button>
       <a href="https://wa.me/919392878946?text=Hi%2C%20I%20want%20to%20order%20Bar%20LED%20Sign%20Board%2018x12%20from%20signsandarts.in" class="btn-wa-full" target="_blank">&#128242; Order via WhatsApp</a>
     </div>
   </div>
@@ -236,13 +237,13 @@
   <h2>Product Specifications</h2>
   <div class="gold-line"></div>
   <table class="specs-table">
-    <tr><td>Product Name</td><td>Bar LED Sign Board — Multicolor, Double Sided</td></tr>
-    <tr><td>Size</td><td>18 Inch × 12 Inch (45cm × 30cm / 1.5 feet × 1 foot)</td></tr>
+    <tr><td>Product Name</td><td>Bar LED Sign Board &mdash; Multicolor</td></tr>
+    <tr><td>Size</td><td>18 Inch &#xD7; 12 Inch (45cm &#xD7; 30cm / 1.5 feet &#xD7; 1 foot)</td></tr>
     <tr><td>Thickness</td><td>2 Inch</td></tr>
     <tr><td>LED Type</td><td>High Brightness Pixel LED</td></tr>
     <tr><td>LED Colors</td><td>Orange, Green, White, Red — Multicolor</td></tr>
     <tr><td>Display Style</td><td>Beer mugs + BAR text with multicolor pixel LEDs</td></tr>
-    <tr><td>Sides</td><td>Double Sided (visible from both directions)</td></tr>
+    <tr><td>Sides</td><td>Single Sided Indoor / Double Sided Outdoor variants</td></tr>
     <tr><td>Frame Material</td><td>High-Quality Steel Alloy (Waterproof)</td></tr>
     <tr><td>Weatherproof</td><td>Yes — Rainproof &amp; Outdoor Rated</td></tr>
     <tr><td>Input Voltage</td><td>230V AC (Standard Indian Socket)</td></tr>
@@ -320,8 +321,8 @@
   <div class="modal-box">
     <h3>Complete Your Order</h3>
     <div id="osSummary">
-      <div class="os-item"><span>Bar LED Sign Board — 18"×12" x1</span><span>&#8377;2,287</span></div>
-      <div class="os-total"><span>Total Payable</span><span>&#8377;2,287</span></div>
+      <div class="os-item"><span>Bar LED Sign Board - Single Sided Indoor x1</span><span>&#8377;1,829</span></div>
+      <div class="os-total"><span>Total Payable</span><span>&#8377;1,829</span></div>
     </div>
     <div style="margin:.8rem 0 0;">
       <label style="font-size:.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#777;display:block;margin-bottom:.5rem;">Payment Method</label>
@@ -329,7 +330,7 @@
         <button class="ptbtn active" id="btnOnline" onclick="setPayMode('online')">&#128274; Pay Online</button>
         <button class="ptbtn cod-btn" id="btnCOD" onclick="setPayMode('cod')">&#128666; Cash on Delivery</button>
       </div>
-      <div class="cod-info" id="codInfo">&#9432; <strong>COD:</strong> Pay <strong>₹200 advance</strong> now. Remaining <strong>₹2,087</strong> paid to delivery person.</div>
+      <div class="cod-info" id="codInfo">&#9432; <strong>COD:</strong> Pay <strong>&#8377;200 advance</strong> now. Remaining <strong>&#8377;1,629</strong> paid to delivery person.</div>
     </div>
     <hr style="margin:.8rem 0;border-color:#eee;">
     <div class="form-group"><label>Full Name *</label><input type="text" id="custName" placeholder="Your full name"></div>
@@ -339,7 +340,7 @@
     <div class="form-group"><label>City *</label><input type="text" id="custCity" placeholder="City"></div>
     <div class="form-group"><label>State *</label><input type="text" id="custState" placeholder="State"></div>
     <div class="form-group"><label>PIN Code *</label><input type="text" id="custPin" placeholder="6-digit PIN code"></div>
-    <button class="btn-pay" id="payBtn" onclick="initiatePayment()">&#128274; Pay &#8377;2,287 Securely</button>
+    <button class="btn-pay" id="payBtn" onclick="initiatePayment()">&#128274; Pay &#8377;1,829 Securely</button>
     <button class="btn-close-modal" onclick="closeCheckout()">Cancel</button>
   </div>
 </div>
@@ -362,20 +363,63 @@
     }
   }
   var payMode = 'online';
+  var currentVariant = {
+    label: 'Single Sided - Indoor',
+    display: 'Single Sided Indoor',
+    id: 'bar-led-single-indoor',
+    price: 1829
+  };
+
+  function formatPrice(amount) {
+    return amount.toLocaleString('en-IN');
+  }
+
+  function updateCheckoutSummary() {
+    var remaining = Math.max(currentVariant.price - 200, 0);
+    document.getElementById('osSummary').innerHTML =
+      '<div class="os-item"><span>Bar LED Sign Board - ' + currentVariant.display + ' x1</span><span>&#8377;' + formatPrice(currentVariant.price) + '</span></div>' +
+      (payMode === 'cod'
+        ? '<div class="os-item" style="color:#e67e22;font-weight:600;"><span>COD Advance (pay now)</span><span>&#8377;200</span></div>' +
+          '<div class="os-item" style="color:#777;"><span>Remaining (pay on delivery)</span><span>&#8377;' + formatPrice(remaining) + '</span></div>' +
+          '<div class="os-total"><span>Total Order Value</span><span>&#8377;' + formatPrice(currentVariant.price) + '</span></div>'
+        : '<div class="os-total"><span>Total Payable</span><span>&#8377;' + formatPrice(currentVariant.price) + '</span></div>');
+    document.getElementById('codInfo').innerHTML = '&#9432; <strong>COD:</strong> Pay <strong>&#8377;200 advance</strong> now. Remaining <strong>&#8377;' + formatPrice(remaining) + '</strong> paid to delivery person.';
+  }
+
+  function updatePaymentButton() {
+    var btn = document.getElementById('payBtn');
+    if (payMode === 'cod') {
+      btn.innerHTML = '&#128666; Pay &#8377;200 Advance &amp; Place COD Order';
+      btn.style.background = '#e67e22';
+    } else {
+      btn.innerHTML = '&#128274; Pay &#8377;' + formatPrice(currentVariant.price) + ' Securely';
+      btn.style.background = '';
+    }
+  }
+
+  function selectVar(label, price, btn) {
+    currentVariant = {
+      label: label,
+      display: label.replace(' - ', ' '),
+      id: label.indexOf('Double') === 0 ? 'bar-led-double-outdoor' : 'bar-led-single-indoor',
+      price: price
+    };
+    document.getElementById('pdPrice').innerHTML = '&#8377;' + formatPrice(price);
+    document.getElementById('priceSave').textContent = label + ' variant selected';
+    document.getElementById('buyNowBtn').innerHTML = '&#9889; Buy Now &mdash; &#8377;' + formatPrice(price);
+    document.querySelectorAll('.vbtn').forEach(function(b){ b.classList.remove('active'); });
+    btn.classList.add('active');
+    updateCheckoutSummary();
+    updatePaymentButton();
+  }
 
   function setPayMode(mode) {
     payMode = mode;
     document.getElementById('btnOnline').classList.toggle('active', mode==='online');
     document.getElementById('btnCOD').classList.toggle('active', mode==='cod');
     document.getElementById('codInfo').classList.toggle('show', mode==='cod');
-    var btn = document.getElementById('payBtn');
-    if (mode==='cod') {
-      btn.innerHTML='&#128666; Pay &#8377;200 Advance &amp; Place COD Order';
-      btn.style.background='#e67e22';
-    } else {
-      btn.innerHTML='&#128274; Pay &#8377;2,287 Securely';
-      btn.style.background='';
-    }
+    updateCheckoutSummary();
+    updatePaymentButton();
   }
 
   function openCheckout(){
@@ -383,8 +427,8 @@
     document.getElementById('btnOnline').classList.add('active');
     document.getElementById('btnCOD').classList.remove('active');
     document.getElementById('codInfo').classList.remove('show');
-    document.getElementById('payBtn').innerHTML='&#128274; Pay &#8377;2,287 Securely';
-    document.getElementById('payBtn').style.background='';
+    updateCheckoutSummary();
+    updatePaymentButton();
     document.getElementById('checkoutModal').classList.add('open');
     document.body.style.overflow='hidden';
   }
@@ -401,9 +445,9 @@
     if(!/^\d{10}$/.test(phone)){alert('Enter a valid 10-digit phone number.');return;}
     if(!/^\d{6}$/.test(pin)){alert('Enter a valid 6-digit PIN code.');return;}
     var isCOD = payMode==='cod';
-    var payAmount = isCOD ? 200 : 2287;
+    var payAmount = isCOD ? 200 : currentVariant.price;
     var orderId='SA-'+Date.now();
-    var orderData={name:name,phone:phone,email:email,address:addr,city:city,state:state,pincode:pin,items:[{id:'bar-led',name:'Bar LED Sign Board — Multicolor 18x12',price:2287,qty:1}],total:2287,isCOD:isCOD,codAdvance:isCOD?200:0};
+    var orderData={name:name,phone:phone,email:email,address:addr,city:city,state:state,pincode:pin,items:[{id:currentVariant.id,name:'Bar LED Sign Board - Multicolor 18x12 '+currentVariant.display,price:currentVariant.price,qty:1}],total:currentVariant.price,isCOD:isCOD,codAdvance:isCOD?200:0};
     try{
       var res=await fetch('/api/create-order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({amount:payAmount,orderId:orderId,customerName:name,customerEmail:email,customerPhone:phone,isCOD:isCOD})});
       var data=await res.json();
@@ -413,7 +457,7 @@
         if(result.error){alert('Payment failed: '+result.error.message);return;}
         var verifyRes=await fetch('/api/verify-payment',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({orderId:orderId,orderData:orderData})});
         var verifyData=await verifyRes.json();
-        if(verifyData.success){window.location.href='/thank-you?order_id='+encodeURIComponent(orderId)+'&product='+encodeURIComponent('Bar LED Sign Board')+'&amount=2287'+(isCOD?'&cod=1':'');}
+        if(verifyData.success){window.location.href='/thank-you?order_id='+encodeURIComponent(orderId)+'&product='+encodeURIComponent('Bar LED Sign Board - '+currentVariant.display)+'&amount='+currentVariant.price+(isCOD?'&cod=1':'');}
         else{alert('Payment received! WhatsApp us with Order ID: '+orderId);}
       });
     }catch(e){alert('Error: '+e.message+'. Please try WhatsApp order.');}

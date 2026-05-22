@@ -862,23 +862,29 @@
       </div>
       <div class="pb">
         <div class="pct">Bar &amp; Restaurant</div>
-        <a href="/bar-led-sign-board/" style="text-decoration:none;"><div class="pnm" style="color:#111;">Bar LED Sign Board &mdash; Multicolor, Double Sided</div></a>
-        <div class="pds">Eye-catching multicolor LED sign for bars, restaurants &amp; pubs. 18"×12" with orange &amp; white beer mugs, green palm, red BAR text. Steel alloy frame — waterproof. Hook mount included.</div>
+        <a href="/bar-led-sign-board/" style="text-decoration:none;"><div class="pnm" style="color:#111;">Bar LED Sign Board &mdash; Multicolor</div></a>
+        <div class="pds">Eye-catching multicolor LED sign for bars, restaurants &amp; pubs. 18"&#xD7;12" with orange &amp; white beer mugs, green palm, red BAR text. Choose single sided indoor or double sided outdoor. Hook mount included.</div>
         <div class="psps">
-          <span class="stg">18" × 12"</span>
+          <span class="stg">18"&#xD7;12"</span>
           <span class="stg">Multicolor LED</span>
-          <span class="stg">Double Sided</span>
-          <span class="stg">Steel Alloy</span>
-          <span class="stg">Waterproof</span>
+          <span class="stg">Single Sided</span>
+          <span class="stg">Indoor</span>
+        </div>
+        <div style="margin-top:.7rem;">
+          <div class="variant-label">Select Variant</div>
+          <div class="variant-btns">
+            <button class="vbtn active" onclick="selectVariant('bar','Single Sided - Indoor',1829,this)">Single Sided &mdash; Indoor &mdash; &#8377;1,829</button>
+            <button class="vbtn" onclick="selectVariant('bar','Double Sided - Outdoor',2287,this)">Double Sided &mdash; Outdoor &mdash; &#8377;2,287</button>
+          </div>
         </div>
       </div>
       <div style="padding:.5rem 1.1rem 0;">
         <a href="/bar-led-sign-board/" style="display:block;text-align:center;font-size:.72rem;font-weight:700;color:#777;letter-spacing:1px;padding:.4rem;border:1px solid #e8e8e8;border-radius:3px;transition:all .2s;" onmouseover="this.style.borderColor='#111';this.style.color='#111'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#777'">View Full Details &rarr;</a>
       </div>
       <div class="pf">
-        <div class="ppr" id="barprice">&#8377;2,287 <small>incl. GST</small></div>
+        <div class="ppr" id="barprice">&#8377;1,829 <small>incl. GST</small></div>
         <div class="pbts">
-          <button class="batc" id="baratc" onclick="addToCart({id:'bar-led',name:'Bar LED Sign Board — Multicolor 18x12',price:2287,qty:1})">&#43; Add to Cart</button>
+          <button class="batc" id="baratc" onclick="addToCart({id:'bar-led-single-indoor',name:'Bar LED Sign Board - Multicolor 18x12 Single Sided Indoor',price:1829,qty:1})">&#43; Add to Cart</button>
           <a href="https://wa.me/919392878946?text=Hi%2C%20I%20want%20Bar%20LED%20Sign%20Board%2018x12" class="bwa" target="_blank">&#128242;</a>
         </div>
       </div>
@@ -1730,10 +1736,20 @@
         'p1': 'Medical Plus LED Sign Board - Green',
         'clinic': 'Clinic Plus LED Sign Board - Red White',
         'greenclinic': 'Clinic LED Sign Board - Green',
-        'pharmacy': 'Pharmacy Plus LED Sign Board - Green'
+        'pharmacy': 'Pharmacy Plus LED Sign Board - Green',
+        'bar': 'Bar LED Sign Board - Multicolor 18x12'
       };
       var name = (names[pid] || pid) + ' ' + size;
-      atcBtn.onclick = function(){ addToCart({id: pid + '-' + size, name: name, price: price, qty: 1}); };
+      var itemId = pid === 'bar'
+        ? (size.indexOf('Double') === 0 ? 'bar-led-double-outdoor' : 'bar-led-single-indoor')
+        : pid + '-' + size;
+      atcBtn.onclick = function(){ addToCart({id: itemId, name: name, price: price, qty: 1}); };
+    }
+    if (pid === 'bar') {
+      var card = document.getElementById('prod-bar');
+      var tags = card ? card.querySelectorAll('.psps .stg') : [];
+      if (tags[2]) tags[2].textContent = size.indexOf('Double') === 0 ? 'Double Sided' : 'Single Sided';
+      if (tags[3]) tags[3].textContent = size.indexOf('Double') === 0 ? 'Outdoor' : 'Indoor';
     }
     // Swap gallery images if variant image set exists
     if (variantImages[pid] && variantImages[pid][size]) {
