@@ -314,7 +314,7 @@
       <img src="size.jpg" alt="Clinic Medical LED Sign Board Size 24x18 inch" id="mi1">
       <img src="features.png" alt="Clinic Medical LED Sign Board Hook and Frame Features" id="mi2">
       <img src="overview.png" alt="Clinic Medical LED Sign Board Full Overview" id="mi3">
-      <img src="hook.jpg" alt="Clinic Medical LED Sign Board Round Hook and Waterproof Frame Detail" id="mi4">
+      <img src="hook.jpg?v=2" alt="Clinic Medical LED Sign Board Round Hook and Waterproof Frame Detail" id="mi4">
       
       <button class="vid-overlay" onclick="openVid()">&#9654; Watch Video</button>
     </div>
@@ -323,7 +323,7 @@
       <img src="size.jpg" class="thumb" onclick="switchMain(1)" alt="Size">
       <img src="features.png" class="thumb" onclick="switchMain(2)" alt="Features">
       <img src="overview.png" class="thumb" onclick="switchMain(3)" alt="Overview">
-      <img src="hook.jpg" class="thumb" onclick="switchMain(4)" alt="Hook">
+      <img src="hook.jpg?v=2" class="thumb" onclick="switchMain(4)" alt="Hook">
       <button class="yt-thumb-btn" onclick="openVid('C6uluAJTe6c')" title="Watch Video">&#9654;</button>
     </div>
     <div class="videos-row">
@@ -886,6 +886,27 @@
       alert('Something went wrong. Please WhatsApp us at +91 93928 78946');
     }
   }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    var wrap = document.querySelector('.main-img-wrap');
+    var strip = document.querySelector('.thumb-strip');
+    if (wrap && !document.getElementById('mi4')) {
+      var img = document.createElement('img');
+      img.src = 'hook.jpg?v=2';
+      img.alt = 'Clinic Medical LED Sign Board Round Hook and Waterproof Frame Detail';
+      img.id = 'mi4';
+      wrap.insertBefore(img, wrap.querySelector('.vid-overlay'));
+    }
+    if (strip && !strip.querySelector('img[alt="Hook"]')) {
+      var thumb = document.createElement('img');
+      thumb.src = 'hook.jpg?v=2';
+      thumb.className = 'thumb';
+      thumb.alt = 'Hook';
+      thumb.onclick = function() { switchMain(4); };
+      var videoThumb = strip.querySelector('.yt-thumb-btn');
+      strip.insertBefore(thumb, videoThumb || null);
+    }
+  });
 </script>
 </body>
 </html>

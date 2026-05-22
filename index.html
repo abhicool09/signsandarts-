@@ -658,7 +658,7 @@
         <img src="/clinic-medical-led-sign-board/size.jpg" alt="Clinic Medical LED Sign Board Size 24x18" id="cmimg1">
         <img src="/clinic-medical-led-sign-board/features.png" alt="Clinic Medical LED Sign Board Hook Features" id="cmimg2">
         <img src="/clinic-medical-led-sign-board/overview.png" alt="Clinic Medical LED Sign Board Product Overview" id="cmimg3">
-        <img src="/clinic-medical-led-sign-board/hook.jpg" alt="Clinic Medical LED Sign Board Hook Mount Detail" id="cmimg4">
+        <img src="/clinic-medical-led-sign-board/hook.jpg?v=2" alt="Clinic Medical LED Sign Board Hook Mount Detail" id="cmimg4">
         <div class="bdg bnew" style="position:absolute;top:10px;left:10px;">New</div>
       </div>
       <button class="gallery-playbtn" onclick="openVideo('C6uluAJTe6c')">&#9654; Watch Video</button>
@@ -667,7 +667,7 @@
         <img src="/clinic-medical-led-sign-board/size.jpg" class="gthumb" onclick="switchImg('clinicmedical',1)" alt="Size">
         <img src="/clinic-medical-led-sign-board/features.png" class="gthumb" onclick="switchImg('clinicmedical',2)" alt="Features">
         <img src="/clinic-medical-led-sign-board/overview.png" class="gthumb" onclick="switchImg('clinicmedical',3)" alt="Overview">
-        <img src="/clinic-medical-led-sign-board/hook.jpg" class="gthumb" onclick="switchImg('clinicmedical',4)" alt="Hook">
+        <img src="/clinic-medical-led-sign-board/hook.jpg?v=2" class="gthumb" onclick="switchImg('clinicmedical',4)" alt="Hook">
         <div class="yt-thumb" onclick="openVideo('C6uluAJTe6c')" title="Watch Video 1"><span class="yt-play">&#9654;</span></div>
       </div>
       <div class="card-videos-row">
@@ -679,7 +679,7 @@
         <a href="/clinic-medical-led-sign-board/" style="text-decoration:none;"><div class="pnm" style="color:#111;">Clinic Medical LED Sign Board &mdash; Green &amp; Red, 24"&#xD7;18"</div></a>
         <div class="pds">Flashing green and red pixel LED sign for clinics, medical shops and drug stores. 24"&#xD7;18" wall-mountable storefront board, waterproof, double sided and visible from both road directions.</div>
         <div class="psps">
-          <span class="stg">24" Ã— 18"</span>
+          <span class="stg">24"&#xD7;18"</span>
           <span class="stg">Green &amp; Red LED</span>
           <span class="stg">Double Sided</span>
           <span class="stg">Waterproof</span>
@@ -1758,6 +1758,27 @@
     if (el && el.classList && el.classList.contains('fb')) el.classList.add('active');
     if (cat !== 'all') setTimeout(function(){ document.getElementById('products').scrollIntoView({behavior:'smooth'}); }, 80);
   }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    var gallery = document.getElementById('clinicmedicalgallery');
+    var thumbs = gallery ? gallery.parentElement.querySelector('.gallery-thumbs') : null;
+    if (gallery && !document.getElementById('cmimg4')) {
+      var img = document.createElement('img');
+      img.src = '/clinic-medical-led-sign-board/hook.jpg?v=2';
+      img.alt = 'Clinic Medical LED Sign Board Hook Mount Detail';
+      img.id = 'cmimg4';
+      gallery.appendChild(img);
+    }
+    if (thumbs && !thumbs.querySelector('img[alt="Hook"]')) {
+      var thumb = document.createElement('img');
+      thumb.src = '/clinic-medical-led-sign-board/hook.jpg?v=2';
+      thumb.className = 'gthumb';
+      thumb.alt = 'Hook';
+      thumb.onclick = function() { switchImg('clinicmedical', 4); };
+      var videoThumb = thumbs.querySelector('.yt-thumb');
+      thumbs.insertBefore(thumb, videoThumb || null);
+    }
+  });
 </script>
 </body>
 </html>
