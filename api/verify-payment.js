@@ -34,6 +34,20 @@ async function getShiprocketToken() {
   return data.token;
 }
 
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || '').trim());
+}
+
+function getSafeBillingEmail(email) {
+  const trimmedEmail = String(email || '').trim().toLowerCase();
+  if (isValidEmail(trimmedEmail)) return trimmedEmail;
+
+  const fallbackEmail = String(process.env.SHIPROCKET_EMAIL || 'signsandartsapi@gmail.com').trim().toLowerCase();
+  if (isValidEmail(fallbackEmail)) return fallbackEmail;
+
+  return 'signsandartsapi@gmail.com';
+}
+
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -103,7 +117,7 @@ module.exports = async (req, res) => {
       city: String(orderData.city || '').trim(),
       state: String(orderData.state || '').trim(),
       pincode: String(orderData.pincode || '').trim(),
-      email: String(orderData.email || '').trim(),
+      email: getSafeBillingEmail(orderData.email),
       phone: String(orderData.phone || '').trim(),
     };
 
@@ -153,7 +167,7 @@ module.exports = async (req, res) => {
         billing_pincode: shippingAddress.pincode,
         billing_state: shippingAddress.state,
         billing_country: 'India',
-        billing_email: shippingAddress.email || 'customer@signsandarts.in',
+        billing_email: shippingAddress.email,
         billing_phone: shippingAddress.phone,
         shipping_is_billing: true,
         order_items: shiprocketItems,

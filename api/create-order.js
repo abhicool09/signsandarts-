@@ -1,3 +1,17 @@
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || '').trim());
+}
+
+function getSafeCustomerEmail(email) {
+  const trimmedEmail = String(email || '').trim().toLowerCase();
+  if (isValidEmail(trimmedEmail)) return trimmedEmail;
+
+  const fallbackEmail = String(process.env.SHIPROCKET_EMAIL || 'signsandartsapi@gmail.com').trim().toLowerCase();
+  if (isValidEmail(fallbackEmail)) return fallbackEmail;
+
+  return 'signsandartsapi@gmail.com';
+}
+
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -31,7 +45,7 @@ module.exports = async (req, res) => {
         customer_details: {
           customer_id: 'CUST-' + Date.now(),
           customer_name: customerName || 'Customer',
-          customer_email: customerEmail || 'customer@signsandarts.in',
+          customer_email: getSafeCustomerEmail(customerEmail),
           customer_phone: customerPhone || '9999999999',
         },
         order_meta: {
