@@ -364,6 +364,19 @@
     .card-videos-row{display:flex;gap:.5rem;padding:.55rem 1.1rem 0;}
     .card-video-btn{flex:1;background:#111;color:#fff;border:none;border-radius:4px;padding:.5rem .55rem;font-family:'DM Sans',sans-serif;font-size:.72rem;font-weight:700;cursor:pointer;transition:background .2s;}
     .card-video-btn:hover{background:#c9a84c;}
+    .portfolio-tools{display:flex;gap:.5rem;flex-wrap:wrap;margin:1.4rem 0 1.6rem;}
+    .portfolio-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.2rem;}
+    .portfolio-card{background:#fff;border:1px solid var(--g200);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;box-shadow:0 1px 4px rgba(0,0,0,.04);}
+    .portfolio-img{height:230px;background:#f7f7f7;overflow:hidden;border-bottom:1px solid var(--g200);}
+    .portfolio-img img{width:100%;height:100%;object-fit:cover;display:block;}
+    .portfolio-body{padding:1.1rem;}
+    .portfolio-meta{display:flex;gap:.4rem;flex-wrap:wrap;margin:.7rem 0;}
+    .portfolio-chip{font-size:.68rem;font-weight:700;letter-spacing:.5px;color:#555;background:#f5f5f5;border:1px solid #e5e5e5;border-radius:3px;padding:.25rem .45rem;}
+    .portfolio-title{font-family:'Playfair Display',serif;font-size:1.25rem;line-height:1.25;color:var(--text);margin:.35rem 0;}
+    .portfolio-location{font-size:.78rem;color:var(--g600);font-weight:600;}
+    .portfolio-desc{font-size:.88rem;color:var(--g700);line-height:1.7;margin-top:.65rem;}
+    .portfolio-empty{display:none;border:1px dashed var(--g400);border-radius:var(--radius-lg);padding:1.5rem;color:var(--g600);background:#fff;}
+    .portfolio-empty.show{display:block;}
     @media(max-width:900px){.fgrid{grid-template-columns:1fr 1fr;}}
     @media(max-width:680px){nav,.bwah{display:none;}.hbg{display:flex;}.fgrid{grid-template-columns:1fr;}.trust{gap:1rem;}.form-row{grid-template-columns:1fr;}}
   </style>
@@ -393,6 +406,7 @@
     <nav>
       <a href="#categories">Categories</a>
       <a href="#products">Products</a>
+      <a href="#portfolio">Portfolio</a>
       <a href="#why">Why Us</a>
       <a href="#how">How to Order</a>
       <a href="#contact">Contact</a>
@@ -412,6 +426,7 @@
 <div class="mnav">
   <a href="#categories" onclick="this.closest('.mnav').classList.remove('open')">Categories</a>
   <a href="#products" onclick="this.closest('.mnav').classList.remove('open')">Products</a>
+  <a href="#portfolio" onclick="this.closest('.mnav').classList.remove('open')">Portfolio</a>
   <a href="#why" onclick="this.closest('.mnav').classList.remove('open')">Why Us</a>
   <a href="#how" onclick="this.closest('.mnav').classList.remove('open')">How to Order</a>
   <a href="#contact" onclick="this.closest('.mnav').classList.remove('open')">Contact</a>
@@ -1111,6 +1126,69 @@
   </div>
 </section>
 
+<!-- PORTFOLIO -->
+<section id="portfolio" style="background:#fafafa;">
+  <div class="slbl">Project Gallery</div>
+  <h2 class="stit">Installed LED Sign Board Portfolio</h2>
+  <p class="ssub">A growing gallery of completed sign board projects. Add new project photos to the portfolio data list in this page after uploading images.</p>
+  <div class="portfolio-tools" aria-label="Portfolio filters">
+    <button class="fb active" onclick="filterPortfolio('all',this)">All Projects</button>
+    <button class="fb" onclick="filterPortfolio('medical',this)">Medical</button>
+    <button class="fb" onclick="filterPortfolio('salon',this)">Salon</button>
+    <button class="fb" onclick="filterPortfolio('restaurant',this)">Restaurant</button>
+    <button class="fb" onclick="filterPortfolio('tattoo',this)">Tattoo</button>
+    <button class="fb" onclick="filterPortfolio('clinic',this)">Clinic</button>
+    <button class="fb" onclick="filterPortfolio('retail',this)">Retail</button>
+  </div>
+  <div class="portfolio-grid" id="portfolioGrid"></div>
+  <div class="portfolio-empty" id="portfolioEmpty">No projects in this category yet. Upload a project photo and add it to the portfolio list to show it here.</div>
+</section>
+
+<!-- BLOG GUIDES -->
+<section id="guides" style="background:#fff;">
+  <div class="slbl">Buying Guides</div>
+  <h2 class="stit">LED Sign Board Guides</h2>
+  <p class="ssub">Helpful guides for medical shops, pharmacies and clinics choosing the right LED sign board.</p>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.2rem;">
+    <article style="border:1px solid var(--g200);border-radius:var(--radius-lg);padding:1.4rem;background:var(--g50);">
+      <div class="pct">Medical Signage</div>
+      <h3 style="font-family:'Playfair Display',serif;font-size:1.35rem;line-height:1.25;margin:.5rem 0;color:var(--text);">Medical Plus LED Board Guide</h3>
+      <p style="font-size:.9rem;color:var(--g700);line-height:1.7;margin-bottom:1rem;">Learn how to choose a medical plus LED board, plus sign light and medical shop sign board.</p>
+      <a href="/blog/medical-plus-led-board-guide.html" style="font-size:.82rem;font-weight:800;color:#111;letter-spacing:.08em;text-transform:uppercase;">Read Guide &rarr;</a>
+    </article>
+    <article style="border:1px solid var(--g200);border-radius:var(--radius-lg);padding:1.4rem;background:var(--g50);">
+      <div class="pct">Medical Boards</div>
+      <h3 style="font-family:'Playfair Display',serif;font-size:1.35rem;line-height:1.25;margin:.5rem 0;color:var(--text);">Medical Sign Board Guide</h3>
+      <p style="font-size:.9rem;color:var(--g700);line-height:1.7;margin-bottom:1rem;">Compare medical sign boards, medical light boards and LED medical display options.</p>
+      <a href="/blog/medical-sign-board-guide.html" style="font-size:.82rem;font-weight:800;color:#111;letter-spacing:.08em;text-transform:uppercase;">Read Guide &rarr;</a>
+    </article>
+    <article style="border:1px solid var(--g200);border-radius:var(--radius-lg);padding:1.4rem;background:var(--g50);">
+      <div class="pct">Clinic Signage</div>
+      <h3 style="font-family:'Playfair Display',serif;font-size:1.35rem;line-height:1.25;margin:.5rem 0;color:var(--text);">Clinic Office Sign Board Guide</h3>
+      <p style="font-size:.9rem;color:var(--g700);line-height:1.7;margin-bottom:1rem;">Choose office sign boards for clinics, doctor chambers and medical reception areas.</p>
+      <a href="/blog/clinic-office-sign-board-guide.html" style="font-size:.82rem;font-weight:800;color:#111;letter-spacing:.08em;text-transform:uppercase;">Read Guide &rarr;</a>
+    </article>
+    <article style="border:1px solid var(--g200);border-radius:var(--radius-lg);padding:1.4rem;background:var(--g50);">
+      <div class="pct">Hospital Boards</div>
+      <h3 style="font-family:'Playfair Display',serif;font-size:1.35rem;line-height:1.25;margin:.5rem 0;color:var(--text);">Hospital LED Sign Board Guide</h3>
+      <p style="font-size:.9rem;color:var(--g700);line-height:1.7;margin-bottom:1rem;">Plan hospital LED signage, department boards and pharmacy plus signs.</p>
+      <a href="/blog/hospital-led-sign-board-guide.html" style="font-size:.82rem;font-weight:800;color:#111;letter-spacing:.08em;text-transform:uppercase;">Read Guide &rarr;</a>
+    </article>
+    <article style="border:1px solid var(--g200);border-radius:var(--radius-lg);padding:1.4rem;background:var(--g50);">
+      <div class="pct">Pharmacy Boards</div>
+      <h3 style="font-family:'Playfair Display',serif;font-size:1.35rem;line-height:1.25;margin:.5rem 0;color:var(--text);">Pharmacy LED Board Buying Guide</h3>
+      <p style="font-size:.9rem;color:var(--g700);line-height:1.7;margin-bottom:1rem;">Compare pharmacy sign boards, green plus signs and 18 inch vs 24 inch LED boards.</p>
+      <a href="/blog/pharmacy-led-board-buying-guide.html" style="font-size:.82rem;font-weight:800;color:#111;letter-spacing:.08em;text-transform:uppercase;">Read Guide &rarr;</a>
+    </article>
+    <article style="border:1px solid var(--g200);border-radius:var(--radius-lg);padding:1.4rem;background:var(--g50);">
+      <div class="pct">Dental Clinics</div>
+      <h3 style="font-family:'Playfair Display',serif;font-size:1.35rem;line-height:1.25;margin:.5rem 0;color:var(--text);">Dental Clinic Signage Guide</h3>
+      <p style="font-size:.9rem;color:var(--g700);line-height:1.7;margin-bottom:1rem;">A practical guide to dental clinic signage, dental boards with light and custom LED signs.</p>
+      <a href="/blog/dental-clinic-signage-guide.html" style="font-size:.82rem;font-weight:800;color:#111;letter-spacing:.08em;text-transform:uppercase;">Read Guide &rarr;</a>
+    </article>
+  </div>
+</section>
+
 <!-- CTA -->
 <div class="cta" id="contact">
   <h2>Ready to Light Up Your Shop?</h2>
@@ -1743,7 +1821,98 @@
     if (cat !== 'all') setTimeout(function(){ document.getElementById('products').scrollIntoView({behavior:'smooth'}); }, 80);
   }
 
+  // Add uploaded portfolio images here.
+  // Suggested path: upload photos into /portfolio/ and use image:'/portfolio/file-name.jpg'
+  var portfolioProjects = [
+    {
+      category: 'medical',
+      title: 'Medical Plus LED Board',
+      location: 'Hyderabad, Telangana',
+      boardType: 'Double Sided Pixel LED',
+      industry: 'Medical Store',
+      image: '/medical-plus-led-sign-board/main.jpg',
+      description: 'Green plus LED sign board for a medical shop frontage, built for bright roadside visibility and plug-and-play use.'
+    },
+    {
+      category: 'medical',
+      title: 'Pharmacy Plus LED Board',
+      location: 'Chennai, Tamil Nadu',
+      boardType: '24 Inch Double Sided LED',
+      industry: 'Pharmacy',
+      image: '/pharmacy-plus-led-sign/main-24.png',
+      description: 'Large green pharmacy plus board for better distance visibility on a busy street.'
+    },
+    {
+      category: 'clinic',
+      title: 'Clinic Medical LED Sign',
+      location: 'Pune, Maharashtra',
+      boardType: '24x18 Wall Mount LED',
+      industry: 'Clinic / Drug Store',
+      image: '/clinic-medical-led-sign-board/main.jpg',
+      description: 'Green and red clinic medical board with wall-mount hooks for a road-facing clinic storefront.'
+    },
+    {
+      category: 'clinic',
+      title: 'Dental Clinic LED Board',
+      location: 'Bengaluru, Karnataka',
+      boardType: '24x18 Pixel LED',
+      industry: 'Dental Clinic',
+      image: '/dental-led-sign-board/main.jpg',
+      description: 'Dental LED sign board with bold lettering and bright tooth graphic for clinic identification.'
+    },
+    {
+      category: 'restaurant',
+      title: 'Bar LED Sign Board',
+      location: 'Goa',
+      boardType: '18x12 Multicolor LED',
+      industry: 'Bar & Restaurant',
+      image: '/bar-led-sign-board/main.jpg',
+      description: 'Multicolor bar sign with bright beer mug graphics for indoor restaurant and bar ambience.'
+    },
+    {
+      category: 'retail',
+      title: 'Xerox Store LED Board',
+      location: 'Mumbai, Maharashtra',
+      boardType: '18x12 Double Sided LED',
+      industry: 'Retail / Xerox Shop',
+      image: '/xerox-store-led-sign-board/main.jpg',
+      description: 'Compact red and white LED sign board for xerox, stationery and print shops.'
+    }
+  ];
+
+  function renderPortfolio(cat) {
+    var grid = document.getElementById('portfolioGrid');
+    var empty = document.getElementById('portfolioEmpty');
+    if (!grid || !empty) return;
+    var projects = portfolioProjects.filter(function(project) {
+      return cat === 'all' || project.category === cat;
+    });
+    grid.innerHTML = projects.map(function(project) {
+      return '<article class="portfolio-card" data-category="' + project.category + '">' +
+        '<div class="portfolio-img"><img src="' + project.image + '" alt="' + project.title + ' - ' + project.industry + ' in ' + project.location + '" loading="lazy"></div>' +
+        '<div class="portfolio-body">' +
+          '<div class="pct">' + project.category + '</div>' +
+          '<h3 class="portfolio-title">' + project.title + '</h3>' +
+          '<div class="portfolio-location">' + project.location + '</div>' +
+          '<div class="portfolio-meta">' +
+            '<span class="portfolio-chip">' + project.boardType + '</span>' +
+            '<span class="portfolio-chip">' + project.industry + '</span>' +
+          '</div>' +
+          '<p class="portfolio-desc">' + project.description + '</p>' +
+        '</div>' +
+      '</article>';
+    }).join('');
+    empty.classList.toggle('show', projects.length === 0);
+  }
+
+  function filterPortfolio(cat, el) {
+    renderPortfolio(cat);
+    document.querySelectorAll('#portfolio .fb').forEach(function(btn){ btn.classList.remove('active'); });
+    if (el) el.classList.add('active');
+  }
+
   document.addEventListener('DOMContentLoaded', function() {
+    renderPortfolio('all');
     var gallery = document.getElementById('clinicmedicalgallery');
     var thumbs = gallery ? gallery.parentElement.querySelector('.gallery-thumbs') : null;
     if (gallery && !document.getElementById('cmimg4')) {
