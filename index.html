@@ -377,6 +377,12 @@
     .portfolio-desc{font-size:.88rem;color:var(--g700);line-height:1.7;margin-top:.65rem;}
     .portfolio-empty{display:none;border:1px dashed var(--g400);border-radius:var(--radius-lg);padding:1.5rem;color:var(--g600);background:#fff;}
     .portfolio-empty.show{display:block;}
+    .guide-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.2rem;}
+    .guide-card{display:block;border:1px solid var(--g200);border-radius:var(--radius-lg);padding:1.4rem;background:var(--g50);text-decoration:none;color:inherit;transition:border-color .2s,box-shadow .2s,transform .2s;}
+    .guide-card:hover{border-color:#111;box-shadow:0 10px 24px rgba(0,0,0,.08);transform:translateY(-2px);}
+    .guide-card h3{font-family:'Playfair Display',serif;font-size:1.35rem;line-height:1.25;margin:.5rem 0;color:var(--text);}
+    .guide-card p{font-size:.9rem;color:var(--g700);line-height:1.7;margin-bottom:1rem;}
+    .guide-link{font-size:.82rem;font-weight:800;color:#111;letter-spacing:.08em;text-transform:uppercase;}
     @media(max-width:900px){.fgrid{grid-template-columns:1fr 1fr;}}
     @media(max-width:680px){nav,.bwah{display:none;}.hbg{display:flex;}.fgrid{grid-template-columns:1fr;}.trust{gap:1rem;}.form-row{grid-template-columns:1fr;}}
   </style>
@@ -407,6 +413,7 @@
       <a href="#categories">Categories</a>
       <a href="#products">Products</a>
       <a href="#portfolio">Portfolio</a>
+      <a href="#guides">Guides</a>
       <a href="#why">Why Us</a>
       <a href="#how">How to Order</a>
       <a href="#contact">Contact</a>
@@ -425,11 +432,12 @@
 <!-- MOBILE NAV -->
 <div class="mnav">
   <a href="#categories" onclick="this.closest('.mnav').classList.remove('open')">Categories</a>
-  <a href="#products" onclick="this.closest('.mnav').classList.remove('open')">Products</a>
-  <a href="#portfolio" onclick="this.closest('.mnav').classList.remove('open')">Portfolio</a>
-  <a href="#why" onclick="this.closest('.mnav').classList.remove('open')">Why Us</a>
-  <a href="#how" onclick="this.closest('.mnav').classList.remove('open')">How to Order</a>
-  <a href="#contact" onclick="this.closest('.mnav').classList.remove('open')">Contact</a>
+<a href="#products" onclick="this.closest('.mnav').classList.remove('open')">Products</a>
+<a href="#portfolio" onclick="this.closest('.mnav').classList.remove('open')">Portfolio</a>
+<a href="#guides" onclick="this.closest('.mnav').classList.remove('open')">Guides</a>
+<a href="#why" onclick="this.closest('.mnav').classList.remove('open')">Why Us</a>
+<a href="#how" onclick="this.closest('.mnav').classList.remove('open')">How to Order</a>
+<a href="#contact" onclick="this.closest('.mnav').classList.remove('open')">Contact</a>
 </div>
 
 <!-- HERO -->
@@ -1149,43 +1157,43 @@
   <div class="slbl">Buying Guides</div>
   <h2 class="stit">LED Sign Board Guides</h2>
   <p class="ssub">Helpful guides for medical shops, pharmacies and clinics choosing the right LED sign board.</p>
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.2rem;">
-    <article style="border:1px solid var(--g200);border-radius:var(--radius-lg);padding:1.4rem;background:var(--g50);">
+  <div class="guide-grid">
+    <a class="guide-card" href="/blog/medical-plus-led-board-guide.html">
       <div class="pct">Medical Signage</div>
-      <h3 style="font-family:'Playfair Display',serif;font-size:1.35rem;line-height:1.25;margin:.5rem 0;color:var(--text);">Medical Plus LED Board Guide</h3>
-      <p style="font-size:.9rem;color:var(--g700);line-height:1.7;margin-bottom:1rem;">Learn how to choose a medical plus LED board, plus sign light and medical shop sign board.</p>
-      <a href="/blog/medical-plus-led-board-guide.html" style="font-size:.82rem;font-weight:800;color:#111;letter-spacing:.08em;text-transform:uppercase;">Read Guide &rarr;</a>
-    </article>
-    <article style="border:1px solid var(--g200);border-radius:var(--radius-lg);padding:1.4rem;background:var(--g50);">
+      <h3>Medical Plus LED Board Guide</h3>
+      <p>Learn how to choose a medical plus LED board, plus sign light and medical shop sign board.</p>
+      <span class="guide-link">Read Guide &rarr;</span>
+    </a>
+    <a class="guide-card" href="/blog/medical-sign-board-guide.html">
       <div class="pct">Medical Boards</div>
-      <h3 style="font-family:'Playfair Display',serif;font-size:1.35rem;line-height:1.25;margin:.5rem 0;color:var(--text);">Medical Sign Board Guide</h3>
-      <p style="font-size:.9rem;color:var(--g700);line-height:1.7;margin-bottom:1rem;">Compare medical sign boards, medical light boards and LED medical display options.</p>
-      <a href="/blog/medical-sign-board-guide.html" style="font-size:.82rem;font-weight:800;color:#111;letter-spacing:.08em;text-transform:uppercase;">Read Guide &rarr;</a>
-    </article>
-    <article style="border:1px solid var(--g200);border-radius:var(--radius-lg);padding:1.4rem;background:var(--g50);">
+      <h3>Medical Sign Board Guide</h3>
+      <p>Compare medical sign boards, medical light boards and LED medical display options.</p>
+      <span class="guide-link">Read Guide &rarr;</span>
+    </a>
+    <a class="guide-card" href="/blog/clinic-office-sign-board-guide.html">
       <div class="pct">Clinic Signage</div>
-      <h3 style="font-family:'Playfair Display',serif;font-size:1.35rem;line-height:1.25;margin:.5rem 0;color:var(--text);">Clinic Office Sign Board Guide</h3>
-      <p style="font-size:.9rem;color:var(--g700);line-height:1.7;margin-bottom:1rem;">Choose office sign boards for clinics, doctor chambers and medical reception areas.</p>
-      <a href="/blog/clinic-office-sign-board-guide.html" style="font-size:.82rem;font-weight:800;color:#111;letter-spacing:.08em;text-transform:uppercase;">Read Guide &rarr;</a>
-    </article>
-    <article style="border:1px solid var(--g200);border-radius:var(--radius-lg);padding:1.4rem;background:var(--g50);">
+      <h3>Clinic Office Sign Board Guide</h3>
+      <p>Choose office sign boards for clinics, doctor chambers and medical reception areas.</p>
+      <span class="guide-link">Read Guide &rarr;</span>
+    </a>
+    <a class="guide-card" href="/blog/hospital-led-sign-board-guide.html">
       <div class="pct">Hospital Boards</div>
-      <h3 style="font-family:'Playfair Display',serif;font-size:1.35rem;line-height:1.25;margin:.5rem 0;color:var(--text);">Hospital LED Sign Board Guide</h3>
-      <p style="font-size:.9rem;color:var(--g700);line-height:1.7;margin-bottom:1rem;">Plan hospital LED signage, department boards and pharmacy plus signs.</p>
-      <a href="/blog/hospital-led-sign-board-guide.html" style="font-size:.82rem;font-weight:800;color:#111;letter-spacing:.08em;text-transform:uppercase;">Read Guide &rarr;</a>
-    </article>
-    <article style="border:1px solid var(--g200);border-radius:var(--radius-lg);padding:1.4rem;background:var(--g50);">
+      <h3>Hospital LED Sign Board Guide</h3>
+      <p>Plan hospital LED signage, department boards and pharmacy plus signs.</p>
+      <span class="guide-link">Read Guide &rarr;</span>
+    </a>
+    <a class="guide-card" href="/blog/pharmacy-led-board-buying-guide.html">
       <div class="pct">Pharmacy Boards</div>
-      <h3 style="font-family:'Playfair Display',serif;font-size:1.35rem;line-height:1.25;margin:.5rem 0;color:var(--text);">Pharmacy LED Board Buying Guide</h3>
-      <p style="font-size:.9rem;color:var(--g700);line-height:1.7;margin-bottom:1rem;">Compare pharmacy sign boards, green plus signs and 18 inch vs 24 inch LED boards.</p>
-      <a href="/blog/pharmacy-led-board-buying-guide.html" style="font-size:.82rem;font-weight:800;color:#111;letter-spacing:.08em;text-transform:uppercase;">Read Guide &rarr;</a>
-    </article>
-    <article style="border:1px solid var(--g200);border-radius:var(--radius-lg);padding:1.4rem;background:var(--g50);">
+      <h3>Pharmacy LED Board Buying Guide</h3>
+      <p>Compare pharmacy sign boards, green plus signs and 18 inch vs 24 inch LED boards.</p>
+      <span class="guide-link">Read Guide &rarr;</span>
+    </a>
+    <a class="guide-card" href="/blog/dental-clinic-signage-guide.html">
       <div class="pct">Dental Clinics</div>
-      <h3 style="font-family:'Playfair Display',serif;font-size:1.35rem;line-height:1.25;margin:.5rem 0;color:var(--text);">Dental Clinic Signage Guide</h3>
-      <p style="font-size:.9rem;color:var(--g700);line-height:1.7;margin-bottom:1rem;">A practical guide to dental clinic signage, dental boards with light and custom LED signs.</p>
-      <a href="/blog/dental-clinic-signage-guide.html" style="font-size:.82rem;font-weight:800;color:#111;letter-spacing:.08em;text-transform:uppercase;">Read Guide &rarr;</a>
-    </article>
+      <h3>Dental Clinic Signage Guide</h3>
+      <p>A practical guide to dental clinic signage, dental boards with light and custom LED signs.</p>
+      <span class="guide-link">Read Guide &rarr;</span>
+    </a>
   </div>
 </section>
 
