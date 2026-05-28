@@ -875,9 +875,7 @@
             });
             var verifyData = await verifyRes.json();
             if (verifyData.success) {
-              closeCheckout();
-              document.getElementById('successOrderId').textContent = 'Order ID: ' + orderId;
-              document.getElementById('successModal').classList.add('open');
+              window.location.href = '/thank-you.html?order_id=' + encodeURIComponent(orderId) + '&product=' + encodeURIComponent(orderData.items[0].name) + '&amount=' + orderData.total + (isCOD ? '&cod=1' : '');
             } else { alert('Payment received! WhatsApp us with Order ID: ' + orderId); }
           }
         });

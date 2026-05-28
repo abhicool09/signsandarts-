@@ -462,7 +462,7 @@
         var verifyRes = await fetch('/api/verify-payment', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ orderId: orderId, orderData: orderData }) });
         var verifyData = await verifyRes.json();
         if (verifyData.success) {
-          window.location.href = '/thank-you?order_id=' + encodeURIComponent(orderId) + '&product=' + encodeURIComponent('Love Neon LED Sign — Pink') + '&amount=400'+(isCOD?'&cod=1':'');
+          window.location.href = '/thank-you.html?order_id=' + encodeURIComponent(orderId) + '&product=' + encodeURIComponent('Love Neon LED Sign — Pink') + '&amount=400'+(isCOD?'&cod=1':'');
         } else {
           alert('Payment received! WhatsApp us with Order ID: ' + orderId);
         }

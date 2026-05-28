@@ -4,6 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Order Confirmed! | Signs and Arts</title>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PNNB88PBN3"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-PNNB88PBN3');
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
@@ -237,6 +244,31 @@
   }
 
   document.getElementById('waLink').href = 'https://wa.me/919392878946?text=Hi%2C%20I%20just%20placed%20a%20' + (isCOD ? 'COD%20' : '') + 'order%20on%20signsandarts.in.%20Order%20ID%3A%20' + encodeURIComponent(orderId);
+
+  (function trackPurchaseConversion() {
+    if (!orderId || orderId === 'â€”' || !amount || typeof gtag !== 'function') return;
+    var totalValue = Number(amount);
+    if (!Number.isFinite(totalValue) || totalValue <= 0) return;
+
+    var storageKey = 'sa_purchase_tracked_' + orderId;
+    try {
+      if (sessionStorage.getItem(storageKey)) return;
+      sessionStorage.setItem(storageKey, '1');
+    } catch (err) {}
+
+    gtag('event', 'purchase', {
+      transaction_id: orderId,
+      value: totalValue,
+      currency: 'INR',
+      payment_type: isCOD ? 'COD advance' : 'Online prepaid',
+      paid_value: isCOD ? 200 : totalValue,
+      items: [{
+        item_name: decodeURIComponent(product),
+        quantity: 1,
+        price: totalValue
+      }]
+    });
+  })();
 </script>
 </body>
 </html>
