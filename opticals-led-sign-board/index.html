@@ -42,6 +42,10 @@
     .main-img-wrap{position:relative;border-radius:var(--radius-lg);overflow:hidden;background:var(--g50);border:1px solid var(--g200);aspect-ratio:4/3;}
     .main-img-wrap img{width:100%;height:100%;object-fit:cover;display:none;}
     .main-img-wrap img.active{display:block;}
+    .zoom-window{display:none;position:absolute;top:12px;right:12px;width:42%;height:42%;min-width:150px;min-height:150px;background-repeat:no-repeat;background-color:#fff;border:2px solid #111;border-radius:8px;box-shadow:0 14px 40px rgba(0,0,0,.22);z-index:4;pointer-events:none;}
+    .main-img-wrap.zooming{cursor:crosshair;}
+    @media(max-width:760px){.zoom-window{display:none!important;}.main-img-wrap.zooming{cursor:default;}}
+
     .vid-overlay{position:absolute;bottom:12px;right:12px;background:rgba(0,0,0,.75);color:#fff;border:none;border-radius:var(--radius);padding:.45rem .9rem;font-size:.78rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:.4rem;}
     .vid-overlay:hover{background:#000;}
     .thumb-strip{display:flex;gap:.5rem;margin-top:.7rem;flex-wrap:wrap;}
@@ -408,6 +412,59 @@
       });
     }catch(e){alert('Error: '+e.message+'. Please try WhatsApp order.');}
   }
+
+  function initImageZoom() {
+    document.querySelectorAll('.main-img-wrap').forEach(function(wrap) {
+      if (wrap.dataset.zoomReady) return;
+      wrap.dataset.zoomReady = '1';
+      var zoom = document.createElement('div');
+      zoom.className = 'zoom-window';
+      wrap.appendChild(zoom);
+
+      function getActiveImage() {
+        return wrap.querySelector('img.active');
+      }
+
+      function hideZoom() {
+        zoom.style.display = 'none';
+        wrap.classList.remove('zooming');
+      }
+
+      function moveZoom(e) {
+        if (window.matchMedia && window.matchMedia('(max-width: 760px)').matches) {
+          hideZoom();
+          return;
+        }
+        var img = getActiveImage();
+        if (!img || !img.src) {
+          hideZoom();
+          return;
+        }
+        var rect = wrap.getBoundingClientRect();
+        var x = e.clientX - rect.left;
+        var y = e.clientY - rect.top;
+        if (x < 0 || y < 0 || x > rect.width || y > rect.height) {
+          hideZoom();
+          return;
+        }
+        var xPct = Math.max(0, Math.min(100, (x / rect.width) * 100));
+        var yPct = Math.max(0, Math.min(100, (y / rect.height) * 100));
+        zoom.style.backgroundImage = 'url("' + (img.currentSrc || img.src) + '")';
+        zoom.style.backgroundSize = '240% 240%';
+        zoom.style.backgroundPosition = xPct + '% ' + yPct + '%';
+        zoom.style.display = 'block';
+        wrap.classList.add('zooming');
+      }
+
+      wrap.addEventListener('mouseenter', moveZoom);
+      wrap.addEventListener('mousemove', moveZoom);
+      wrap.addEventListener('mouseleave', hideZoom);
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initImageZoom);
+  initImageZoom();
+
 </script>
 <script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
 </body>

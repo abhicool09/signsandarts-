@@ -289,10 +289,11 @@
       object-fit:contain;
       padding:8px;
       opacity:0;transition:opacity .35s ease;
+      pointer-events:none;z-index:0;
       cursor:zoom-in;
       background:#f8f8f8;
     }
-    .pgallery img.active{opacity:1;}
+    .pgallery img.active{opacity:1;pointer-events:auto;z-index:1;}
     .gallery-thumbs{
       display:flex;gap:6px;
       padding:7px 10px;

@@ -60,8 +60,12 @@
 
     .img-col{position:sticky;top:80px;}
     .main-img-wrap{background:var(--g50);border:1px solid var(--g200);border-radius:var(--radius-lg);overflow:hidden;position:relative;width:100%;padding-bottom:100%;margin-bottom:.8rem;}
-    .main-img-wrap img{width:100%;height:100%;object-fit:contain;padding:1.5rem;transition:opacity .35s ease;position:absolute;top:0;left:0;opacity:0;background:var(--g50);}
-    .main-img-wrap img.active{opacity:1;}
+    .main-img-wrap img{width:100%;height:100%;object-fit:contain;padding:1.5rem;transition:opacity .35s ease;position:absolute;top:0;left:0;opacity:0;background:var(--g50);pointer-events:none;z-index:0;}
+    .main-img-wrap img.active{opacity:1;pointer-events:auto;z-index:1;}
+    .zoom-window{display:none;position:absolute;top:12px;right:12px;width:42%;height:42%;min-width:150px;min-height:150px;background-repeat:no-repeat;background-color:#fff;border:2px solid #111;border-radius:8px;box-shadow:0 14px 40px rgba(0,0,0,.22);z-index:4;pointer-events:none;}
+    .main-img-wrap.zooming{cursor:crosshair;}
+    @media(max-width:760px){.zoom-window{display:none!important;}.main-img-wrap.zooming{cursor:default;}}
+
     .vid-overlay{position:absolute;bottom:12px;right:12px;z-index:2;background:rgba(0,0,0,.75);color:#fff;border:none;border-radius:50px;padding:.4rem 1rem;font-family:'DM Sans',sans-serif;font-size:.75rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:.4rem;letter-spacing:.5px;transition:background .2s;}
     .vid-overlay:hover{background:var(--gold);}
     .thumb-strip{display:flex;gap:.5rem;flex-wrap:wrap;}
@@ -705,6 +709,59 @@
       alert('Something went wrong. Please WhatsApp us at +91 93928 78946');
     }
   }
+
+  function initImageZoom() {
+    document.querySelectorAll('.main-img-wrap').forEach(function(wrap) {
+      if (wrap.dataset.zoomReady) return;
+      wrap.dataset.zoomReady = '1';
+      var zoom = document.createElement('div');
+      zoom.className = 'zoom-window';
+      wrap.appendChild(zoom);
+
+      function getActiveImage() {
+        return wrap.querySelector('img.active');
+      }
+
+      function hideZoom() {
+        zoom.style.display = 'none';
+        wrap.classList.remove('zooming');
+      }
+
+      function moveZoom(e) {
+        if (window.matchMedia && window.matchMedia('(max-width: 760px)').matches) {
+          hideZoom();
+          return;
+        }
+        var img = getActiveImage();
+        if (!img || !img.src) {
+          hideZoom();
+          return;
+        }
+        var rect = wrap.getBoundingClientRect();
+        var x = e.clientX - rect.left;
+        var y = e.clientY - rect.top;
+        if (x < 0 || y < 0 || x > rect.width || y > rect.height) {
+          hideZoom();
+          return;
+        }
+        var xPct = Math.max(0, Math.min(100, (x / rect.width) * 100));
+        var yPct = Math.max(0, Math.min(100, (y / rect.height) * 100));
+        zoom.style.backgroundImage = 'url("' + (img.currentSrc || img.src) + '")';
+        zoom.style.backgroundSize = '240% 240%';
+        zoom.style.backgroundPosition = xPct + '% ' + yPct + '%';
+        zoom.style.display = 'block';
+        wrap.classList.add('zooming');
+      }
+
+      wrap.addEventListener('mouseenter', moveZoom);
+      wrap.addEventListener('mousemove', moveZoom);
+      wrap.addEventListener('mouseleave', hideZoom);
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initImageZoom);
+  initImageZoom();
+
 </script>
 </body>
 </html>
