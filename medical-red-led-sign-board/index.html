@@ -472,7 +472,7 @@
         <button class="ptbtn" id="btnCOD" onclick="setPayMode('cod')">&#128666; Cash on Delivery</button>
       </div>
       <div class="cod-info" id="codInfo">
-        <strong>&#9432; COD Order:</strong> Pay <strong>&#8377;200 advance</strong> now to confirm your order. Remaining amount is paid to the delivery person when your sign board arrives.
+        <strong>&#9432; COD Order:</strong> Pay <strong>&#8377;200 advance</strong> now to confirm your order. A <strong>&#8377;50 COD charge</strong> is added to the order. Remaining amount is paid to the delivery person when your sign board arrives.
       </div>
       <div class="form-row">
         <div class="form-group"><label>Full Name *</label><input type="text" id="fname" placeholder="Your full name"></div>
@@ -591,6 +591,10 @@
     if (!isOpen) item.classList.add('open');
   }
 
+  function getCodAdvance() { return 200; }
+  function getCodCharge() { return 50; }
+  function getCodOrderTotal() { return currentVariant.price + getCodCharge(); }
+
   function setPayMode(mode) {
     payMode = mode;
     document.getElementById('btnOnline').classList.toggle('active', mode === 'online');
@@ -606,11 +610,16 @@
   function updateOrderSummary() {
     var summary = document.getElementById('orderSummary');
     if (payMode === 'cod') {
+      var advance = getCodAdvance();
+      var codCharge = getCodCharge();
+      var codTotal = getCodOrderTotal();
+      var remaining = Math.max(codTotal - advance, 0);
       summary.innerHTML = '<div class="os-title">Order Summary</div>' +
         '<div class="os-item"><span>Medical LED Sign Board — Red & Green ' + currentVariant.size + ' x1</span><span>&#8377;' + currentVariant.price.toLocaleString('en-IN') + '</span></div>' +
-        '<div class="os-item" style="color:#c77b00;font-weight:600;"><span>COD Advance (pay now)</span><span>&#8377;200</span></div>' +
-        '<div class="os-item" style="color:#777;"><span>Remaining (pay on delivery)</span><span>&#8377;' + Math.max(currentVariant.price - 200, 0).toLocaleString('en-IN') + '</span></div>' +
-        '<div class="os-total"><span>Total Order Value</span><span>&#8377;' + currentVariant.price.toLocaleString('en-IN') + '</span></div>';
+        '<div class="os-item" style="color:#c77b00;font-weight:600;"><span>COD Advance (pay now)</span><span>&#8377;' + advance.toLocaleString('en-IN') + '</span></div>' +
+        '<div class="os-item"><span>COD Handling Charge</span><span>&#8377;' + codCharge.toLocaleString('en-IN') + '</span></div>' +
+        '<div class="os-item" style="color:#777;"><span>Remaining (pay on delivery)</span><span>&#8377;' + remaining.toLocaleString('en-IN') + '</span></div>' +
+        '<div class="os-total"><span>Total Order Value</span><span>&#8377;' + codTotal.toLocaleString('en-IN') + '</span></div>';
     } else {
       summary.innerHTML = '<div class="os-title">Order Summary</div>' +
         '<div class="os-item"><span>Medical LED Sign Board — Red & Green ' + currentVariant.size + ' x1</span><span>&#8377;' + currentVariant.price.toLocaleString('en-IN') + '</span></div>' +
@@ -660,7 +669,8 @@
     var btn = document.getElementById('payBtn');
     btn.disabled = true;
     btn.textContent = 'Creating order...';
-    var payAmount = isCOD ? 200 : currentVariant.price;
+    var codAdvance = isCOD ? getCodAdvance() : 0;
+    var payAmount = isCOD ? codAdvance : currentVariant.price;
     var orderId = 'SA-' + Date.now();
     var orderData = {
       name: document.getElementById('fname').value.trim(),
@@ -671,10 +681,13 @@
       state: document.getElementById('fstate').value.trim(),
       pincode: document.getElementById('fpincode').value.trim(),
       items: [{ id:'medical-red', name:'Medical LED Sign Board — Red & Green '+currentVariant.size, price:currentVariant.price, qty:1 }],
-      total: currentVariant.price,
+      total: isCOD ? getCodOrderTotal() : currentVariant.price,
+      productTotal: currentVariant.price,
       isCOD: isCOD,
-      advancePaid: isCOD ? 200 : currentVariant.price,
-      codAmount: isCOD ? Math.max(currentVariant.price - 200, 0) : 0,
+      codAdvance: codAdvance,
+      codCharge: isCOD ? getCodCharge() : 0,
+      advancePaid: isCOD ? codAdvance : currentVariant.price,
+      codAmount: isCOD ? Math.max(getCodOrderTotal() - codAdvance, 0) : 0,
     };
     try {
       var res = await fetch('/api/create-order', {

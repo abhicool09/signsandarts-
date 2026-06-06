@@ -334,7 +334,7 @@
         <button class="ptbtn active" id="btnOnline" onclick="setPayMode('online')">&#128274; Pay Online</button>
         <button class="ptbtn cod-btn" id="btnCOD" onclick="setPayMode('cod')">&#128666; Cash on Delivery</button>
       </div>
-      <div class="cod-info" id="codInfo">&#9432; <strong>COD:</strong> Pay <strong>&#8377;200 advance</strong> now. Remaining <strong>&#8377;1,629</strong> paid to delivery person.</div>
+      <div class="cod-info" id="codInfo">&#9432; <strong>COD:</strong> Pay <strong>&#8377;200 advance</strong> now. A <strong>&#8377;50 COD charge</strong> is added to the order. Remaining amount is paid to the delivery person.</div>
     </div>
     <hr style="margin:.8rem 0;border-color:#eee;">
     <div class="form-group"><label>Full Name *</label><input type="text" id="custName" placeholder="Your full name"></div>
@@ -378,16 +378,21 @@
     return amount.toLocaleString('en-IN');
   }
 
+  function getCodCharge() { return 50; }
+  function getCodOrderTotal() { return currentVariant.price + getCodCharge(); }
+
   function updateCheckoutSummary() {
-    var remaining = Math.max(currentVariant.price - 200, 0);
+    var codTotal = getCodOrderTotal();
+    var remaining = Math.max(codTotal - 200, 0);
     document.getElementById('osSummary').innerHTML =
       '<div class="os-item"><span>Bar LED Sign Board - ' + currentVariant.display + ' x1</span><span>&#8377;' + formatPrice(currentVariant.price) + '</span></div>' +
       (payMode === 'cod'
         ? '<div class="os-item" style="color:#e67e22;font-weight:600;"><span>COD Advance (pay now)</span><span>&#8377;200</span></div>' +
+          '<div class="os-item"><span>COD Handling Charge</span><span>&#8377;' + formatPrice(getCodCharge()) + '</span></div>' +
           '<div class="os-item" style="color:#777;"><span>Remaining (pay on delivery)</span><span>&#8377;' + formatPrice(remaining) + '</span></div>' +
-          '<div class="os-total"><span>Total Order Value</span><span>&#8377;' + formatPrice(currentVariant.price) + '</span></div>'
+          '<div class="os-total"><span>Total Order Value</span><span>&#8377;' + formatPrice(codTotal) + '</span></div>'
         : '<div class="os-total"><span>Total Payable</span><span>&#8377;' + formatPrice(currentVariant.price) + '</span></div>');
-    document.getElementById('codInfo').innerHTML = '&#9432; <strong>COD:</strong> Pay <strong>&#8377;200 advance</strong> now. Remaining <strong>&#8377;' + formatPrice(remaining) + '</strong> paid to delivery person.';
+    document.getElementById('codInfo').innerHTML = '&#9432; <strong>COD:</strong> Pay <strong>&#8377;200 advance</strong> now. A <strong>&#8377;' + formatPrice(getCodCharge()) + ' COD charge</strong> is added. Remaining <strong>&#8377;' + formatPrice(remaining) + '</strong> paid to delivery person.';
   }
 
   function updatePaymentButton() {
@@ -450,8 +455,9 @@
     if(!/^\d{6}$/.test(pin)){alert('Enter a valid 6-digit PIN code.');return;}
     var isCOD = payMode==='cod';
     var payAmount = isCOD ? 200 : currentVariant.price;
+    var orderTotal = isCOD ? getCodOrderTotal() : currentVariant.price;
     var orderId='SA-'+Date.now();
-    var orderData={name:name,phone:phone,email:email,address:addr,city:city,state:state,pincode:pin,items:[{id:currentVariant.id,name:'Bar LED Sign Board - Multicolor 18x12 '+currentVariant.display,price:currentVariant.price,qty:1}],total:currentVariant.price,isCOD:isCOD,codAdvance:isCOD?200:0};
+    var orderData={name:name,phone:phone,email:email,address:addr,city:city,state:state,pincode:pin,items:[{id:currentVariant.id,name:'Bar LED Sign Board - Multicolor 18x12 '+currentVariant.display,price:currentVariant.price,qty:1}],total:orderTotal,productTotal:currentVariant.price,isCOD:isCOD,codAdvance:isCOD?200:0,codCharge:isCOD?getCodCharge():0};
     try{
       var res=await fetch('/api/create-order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({amount:payAmount,orderId:orderId,customerName:name,customerEmail:email,customerPhone:phone,isCOD:isCOD})});
       var data=await res.json();
@@ -461,7 +467,7 @@
         if(result.error){alert('Payment failed: '+result.error.message);return;}
         var verifyRes=await fetch('/api/verify-payment',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({orderId:orderId,orderData:orderData})});
         var verifyData=await verifyRes.json();
-        if(verifyData.success){window.location.href='/thank-you.html?order_id='+encodeURIComponent(orderId)+'&product='+encodeURIComponent('Bar LED Sign Board - '+currentVariant.display)+'&amount='+currentVariant.price+(isCOD?'&cod=1':'');}
+        if(verifyData.success){window.location.href='/thank-you.html?order_id='+encodeURIComponent(orderId)+'&product='+encodeURIComponent('Bar LED Sign Board - '+currentVariant.display)+'&amount='+orderData.total+(isCOD?'&cod=1':'');}
         else{alert('Payment received! WhatsApp us with Order ID: '+orderId);}
       });
     }catch(e){alert('Error: '+e.message+'. Please try WhatsApp order.');}

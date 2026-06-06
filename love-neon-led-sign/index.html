@@ -386,7 +386,7 @@
       <button class="ptbtn active" id="btnOnline" onclick="setPayMode('online')">&#128274; Pay Online</button>
       <button class="ptbtn cod-btn" id="btnCOD" onclick="setPayMode('cod')">&#128666; Cash on Delivery</button>
     </div>
-    <div class="cod-info" id="codInfo">&#9432; <strong>COD:</strong> Pay <strong>&#8377;200 advance</strong> now. Remaining amount is paid to the delivery person.</div>
+    <div class="cod-info" id="codInfo">&#9432; <strong>COD:</strong> Pay <strong>&#8377;200 advance</strong> now. A <strong>&#8377;50 COD charge</strong> is added to the order. Remaining amount is paid to the delivery person.</div>
     <button class="btn-pay" id="payBtn" onclick="initiatePayment()">&#128274; Pay &#8377;400 Securely</button>
     <button class="btn-close-modal" onclick="closeCheckout()">Cancel</button>
   </div>
@@ -418,6 +418,8 @@
   }
 
   var payMode = 'online';
+  var COD_CHARGE = 50;
+
   function setPayMode(mode) {
     payMode = mode;
     document.getElementById('btnOnline').classList.toggle('active', mode === 'online');
@@ -454,8 +456,9 @@
     if (!/^\d{6}$/.test(pin)) { alert('Enter a valid 6-digit PIN code.'); return; }
     var isCOD = payMode === 'cod';
     var payAmount = isCOD ? 200 : 400;
+    var orderTotal = isCOD ? 400 + COD_CHARGE : 400;
     var orderId = 'SA-' + Date.now();
-    var orderData = { name: name, phone: phone, email: email, address: addr, city: city, state: state, pincode: pin, items: [{ id: 'love-neon-pink', name: 'Love Neon LED Sign — Pink', price: 400, qty: 1 }], total: 400, isCOD: isCOD, codAdvance: isCOD ? 200 : 0 };
+    var orderData = { name: name, phone: phone, email: email, address: addr, city: city, state: state, pincode: pin, items: [{ id: 'love-neon-pink', name: 'Love Neon LED Sign — Pink', price: 400, qty: 1 }], total: orderTotal, productTotal: 400, isCOD: isCOD, codAdvance: isCOD ? 200 : 0, codCharge: isCOD ? COD_CHARGE : 0 };
     try {
       var res = await fetch('/api/create-order', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ amount: payAmount, orderId: orderId, customerName: name, customerEmail: email, customerPhone: phone, isCOD: isCOD }) });
       var data = await res.json();
@@ -466,7 +469,7 @@
         var verifyRes = await fetch('/api/verify-payment', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ orderId: orderId, orderData: orderData }) });
         var verifyData = await verifyRes.json();
         if (verifyData.success) {
-          window.location.href = '/thank-you.html?order_id=' + encodeURIComponent(orderId) + '&product=' + encodeURIComponent('Love Neon LED Sign — Pink') + '&amount=400'+(isCOD?'&cod=1':'');
+          window.location.href = '/thank-you.html?order_id=' + encodeURIComponent(orderId) + '&product=' + encodeURIComponent('Love Neon LED Sign — Pink') + '&amount='+orderData.total+(isCOD?'&cod=1':'');
         } else {
           alert('Payment received! WhatsApp us with Order ID: ' + orderId);
         }

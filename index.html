@@ -1448,7 +1448,7 @@
           <button class="ptbtn cod-btn" id="btnCOD" onclick="setPayMode('cod')">&#128666; Cash on Delivery</button>
         </div>
         <div class="cod-info" id="codInfo">
-          <strong>&#9432; COD Order:</strong> Pay <strong id="codAdvanceDisplay">₹200 advance</strong> now to confirm your order. Remaining amount is paid to the delivery person when your sign board arrives.
+          <strong>&#9432; COD Order:</strong> Pay <strong id="codAdvanceDisplay">&#8377;200 advance</strong> now to confirm your order. A <strong>&#8377;50 COD charge</strong> is added to the order. Remaining amount is paid to the delivery person when your sign board arrives.
         </div>
       </div>
       <div class="form-row">
@@ -1591,6 +1591,8 @@
 
   // ── PAYMENT MODE ─────────────────────────────────────────────────────────
   var payMode = 'online'; // 'online' or 'cod'
+  var COD_CHARGE = 50;
+
 
   function setPayMode(mode) {
     payMode = mode;
@@ -1600,7 +1602,7 @@
     const total = getTotal();
     const advance = total <= 10 ? 1 : 200;
     if (document.getElementById('codAdvanceDisplay')) {
-      document.getElementById('codAdvanceDisplay').textContent = '₹' + advance + ' advance';
+      document.getElementById('codAdvanceDisplay').innerHTML = '&#8377;' + advance + ' advance';
     }
     updateOrderSummary();
     const btn = document.getElementById('payBtn');
@@ -1616,14 +1618,17 @@
   function updateOrderSummary() {
     const total = getTotal();
     const advance = total <= 10 ? 1 : 200;
+    const codTotal = total + COD_CHARGE;
+    const remaining = Math.max(codTotal - advance, 0);
     const summary = document.getElementById('orderSummary');
     if (payMode === 'cod') {
       summary.innerHTML = `
         <div class="os-title">Order Summary</div>
         ${cart.map(i => `<div class="os-item"><span>${i.name} x${i.qty}</span><span>&#8377;${(i.price*i.qty).toLocaleString('en-IN')}</span></div>`).join('')}
         <div class="os-item" style="color:#e67e22;font-weight:600;"><span>COD Advance (pay now)</span><span>&#8377;${advance.toLocaleString('en-IN')}</span></div>
-        <div class="os-item" style="color:#777;"><span>Remaining (pay on delivery)</span><span>&#8377;${(total-advance).toLocaleString('en-IN')}</span></div>
-        <div class="os-total"><span>Total Order Value</span><span>&#8377;${total.toLocaleString('en-IN')}</span></div>
+        <div class="os-item"><span>COD Handling Charge</span><span>&#8377;${COD_CHARGE.toLocaleString('en-IN')}</span></div>
+        <div class="os-item" style="color:#777;"><span>Remaining (pay on delivery)</span><span>&#8377;${remaining.toLocaleString('en-IN')}</span></div>
+        <div class="os-total"><span>Total Order Value</span><span>&#8377;${codTotal.toLocaleString('en-IN')}</span></div>
       `;
     } else {
       summary.innerHTML = `
@@ -1691,6 +1696,7 @@
     const isCOD = payMode === 'cod';
     const codAdvance = isCOD ? (total <= 10 ? 1 : 200) : 0;
     const payAmount = isCOD ? codAdvance : total;
+    const orderTotal = isCOD ? total + COD_CHARGE : total;
     const orderId = 'SA-' + Date.now();
     const orderData = {
       name: document.getElementById('fname').value.trim(),
@@ -1701,9 +1707,11 @@
       state: document.getElementById('fstate').value.trim(),
       pincode: document.getElementById('fpincode').value.trim(),
       items: cart.map(i => ({ id: i.id, name: i.name, price: i.price, qty: i.qty })),
-      total: total,
+      total: orderTotal,
+      productTotal: total,
       isCOD: isCOD,
       codAdvance: codAdvance,
+      codCharge: isCOD ? COD_CHARGE : 0,
     };
 
     try {
