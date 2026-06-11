@@ -101,7 +101,6 @@
     .prod-price-box{background:var(--g50);border:1px solid var(--g200);border-radius:var(--radius-lg);padding:1.2rem;margin-bottom:1.2rem;}
     .price-label{font-size:.68rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--g600);margin-bottom:.3rem;}
     .price-main{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:var(--black);}
-    .price-gst{font-size:.75rem;color:var(--g600);margin-top:2px;}
     .price-save{display:inline-block;background:#e8f5e9;color:var(--green);font-size:.75rem;font-weight:700;padding:.2rem .6rem;border-radius:2px;margin-top:.4rem;}
 
     /* Variant */
@@ -356,7 +355,6 @@
     <div class="prod-price-box">
       <div class="price-label">Price</div>
       <div class="price-main" id="pdPrice">&#8377;6,819</div>
-      <div class="price-gst">Inclusive of all taxes &amp; GST</div>
       <div class="price-save">You save &#8377;3,681 (37%) vs MRP &#8377;10,500</div>
     </div>
 
@@ -668,7 +666,7 @@
         <button class="ptbtn active" id="btnOnline" onclick="setPayMode('online')">&#128274; Pay Online</button>
         <button class="ptbtn cod-btn" id="btnCOD" onclick="setPayMode('cod')">&#128666; Cash on Delivery</button>
       </div>
-      <div class="cod-info" id="codInfo">&#9432; <strong>COD:</strong> Pay <strong>&#8377;200 advance</strong> now. A <strong>&#8377;50 COD charge</strong> is added to the order. Remaining amount is paid to the delivery person.</div>
+      <div class="cod-info" id="codInfo">&#9432; <strong>COD:</strong> Pay <strong>&#8377;3,819 advance</strong> now. A <strong>&#8377;50 COD charge</strong> is added to the order. Remaining amount is paid to the delivery person.</div>
       <div class="form-row">
         <div class="form-group"><label>Full Name *</label><input type="text" id="fname" placeholder="Your full name"></div>
         <div class="form-group"><label>Phone Number *</label><input type="tel" id="fphone" placeholder="10-digit mobile"></div>
@@ -763,7 +761,7 @@
   // ── CHECKOUT ──────────────────────────────────────────────────────────────
   var payMode = 'online';
 
-  function getCodAdvance() { return 200; }
+  function getCodAdvance() { return 3819; }
   function getCodCharge() { return 50; }
   function getCodOrderTotal() { return currentVariant.price + getCodCharge(); }
   function getPaymentButtonText() {
