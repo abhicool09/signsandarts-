@@ -37,7 +37,7 @@ function closePixelCheckout(){
 }
 function pixelTotals(){
   var subtotal=pixelOrder.product.price*pixelOrder.qty;
-  var shipping=pixelOrder.product.price<500?LOW_PRICE_SHIPPING:0;
+  var shipping=subtotal<300?LOW_PRICE_SHIPPING:0;
   var onlineTotal=subtotal+shipping;
   var codTotal=onlineTotal+COD_CHARGE;
   var advance=Math.min(200,codTotal);
