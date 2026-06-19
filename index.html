@@ -1665,6 +1665,11 @@
   // ── PAYMENT MODE ─────────────────────────────────────────────────────────
   var payMode = 'online'; // 'online' or 'cod'
   var COD_CHARGE = 50;
+  var LOW_PRICE_SHIPPING = 125;
+
+  function getShippingCharge() {
+    return cart.some(function(item) { return Number(item.price) < 500; }) ? LOW_PRICE_SHIPPING : 0;
+  }
 
 
   function setPayMode(mode) {
@@ -1690,14 +1695,17 @@
 
   function updateOrderSummary() {
     const total = getTotal();
-    const advance = getCodAdvance(total);
-    const codTotal = total + COD_CHARGE;
+    const shipping = getShippingCharge();
+    const onlineTotal = total + shipping;
+    const advance = getCodAdvance(onlineTotal);
+    const codTotal = onlineTotal + COD_CHARGE;
     const remaining = Math.max(codTotal - advance, 0);
     const summary = document.getElementById('orderSummary');
     if (payMode === 'cod') {
       summary.innerHTML = `
         <div class="os-title">Order Summary</div>
         ${cart.map(i => `<div class="os-item"><span>${i.name} x${i.qty}</span><span>&#8377;${(i.price*i.qty).toLocaleString('en-IN')}</span></div>`).join('')}
+        ${shipping ? `<div class="os-item"><span>Shipping Charge</span><span>&#8377;${shipping.toLocaleString('en-IN')}</span></div>` : ''}
         <div class="os-item" style="color:#e67e22;font-weight:600;"><span>COD Advance (pay now)</span><span>&#8377;${advance.toLocaleString('en-IN')}</span></div>
         <div class="os-item"><span>COD Handling Charge</span><span>&#8377;${COD_CHARGE.toLocaleString('en-IN')}</span></div>
         <div class="os-item" style="color:#777;"><span>Remaining (pay on delivery)</span><span>&#8377;${remaining.toLocaleString('en-IN')}</span></div>
@@ -1707,7 +1715,8 @@
       summary.innerHTML = `
         <div class="os-title">Order Summary</div>
         ${cart.map(i => `<div class="os-item"><span>${i.name} x${i.qty}</span><span>&#8377;${(i.price*i.qty).toLocaleString('en-IN')}</span></div>`).join('')}
-        <div class="os-total"><span>Total Payable</span><span>&#8377;${total.toLocaleString('en-IN')}</span></div>
+        ${shipping ? `<div class="os-item"><span>Shipping Charge</span><span>&#8377;${shipping.toLocaleString('en-IN')}</span></div>` : ''}
+        <div class="os-total"><span>Total Payable</span><span>&#8377;${onlineTotal.toLocaleString('en-IN')}</span></div>
       `;
     }
   }
@@ -1766,10 +1775,12 @@
     btn.innerHTML = 'Creating order...';
 
     const total = getTotal();
+    const shipping = getShippingCharge();
+    const onlineTotal = total + shipping;
     const isCOD = payMode === 'cod';
-    const codAdvance = isCOD ? getCodAdvance(total) : 0;
-    const payAmount = isCOD ? codAdvance : total;
-    const orderTotal = isCOD ? total + COD_CHARGE : total;
+    const codAdvance = isCOD ? getCodAdvance(onlineTotal) : 0;
+    const payAmount = isCOD ? codAdvance : onlineTotal;
+    const orderTotal = isCOD ? onlineTotal + COD_CHARGE : onlineTotal;
     const orderId = 'SA-' + Date.now();
     const orderData = {
       name: document.getElementById('fname').value.trim(),
@@ -1782,6 +1793,7 @@
       items: cart.map(i => ({ id: i.id, name: i.name, price: i.price, qty: i.qty })),
       total: orderTotal,
       productTotal: total,
+      shippingCharge: shipping,
       isCOD: isCOD,
       codAdvance: codAdvance,
       codCharge: isCOD ? COD_CHARGE : 0,

@@ -277,6 +277,7 @@
     var PRODUCT_PRICE = 339;
     var COD_ADVANCE = 200;
     var COD_CHARGE = 50;
+    var SHIPPING_CHARGE = PRODUCT_PRICE < 500 ? 125 : 0;
     var payMode = 'online';
 
     function switchMain(index) {
@@ -295,10 +296,11 @@
     function updateOrderSummary() {
       var summary = document.getElementById('orderSummary');
       if (payMode === 'cod') {
-        var codTotal = PRODUCT_PRICE + COD_CHARGE;
+        var codTotal = PRODUCT_PRICE + SHIPPING_CHARGE + COD_CHARGE;
         var remaining = codTotal - COD_ADVANCE;
         summary.innerHTML =
           '<div class="os-item"><span>Mini RF LED Strip Controller x1</span><span>&#8377;' + formatPrice(PRODUCT_PRICE) + '</span></div>' +
+          '<div class="os-item"><span>Shipping Charge</span><span>&#8377;' + formatPrice(SHIPPING_CHARGE) + '</span></div>' +
           '<div class="os-item"><span>COD Advance (pay now)</span><span>&#8377;' + formatPrice(COD_ADVANCE) + '</span></div>' +
           '<div class="os-item"><span>COD Handling Charge</span><span>&#8377;' + formatPrice(COD_CHARGE) + '</span></div>' +
           '<div class="os-item"><span>Remaining on delivery</span><span>&#8377;' + formatPrice(remaining) + '</span></div>' +
@@ -306,7 +308,8 @@
       } else {
         summary.innerHTML =
           '<div class="os-item"><span>Mini RF LED Strip Controller x1</span><span>&#8377;' + formatPrice(PRODUCT_PRICE) + '</span></div>' +
-          '<div class="os-total"><span>Total Payable</span><span>&#8377;' + formatPrice(PRODUCT_PRICE) + '</span></div>';
+          '<div class="os-item"><span>Shipping Charge</span><span>&#8377;' + formatPrice(SHIPPING_CHARGE) + '</span></div>' +
+          '<div class="os-total"><span>Total Payable</span><span>&#8377;' + formatPrice(PRODUCT_PRICE + SHIPPING_CHARGE) + '</span></div>';
       }
     }
 
@@ -317,7 +320,7 @@
       document.getElementById('codInfo').classList.toggle('show', mode === 'cod');
       document.getElementById('payBtn').innerHTML = mode === 'cod'
         ? 'Pay &#8377;' + COD_ADVANCE + ' Advance &amp; Place COD Order'
-        : 'Pay &#8377;' + PRODUCT_PRICE + ' Securely';
+        : 'Pay &#8377;' + formatPrice(PRODUCT_PRICE + SHIPPING_CHARGE) + ' Securely';
       document.getElementById('payBtn').style.background = mode === 'cod' ? '#e67e22' : '#111';
       updateOrderSummary();
     }
@@ -356,8 +359,8 @@
       }
 
       var isCOD = payMode === 'cod';
-      var payAmount = isCOD ? COD_ADVANCE : PRODUCT_PRICE;
-      var orderTotal = isCOD ? PRODUCT_PRICE + COD_CHARGE : PRODUCT_PRICE;
+      var payAmount = isCOD ? COD_ADVANCE : PRODUCT_PRICE + SHIPPING_CHARGE;
+      var orderTotal = isCOD ? PRODUCT_PRICE + SHIPPING_CHARGE + COD_CHARGE : PRODUCT_PRICE + SHIPPING_CHARGE;
       var orderId = 'SA-' + Date.now();
       var productName = 'Mini RF Remote Controller for Single Color LED Strip Lights';
       var orderData = {
@@ -371,6 +374,7 @@
         items: [{ id:'led-strip-rf-controller', name:productName, price:PRODUCT_PRICE, qty:1 }],
         total: orderTotal,
         productTotal: PRODUCT_PRICE,
+        shippingCharge: SHIPPING_CHARGE,
         isCOD: isCOD,
         codAdvance: isCOD ? COD_ADVANCE : 0,
         codCharge: isCOD ? COD_CHARGE : 0

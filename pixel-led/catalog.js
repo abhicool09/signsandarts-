@@ -1,4 +1,4 @@
-var pixelPayMode='online',pixelOrder=null,COD_CHARGE=50;
+var pixelPayMode='online',pixelOrder=null,COD_CHARGE=50,LOW_PRICE_SHIPPING=125;
 function formatPixelPrice(value){return Number(value).toLocaleString('en-IN')}
 function getPixelProduct(id){return (window.PIXEL_PRODUCTS||[]).find(function(item){return item.id===id})}
 function initPixelCatalog(){
@@ -37,25 +37,30 @@ function closePixelCheckout(){
 }
 function pixelTotals(){
   var subtotal=pixelOrder.product.price*pixelOrder.qty;
-  var codTotal=subtotal+COD_CHARGE;
+  var shipping=pixelOrder.product.price<500?LOW_PRICE_SHIPPING:0;
+  var onlineTotal=subtotal+shipping;
+  var codTotal=onlineTotal+COD_CHARGE;
   var advance=Math.min(200,codTotal);
-  return {subtotal:subtotal,codTotal:codTotal,advance:advance,remaining:Math.max(codTotal-advance,0)};
+  return {subtotal:subtotal,shipping:shipping,onlineTotal:onlineTotal,codTotal:codTotal,advance:advance,remaining:Math.max(codTotal-advance,0)};
 }
 function renderPixelSummary(){
   if(!pixelOrder)return;
   var totals=pixelTotals(),summary=document.getElementById('orderSummary');
   var rows='<div class="summary-row"><span>'+pixelOrder.product.name+' x'+pixelOrder.qty+'</span><span>&#8377;'+formatPixelPrice(totals.subtotal)+'</span></div>';
+  if(totals.shipping){
+    rows+='<div class="summary-row"><span>Shipping charge</span><span>&#8377;'+formatPixelPrice(totals.shipping)+'</span></div>';
+  }
   if(pixelPayMode==='cod'){
     rows+='<div class="summary-row"><span>COD handling charge</span><span>&#8377;'+COD_CHARGE+'</span></div>';
     rows+='<div class="summary-row"><span>Advance payable now</span><span>&#8377;'+formatPixelPrice(totals.advance)+'</span></div>';
     rows+='<div class="summary-row"><span>Balance on delivery</span><span>&#8377;'+formatPixelPrice(totals.remaining)+'</span></div>';
     rows+='<div class="summary-row total"><span>Total order value</span><span>&#8377;'+formatPixelPrice(totals.codTotal)+'</span></div>';
   }else{
-    rows+='<div class="summary-row total"><span>Total payable</span><span>&#8377;'+formatPixelPrice(totals.subtotal)+'</span></div>';
+    rows+='<div class="summary-row total"><span>Total payable</span><span>&#8377;'+formatPixelPrice(totals.onlineTotal)+'</span></div>';
   }
   summary.innerHTML=rows;
   document.getElementById('codAdvanceText').innerHTML='&#8377;'+formatPixelPrice(totals.advance)+' advance';
-  document.getElementById('payBtn').innerHTML=pixelPayMode==='cod'?'Pay &#8377;'+formatPixelPrice(totals.advance)+' Advance & Place COD Order':'Pay &#8377;'+formatPixelPrice(totals.subtotal)+' Securely';
+  document.getElementById('payBtn').innerHTML=pixelPayMode==='cod'?'Pay &#8377;'+formatPixelPrice(totals.advance)+' Advance & Place COD Order':'Pay &#8377;'+formatPixelPrice(totals.onlineTotal)+' Securely';
 }
 function setPixelPayMode(mode){
   pixelPayMode=mode;
@@ -74,10 +79,10 @@ async function placePixelOrder(){
   if(!/^\S+@\S+\.\S+$/.test(data.email)){alert('Enter a valid email address.');return}
   if(!/^\d{6}$/.test(data.pincode)){alert('Enter a valid 6-digit PIN code.');return}
   var totals=pixelTotals(),isCOD=pixelPayMode==='cod';
-  var payAmount=isCOD?totals.advance:totals.subtotal;
-  var orderTotal=isCOD?totals.codTotal:totals.subtotal;
+  var payAmount=isCOD?totals.advance:totals.onlineTotal;
+  var orderTotal=isCOD?totals.codTotal:totals.onlineTotal;
   var orderId='SA-PX-'+Date.now();
-  var orderData={name:data.name,phone:data.phone,email:data.email,address:data.address,city:data.city,state:data.state,pincode:data.pincode,items:[{id:pixelOrder.product.id,name:pixelOrder.product.name,price:pixelOrder.product.price,qty:pixelOrder.qty}],total:orderTotal,productTotal:totals.subtotal,isCOD:isCOD,codAdvance:isCOD?totals.advance:0,codCharge:isCOD?COD_CHARGE:0};
+  var orderData={name:data.name,phone:data.phone,email:data.email,address:data.address,city:data.city,state:data.state,pincode:data.pincode,items:[{id:pixelOrder.product.id,name:pixelOrder.product.name,price:pixelOrder.product.price,qty:pixelOrder.qty}],total:orderTotal,productTotal:totals.subtotal,shippingCharge:totals.shipping,isCOD:isCOD,codAdvance:isCOD?totals.advance:0,codCharge:isCOD?COD_CHARGE:0};
   var button=document.getElementById('payBtn');button.disabled=true;button.textContent='Creating order...';
   try{
     var response=await fetch('/api/create-order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({amount:payAmount,orderId:orderId,customerName:data.name,customerEmail:data.email,customerPhone:data.phone,isCOD:isCOD})});

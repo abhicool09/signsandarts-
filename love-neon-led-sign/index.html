@@ -370,8 +370,7 @@
 <div class="modal-bg" id="checkoutModal">
   <div class="modal-box">
     <h3>Complete Your Order</h3>
-    <div class="os-item"><span>Love Neon LED Sign — Pink x1</span><span>&#8377;400</span></div>
-    <div class="os-total"><span>Total Payable</span><span>&#8377;400</span></div>
+    <div id="orderSummary"></div>
     <hr style="margin:.8rem 0;border-color:#eee;">
     <div class="form-group"><label>Full Name *</label><input type="text" id="custName" placeholder="Your full name"></div>
     <div class="form-group"><label>Phone Number *</label><input type="tel" id="custPhone" placeholder="10-digit mobile number"></div>
@@ -417,6 +416,20 @@
 
   var payMode = 'online';
   var COD_CHARGE = 50;
+  var PRODUCT_PRICE = 400;
+  var SHIPPING_CHARGE = PRODUCT_PRICE < 500 ? 125 : 0;
+
+  function updateOrderSummary() {
+    var total = PRODUCT_PRICE + SHIPPING_CHARGE;
+    var codTotal = total + COD_CHARGE;
+    var remaining = codTotal - 200;
+    document.getElementById('orderSummary').innerHTML =
+      '<div class="os-item"><span>Love Neon LED Sign — Pink x1</span><span>&#8377;' + PRODUCT_PRICE + '</span></div>' +
+      '<div class="os-item"><span>Shipping Charge</span><span>&#8377;' + SHIPPING_CHARGE + '</span></div>' +
+      (payMode === 'cod'
+        ? '<div class="os-item"><span>COD Handling Charge</span><span>&#8377;' + COD_CHARGE + '</span></div><div class="os-item"><span>Remaining on delivery</span><span>&#8377;' + remaining + '</span></div><div class="os-total"><span>Total Order Value</span><span>&#8377;' + codTotal + '</span></div>'
+        : '<div class="os-total"><span>Total Payable</span><span>&#8377;' + total + '</span></div>');
+  }
 
   function setPayMode(mode) {
     payMode = mode;
@@ -426,7 +439,8 @@
     var btn = document.getElementById('payBtn');
     btn.innerHTML = mode === 'cod'
       ? '&#128666; Pay &#8377;200 Advance &amp; Place COD Order'
-      : '&#128274; Pay &#8377;400 Securely';
+      : '&#128274; Pay &#8377;' + (PRODUCT_PRICE + SHIPPING_CHARGE) + ' Securely';
+    updateOrderSummary();
     btn.style.background = mode === 'cod' ? '#e67e22' : '';
   }
 
@@ -453,10 +467,10 @@
     if (!/^\d{10}$/.test(phone)) { alert('Enter a valid 10-digit phone number.'); return; }
     if (!/^\d{6}$/.test(pin)) { alert('Enter a valid 6-digit PIN code.'); return; }
     var isCOD = payMode === 'cod';
-    var payAmount = isCOD ? 200 : 400;
-    var orderTotal = isCOD ? 400 + COD_CHARGE : 400;
+    var payAmount = isCOD ? 200 : PRODUCT_PRICE + SHIPPING_CHARGE;
+    var orderTotal = isCOD ? PRODUCT_PRICE + SHIPPING_CHARGE + COD_CHARGE : PRODUCT_PRICE + SHIPPING_CHARGE;
     var orderId = 'SA-' + Date.now();
-    var orderData = { name: name, phone: phone, email: email, address: addr, city: city, state: state, pincode: pin, items: [{ id: 'love-neon-pink', name: 'Love Neon LED Sign — Pink', price: 400, qty: 1 }], total: orderTotal, productTotal: 400, isCOD: isCOD, codAdvance: isCOD ? 200 : 0, codCharge: isCOD ? COD_CHARGE : 0 };
+    var orderData = { name: name, phone: phone, email: email, address: addr, city: city, state: state, pincode: pin, items: [{ id: 'love-neon-pink', name: 'Love Neon LED Sign — Pink', price: 400, qty: 1 }], total: orderTotal, productTotal: PRODUCT_PRICE, shippingCharge: SHIPPING_CHARGE, isCOD: isCOD, codAdvance: isCOD ? 200 : 0, codCharge: isCOD ? COD_CHARGE : 0 };
     try {
       var res = await fetch('/api/create-order', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ amount: payAmount, orderId: orderId, customerName: name, customerEmail: email, customerPhone: phone, isCOD: isCOD }) });
       var data = await res.json();
