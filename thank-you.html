@@ -246,7 +246,7 @@
   document.getElementById('waLink').href = 'https://wa.me/919392878946?text=Hi%2C%20I%20just%20placed%20a%20' + (isCOD ? 'COD%20' : '') + 'order%20on%20signsandarts.in.%20Order%20ID%3A%20' + encodeURIComponent(orderId);
 
   (function trackPurchaseConversion() {
-    if (!orderId || orderId === 'â€”' || !amount || typeof gtag !== 'function') return;
+    if (!orderId || orderId === '-' || !amount || typeof gtag !== 'function') return;
     var totalValue = Number(amount);
     if (!Number.isFinite(totalValue) || totalValue <= 0) return;
 
