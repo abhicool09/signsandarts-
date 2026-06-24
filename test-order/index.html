@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Test Order ₹5 | Signs and Arts (internal)</title>
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <style>
+    body{margin:0;font-family:'DM Sans',sans-serif;background:#fafafa;color:#171717;line-height:1.5}
+    .wrap{max-width:460px;margin:30px auto;padding:0 18px}
+    h1{font-family:'Playfair Display',serif;font-size:1.6rem;margin:0 0 4px}
+    .note{background:#fff3cd;border:1px solid #ffe08a;color:#7a5c00;padding:10px 12px;border-radius:8px;font-size:.85rem;margin:12px 0}
+    .card{background:#fff;border:1px solid #e5e5e5;border-radius:10px;padding:18px}
+    label{display:block;font-weight:600;font-size:.85rem;margin:10px 0 4px}
+    input{width:100%;box-sizing:border-box;padding:.6rem .75rem;border:1.5px solid #ccc;border-radius:6px;font-size:.95rem;font-family:inherit}
+    button{width:100%;background:#1e8a44;color:#fff;border:none;padding:.85rem;border-radius:6px;font-size:1.05rem;font-weight:700;cursor:pointer;margin-top:16px}
+    button:disabled{opacity:.6}
+    .row{display:flex;gap:10px}.row>div{flex:1}
+    .err{color:#c0392b;font-size:.85rem;margin-top:8px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Test Order — ₹5</h1>
+    <div class="note">⚠️ Internal test page. This places a <strong>real ₹5 order</strong> through Cashfree to verify checkout → order-save → tracking. Delete this page after testing.</div>
+    <div class="card">
+      <label>Full Name</label><input id="fname" value="Test Customer">
+      <label>Phone (10-digit — you'll use this to track)</label><input id="fphone" inputmode="numeric" placeholder="10-digit mobile">
+      <label>Email</label><input id="femail" value="test@signsandarts.in">
+      <label>Address</label><input id="faddress" value="Test address, near market">
+      <div class="row">
+        <div><label>City</label><input id="fcity" value="Hyderabad"></div>
+        <div><label>State</label><input id="fstate" value="Telangana"></div>
+      </div>
+      <label>Pincode</label><input id="fpincode" value="500060">
+      <button id="payBtn" onclick="pay()">Pay ₹5 (Test)</button>
+      <div id="err" class="err"></div>
+    </div>
+  </div>
+
+  <script>
+    function val(id){ return document.getElementById(id).value.trim(); }
+    async function pay(){
+      var err = document.getElementById('err'); err.textContent = '';
+      if(!/^\d{10}$/.test(val('fphone'))){ err.textContent='Enter a valid 10-digit phone.'; return; }
+      if(!/^\d{6}$/.test(val('fpincode'))){ err.textContent='Enter a valid 6-digit pincode.'; return; }
+      var btn = document.getElementById('payBtn'); btn.disabled=true; btn.textContent='Creating order...';
+      var orderId = 'TEST-' + Date.now();
+      var orderData = {
+        name: val('fname'), phone: val('fphone'), email: val('femail'),
+        address: val('faddress'), city: val('fcity'), state: val('fstate'), pincode: val('fpincode'),
+        items: [{ id:'test5', name:'TEST PRODUCT (5 rupee)', price:5, qty:1 }],
+        total: 5, productTotal: 5, isCOD:false, codAdvance:0, codCharge:0
+      };
+      try {
+        var res = await fetch('/api/create-order', { method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ amount:5, orderId:orderId, customerName:orderData.name, customerEmail:orderData.email, customerPhone:orderData.phone, isCOD:false }) });
+        var cf = await res.json();
+        if(!cf.payment_session_id){ throw new Error(cf.error || 'Failed to create order'); }
+        var s = document.createElement('script'); s.src='https://sdk.cashfree.com/js/v3/cashfree.js';
+        s.onload = async function(){
+          var cashfree = await window.Cashfree({ mode:'production' });
+          cashfree.checkout({ paymentSessionId: cf.payment_session_id, redirectTarget:'_modal' }).then(async function(result){
+            if(result.error){ btn.disabled=false; btn.textContent='Pay ₹5 (Test)'; err.textContent='Payment cancelled/failed.'; return; }
+            if(result.paymentDetails){
+              var vr = await fetch('/api/verify-payment', { method:'POST', headers:{'Content-Type':'application/json'},
+                body: JSON.stringify({ orderId:orderId, orderData:orderData }) });
+              var vd = await vr.json();
+              if(vd.success){ window.location.href = '/thank-you.html?order_id=' + encodeURIComponent(orderId) + '&amount=5'; }
+              else { err.textContent = 'Payment received. Order ID: ' + orderId + ' (verify: ' + (vd.error||'check logs') + ')'; btn.disabled=false; btn.textContent='Pay ₹5 (Test)'; }
+            }
+          });
+        };
+        document.head.appendChild(s);
+      } catch(e){ btn.disabled=false; btn.textContent='Pay ₹5 (Test)'; err.textContent = e.message; }
+    }
+  </script>
+</body>
+</html>
