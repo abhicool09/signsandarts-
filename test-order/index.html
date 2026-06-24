@@ -55,7 +55,7 @@
         total: 5, productTotal: 5, isCOD:false, codAdvance:0, codCharge:0
       };
       try {
-        var res = await fetch('/api/create-order', { method:'POST', headers:{'Content-Type':'application/json'},
+        var res = await fetch('https://signsandarts.in/api/create-order', { method:'POST', headers:{'Content-Type':'application/json'},
           body: JSON.stringify({ amount:5, orderId:orderId, customerName:orderData.name, customerEmail:orderData.email, customerPhone:orderData.phone, isCOD:false }) });
         var cf = await res.json();
         if(!cf.payment_session_id){ throw new Error(cf.error || 'Failed to create order'); }
@@ -65,10 +65,10 @@
           cashfree.checkout({ paymentSessionId: cf.payment_session_id, redirectTarget:'_modal' }).then(async function(result){
             if(result.error){ btn.disabled=false; btn.textContent='Pay ₹5 (Test)'; err.textContent='Payment cancelled/failed.'; return; }
             if(result.paymentDetails){
-              var vr = await fetch('/api/verify-payment', { method:'POST', headers:{'Content-Type':'application/json'},
+              var vr = await fetch('https://signsandarts.in/api/verify-payment', { method:'POST', headers:{'Content-Type':'application/json'},
                 body: JSON.stringify({ orderId:orderId, orderData:orderData }) });
               var vd = await vr.json();
-              if(vd.success){ window.location.href = '/thank-you.html?order_id=' + encodeURIComponent(orderId) + '&amount=5'; }
+              if(vd.success){ window.location.href = 'https://signsandarts.in/thank-you.html?order_id=' + encodeURIComponent(orderId) + '&amount=5'; }
               else { err.textContent = 'Payment received. Order ID: ' + orderId + ' (verify: ' + (vd.error||'check logs') + ')'; btn.disabled=false; btn.textContent='Pay ₹5 (Test)'; }
             }
           });
