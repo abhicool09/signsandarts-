@@ -34,6 +34,43 @@ async function getShiprocketToken() {
   return data.token;
 }
 
+// Save/update the order in Supabase. Never throws — order tracking must not break checkout.
+async function saveOrderToSupabase(orderId, orderData, isCOD) {
+  const url = process.env.SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_KEY;
+  if (!url || !key) return; // not configured yet — skip silently
+  try {
+    const row = {
+      order_id: orderId,
+      name: String(orderData.name || '').trim(),
+      phone: String(orderData.phone || '').trim(),
+      email: String(orderData.email || '').trim(),
+      address: String(orderData.address || '').trim(),
+      city: String(orderData.city || '').trim(),
+      state: String(orderData.state || '').trim(),
+      pincode: String(orderData.pincode || '').trim(),
+      items: orderData.items || [],
+      total: Number(orderData.total || 0),
+      payment_mode: isCOD ? 'COD' : 'Online',
+      cod_advance: isCOD ? Number(orderData.codAdvance || 200) : 0,
+      status: 'Confirmed',
+      updated_at: new Date().toISOString(),
+    };
+    await fetch(`${url}/rest/v1/orders`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        apikey: key,
+        Authorization: `Bearer ${key}`,
+        Prefer: 'resolution=merge-duplicates',
+      },
+      body: JSON.stringify(row),
+    });
+  } catch (e) {
+    console.error('Supabase saveOrder failed:', e.message);
+  }
+}
+
 function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || '').trim());
 }
@@ -92,6 +129,9 @@ module.exports = async (req, res) => {
     if (!successPayment) {
       return res.status(400).json({ error: 'Payment not successful' });
     }
+
+    // ── 1b. Save order to Supabase (for customer order tracking) ─────────────
+    await saveOrderToSupabase(orderId, orderData, isCOD);
 
     // ── 2. Create Shiprocket Order ──────────────────────────────────────────
     let srToken;

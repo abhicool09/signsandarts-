@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, follow">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <title>Track Your Order | Signs and Arts</title>
+  <meta name="description" content="Track your Signs and Arts LED sign board order. Enter your Order ID and phone number to see live order status and delivery tracking.">
+  <link rel="canonical" href="https://signsandarts.in/track/">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <style>
+    body{margin:0;font-family:'DM Sans',sans-serif;color:#171717;background:#fafafa;line-height:1.6}
+    header,main{max-width:680px;margin:auto;padding:24px 18px}
+    header{border-bottom:1px solid #e5e5e5;background:#fff}
+    a{color:#0b6b2a}.logo{text-decoration:none;color:#111;display:inline-block}
+    .ln{font-family:'Playfair Display',serif;font-size:1.45rem;font-weight:700;letter-spacing:-.5px;line-height:1}.ln span{color:#c9a84c}
+    .ls{font-size:.55rem;letter-spacing:2px;text-transform:uppercase;color:#777;margin-top:3px}
+    h1{font-family:'Playfair Display',serif;font-size:1.9rem;margin:18px 0 6px}
+    .sub{color:#777;margin:0 0 20px}
+    .card{background:#fff;border:1px solid #e5e5e5;border-radius:10px;padding:20px;margin-bottom:18px}
+    label{display:block;font-weight:600;font-size:.9rem;margin:10px 0 5px}
+    input{width:100%;box-sizing:border-box;padding:.7rem .85rem;border:1.5px solid #ccc;border-radius:6px;font-size:1rem;font-family:inherit}
+    button{width:100%;background:#111;color:#fff;border:none;padding:.85rem;border-radius:6px;font-size:1rem;font-weight:700;cursor:pointer;margin-top:16px}
+    button:disabled{opacity:.6;cursor:default}
+    .msg{padding:12px 14px;border-radius:6px;margin-top:14px;font-size:.92rem}
+    .msg.err{background:#fcebeb;color:#a32d2d}
+    .row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f0f0f0;font-size:.92rem}
+    .row span:first-child{color:#777}
+    .steps{display:flex;margin:18px 0 6px}
+    .step{flex:1;text-align:center;position:relative;font-size:.78rem;color:#999}
+    .step .dot{width:26px;height:26px;border-radius:50%;background:#e5e5e5;color:#fff;display:flex;align-items:center;justify-content:center;margin:0 auto 6px;font-size:.9rem}
+    .step.done .dot{background:#1e8a44}.step.done{color:#1e8a44;font-weight:600}
+    .step::before{content:'';position:absolute;top:13px;left:-50%;width:100%;height:3px;background:#e5e5e5;z-index:-1}
+    .step:first-child::before{display:none}
+    .step.done::before{background:#1e8a44}
+    .cancel{background:#fcebeb;color:#a32d2d;text-align:center;padding:14px;border-radius:8px;font-weight:700}
+    .wa{display:inline-block;background:#25D366;color:#fff;text-decoration:none;font-weight:700;padding:.7rem 1rem;border-radius:6px;margin-top:12px;text-align:center;width:100%;box-sizing:border-box}
+    .track-link{display:inline-block;margin-top:10px;font-weight:700}
+  </style>
+</head>
+<body>
+  <header>
+    <a class="logo" href="/"><div class="ln">Signs <span>&amp;</span> Arts</div><div class="ls">LED Sign Boards - India</div></a>
+  </header>
+  <main>
+    <h1>Track Your Order</h1>
+    <p class="sub">Enter your Order ID and the phone number you used at checkout.</p>
+
+    <div class="card">
+      <form id="f">
+        <label for="oid">Order ID</label>
+        <input id="oid" placeholder="e.g. SA-1782300951688" required>
+        <label for="ph">Phone Number</label>
+        <input id="ph" inputmode="numeric" placeholder="10-digit mobile number" required>
+        <button id="btn" type="submit">Check Status</button>
+      </form>
+      <div id="out"></div>
+    </div>
+
+    <p class="sub" style="text-align:center;font-size:.88rem">Can't find your order? <a href="https://wa.me/919392878946">Message us on WhatsApp</a> with your Order ID.</p>
+  </main>
+
+  <script>
+    var STEPS = ['Confirmed', 'Dispatched', 'Delivered'];
+    var f = document.getElementById('f'), out = document.getElementById('out'), btn = document.getElementById('btn');
+    f.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var orderId = document.getElementById('oid').value.trim();
+      var phone = document.getElementById('ph').value.trim();
+      if (!orderId || !phone) return;
+      btn.disabled = true; btn.textContent = 'Checking...'; out.innerHTML = '';
+      fetch('/api/order-status', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderId: orderId, phone: phone })
+      }).then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
+        .then(function (res) {
+          btn.disabled = false; btn.textContent = 'Check Status';
+          if (!res.ok) { out.innerHTML = '<div class="msg err">' + (res.d.error || 'Order not found.') + '</div>'; return; }
+          render(res.d);
+        }).catch(function () {
+          btn.disabled = false; btn.textContent = 'Check Status';
+          out.innerHTML = '<div class="msg err">Something went wrong. Please try again.</div>';
+        });
+    });
+
+    function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+    function render(o) {
+      var html = '';
+      if ((o.status || '').toLowerCase() === 'cancelled') {
+        html += '<div class="cancel">This order was cancelled. Please contact us on WhatsApp for help.</div>';
+      } else {
+        var idx = STEPS.map(function (s) { return s.toLowerCase(); }).indexOf((o.status || 'Confirmed').toLowerCase());
+        if (idx < 0) idx = 0;
+        html += '<div class="steps">';
+        for (var i = 0; i < STEPS.length; i++) {
+          html += '<div class="step' + (i <= idx ? ' done' : '') + '"><div class="dot">' + (i <= idx ? '✓' : (i + 1)) + '</div>' + STEPS[i] + '</div>';
+        }
+        html += '</div>';
+      }
+      html += '<div style="margin-top:16px">';
+      html += '<div class="row"><span>Order ID</span><span>' + esc(o.order_id) + '</span></div>';
+      html += '<div class="row"><span>Status</span><span><strong>' + esc(o.status) + '</strong></span></div>';
+      if (o.payment_mode) html += '<div class="row"><span>Payment</span><span>' + esc(o.payment_mode) + '</span></div>';
+      if (o.total) html += '<div class="row"><span>Order total</span><span>₹' + esc(o.total) + '</span></div>';
+      if (o.items && o.items.length) {
+        var names = o.items.map(function (it) { return esc(it.name) + (it.qty > 1 ? ' x' + it.qty : ''); }).join(', ');
+        html += '<div class="row"><span>Items</span><span style="text-align:right;max-width:60%">' + names + '</span></div>';
+      }
+      if (o.courier) html += '<div class="row"><span>Courier</span><span>' + esc(o.courier) + '</span></div>';
+      if (o.tracking_number) html += '<div class="row"><span>Tracking No.</span><span>' + esc(o.tracking_number) + '</span></div>';
+      html += '</div>';
+      if (o.tracking_url) html += '<a class="track-link" href="' + esc(o.tracking_url) + '" target="_blank" rel="noopener">Track shipment with courier &rarr;</a>';
+      html += '<a class="wa" href="https://wa.me/919392878946?text=Order%20' + encodeURIComponent(o.order_id) + '" target="_blank">Ask about this order on WhatsApp</a>';
+      out.innerHTML = html;
+    }
+  </script>
+</body>
+</html>
