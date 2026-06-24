@@ -71,6 +71,33 @@ async function saveOrderToSupabase(orderId, orderData, isCOD) {
   }
 }
 
+// After Shiprocket creates the shipment, store its id (+ AWB if already assigned) on the order.
+async function updateOrderShiprocket(orderId, srData) {
+  const url = process.env.SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_KEY;
+  if (!url || !key || !srData) return;
+  try {
+    const patch = { shiprocket_id: String(srData.shipment_id || ''), updated_at: new Date().toISOString() };
+    if (srData.awb_code) {
+      patch.tracking_number = String(srData.awb_code);
+      patch.courier = String(srData.courier_name || '');
+      patch.tracking_url = 'https://shiprocket.co/tracking/' + srData.awb_code;
+    }
+    await fetch(`${url}/rest/v1/orders?order_id=eq.${encodeURIComponent(orderId)}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        apikey: key,
+        Authorization: `Bearer ${key}`,
+        Prefer: 'return=minimal',
+      },
+      body: JSON.stringify(patch),
+    });
+  } catch (e) {
+    console.error('updateOrderShiprocket failed:', e.message);
+  }
+}
+
 function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || '').trim());
 }
@@ -238,6 +265,9 @@ module.exports = async (req, res) => {
         note: 'Payment successful! Please create Shiprocket order manually for Order ID: ' + orderId,
       });
     }
+
+    // store Shiprocket shipment id (+ AWB if assigned) for live order tracking
+    await updateOrderShiprocket(orderId, srData);
 
     return res.status(200).json({
       success: true,
