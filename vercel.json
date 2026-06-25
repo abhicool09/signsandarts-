@@ -1,4 +1,10 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "functions": {
+    "api/create-order.js": { "maxDuration": 20 },
+    "api/verify-payment.js": { "maxDuration": 60 },
+    "api/order-status.js": { "maxDuration": 20 }
+  },
   "rewrites": [
     { "source": "/thank-you", "destination": "/thank-you.html" }
   ]

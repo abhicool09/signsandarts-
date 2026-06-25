@@ -1,5 +1,8 @@
 {
   "name": "signsandarts",
   "version": "1.0.0",
-  "description": "Signs and Arts LED Sign Boards"
+  "description": "Signs and Arts LED Sign Boards",
+  "scripts": {
+    "test:checkout-security": "node scripts/test-checkout-security.js"
+  }
 }

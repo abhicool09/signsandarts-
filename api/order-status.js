@@ -1,5 +1,6 @@
 // Customer order lookup: requires Order ID + phone (both must match) for privacy.
 // Auto-enriches with live Shiprocket tracking (AWB, courier, status) when available.
+const { enforceRateLimit } = require('./_lib/rate-limit');
 
 async function getShiprocketTracking(shipmentId) {
   const email = process.env.SHIPROCKET_EMAIL;
@@ -9,11 +10,13 @@ async function getShiprocketTracking(shipmentId) {
     const login = await fetch('https://apiv2.shiprocket.in/v1/external/auth/login', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),
+      signal: AbortSignal.timeout(8000),
     });
     const ld = await login.json();
     if (!ld.token) return null;
     const tr = await fetch(`https://apiv2.shiprocket.in/v1/external/courier/track/shipment/${shipmentId}`, {
       headers: { Authorization: `Bearer ${ld.token}` },
+      signal: AbortSignal.timeout(8000),
     });
     const td = await tr.json();
     const data = td && td.tracking_data;
@@ -47,21 +50,26 @@ async function patchOrder(url, key, orderId, fields) {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json', apikey: key, Authorization: `Bearer ${key}`, Prefer: 'return=minimal' },
       body: JSON.stringify(Object.assign({ updated_at: new Date().toISOString() }, fields)),
+      signal: AbortSignal.timeout(8000),
     });
   } catch (e) { /* best-effort cache, ignore */ }
 }
 
 module.exports = async (req, res) => {
+  res.setHeader('Cache-Control', 'no-store');
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+  if (!enforceRateLimit(req, res, 'order-status', 40, 5 * 60 * 1000)) return;
 
   const { orderId, phone } = req.body || {};
   if (!orderId || !phone) {
     return res.status(400).json({ error: 'Order ID and phone number are required' });
   }
+  const lookupKey = `${String(orderId).trim()}:${String(phone).replace(/\D/g, '').slice(-10)}`;
+  if (!enforceRateLimit(req, res, 'order-status-lookup', 10, 5 * 60 * 1000, lookupKey)) return;
 
   const url = process.env.SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_KEY;
@@ -74,7 +82,10 @@ module.exports = async (req, res) => {
   try {
     const r = await fetch(
       `${url}/rest/v1/orders?order_id=eq.${encodeURIComponent(String(orderId).trim())}&select=*`,
-      { headers: { apikey: key, Authorization: `Bearer ${key}` } }
+      {
+        headers: { apikey: key, Authorization: `Bearer ${key}` },
+        signal: AbortSignal.timeout(8000),
+      }
     );
     const rows = await r.json();
     const order = Array.isArray(rows)
@@ -85,7 +96,12 @@ module.exports = async (req, res) => {
       return res.status(404).json({ error: 'No order found for that Order ID and phone number.' });
     }
 
+    if (order.status === 'Payment Pending') {
+      return res.status(404).json({ error: 'Payment has not been completed for this order.' });
+    }
+
     let status = order.status || 'Confirmed';
+    if (['Processing', 'Fulfilling'].includes(status)) status = 'Confirmed';
     let courier = order.courier || '';
     let tracking_number = order.tracking_number || '';
     let tracking_url = order.tracking_url || '';

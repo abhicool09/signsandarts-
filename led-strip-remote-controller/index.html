@@ -385,7 +385,7 @@
       var isCOD = payMode === 'cod';
       var payAmount = isCOD ? COD_ADVANCE : PRODUCT_PRICE + SHIPPING_CHARGE;
       var orderTotal = isCOD ? PRODUCT_PRICE + SHIPPING_CHARGE + COD_CHARGE : PRODUCT_PRICE + SHIPPING_CHARGE;
-      var orderId = 'SA-' + Date.now();
+      var orderId = '';
       var productName = 'Mini RF Remote Controller for Single Color LED Strip Lights';
       var orderData = {
         name: name,
@@ -411,16 +411,11 @@
         var response = await fetch('/api/create-order', {
           method:'POST',
           headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({
-            amount:payAmount,
-            orderId:orderId,
-            customerName:name,
-            customerEmail:email,
-            customerPhone:phone,
-            isCOD:isCOD
-          })
+          body: JSON.stringify({ orderData: orderData })
         });
         var paymentOrder = await response.json();
+      orderId = paymentOrder.order_id;
+      Object.assign(orderData, paymentOrder.order_data || {});
         if (!paymentOrder.payment_session_id) throw new Error(paymentOrder.error || 'Could not create order');
 
         var cashfree = Cashfree({mode:'production'});
@@ -437,7 +432,7 @@
           var verifyResponse = await fetch('/api/verify-payment', {
             method:'POST',
             headers:{'Content-Type':'application/json'},
-            body:JSON.stringify({orderId:orderId, orderData:orderData})
+            body: JSON.stringify({ orderId: orderId })
           });
           var verification = await verifyResponse.json();
           if (verification.success) {

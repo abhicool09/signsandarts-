@@ -13,13 +13,13 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Do I need an electrician to install this board?","acceptedAnswer":{"@type":"Answer","text":"No! This is a plug & play LED sign board. Just connect the power cable to any standard 230V Indian socket and your sign glows instantly. No electrician, no wiring, no tools needed."}},{"@type":"Question","name":"Is this board suitable for outdoor use?","acceptedAnswer":{"@type":"Answer","text":"Yes! The iron frame construction makes it weatherproof and rainproof. It is designed for outdoor Indian conditions — heavy rain, dust, and heat. However, we recommend installing it in a partially sheltered area (under a roof overhang) for maximum longevity."}},{"@type":"Question","name":"What is the difference between 18\"×18\" and 24\"×24\"?","acceptedAnswer":{"@type":"Answer","text":"The 18\"×18\" (1.5 feet) is practical for small to medium shops with limited wall space. The 24\"×24\" (2 feet) is larger and more visible from greater distances — ideal for shops on busy roads or large shop fronts. Both have the same features."}},{"@type":"Question","name":"How bright is this LED sign? Can it be seen in daylight?","acceptedAnswer":{"@type":"Answer","text":"Yes! We use 9mm pixel LEDs which are ultra-bright and clearly visible even in direct sunlight. The blinking flasher effect further increases visibility during the day. The board is visible from 100+ feet in most conditions."}},{"@type":"Question","name":"How long will this board last?","acceptedAnswer":{"@type":"Answer","text":"The pixel LEDs have a rated lifespan of 30,000+ hours. If run 12 hours per day, that is over 6 years of operation. The iron frame is durable for outdoor conditions. With normal usage, many customers use the boards for multiple years with normal care."}},{"@type":"Question","name":"Do you deliver to my city?","acceptedAnswer":{"@type":"Answer","text":"Yes! We deliver pan India — to every PIN code across all states and union territories. From metros to small towns. Delivery takes 2–5 working days depending on your location. You will receive a tracking link via SMS once dispatched."}},{"@type":"Question","name":"Will I get a GST invoice?","acceptedAnswer":{"@type":"Answer","text":"Yes! A proper GST invoice is sent with every order. You can use it to claim input tax credit for your business. The invoice is also emailed to you after purchase."}},{"@type":"Question","name":"Can I get this board with my shop name?","acceptedAnswer":{"@type":"Answer","text":"This product shows \"MEDICAL\" text. If you want your specific shop name on the board, please check our Custom LED Sign Board option or WhatsApp us at +91 93928 78946 for a custom order quote."}}]}</script>
   <meta property="og:type" content="product">
   <meta property="og:site_name" content="Signs and Arts">
-  <meta property="og:title" content="Medical Plus LED Sign Board — Green, Double Sided 18"×18" | Signs and Arts">
+  <meta property="og:title" content="Medical Plus LED Sign Board — Green, Double Sided 18&quot;×18&quot; | Signs and Arts">
   <meta property="og:description" content="Buy Medical Plus LED Sign Board — Green, Double Sided 18x18 inch. Ultra bright pixel LED cross sign for medical stores & pharmacies. Iron frame, weatherproof, plug & play. Pan India delivery.">
   <meta property="og:url" content="https://signsandarts.in/medical-plus-led-sign-board">
   <meta property="og:image" content="https://signsandarts.in/medical-plus-led-sign-board/main.webp">
   <meta property="og:locale" content="en_IN">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Medical Plus LED Sign Board — Green, Double Sided 18"×18" | Signs and Arts">
+  <meta name="twitter:title" content="Medical Plus LED Sign Board — Green, Double Sided 18&quot;×18&quot; | Signs and Arts">
   <meta name="twitter:description" content="Buy Medical Plus LED Sign Board — Green, Double Sided 18x18 inch. Ultra bright pixel LED cross sign for medical stores & pharmacies. Iron frame, weatherproof, plug & play. Pan India delivery.">
   <meta name="twitter:image" content="https://signsandarts.in/medical-plus-led-sign-board/main.webp">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Product","name":"Medical Plus LED Sign Board Green 18x18 inch","description":"Green double sided pixel LED medical plus sign board for medical stores and pharmacies. Weatherproof, plug and play, pan India delivery.","brand":{"@type":"Brand","name":"Signs and Arts"},"offers":{"@type":"Offer","price":"2689","priceCurrency":"INR","availability":"https://schema.org/InStock"},"image":"https://signsandarts.in/medical-plus-led-sign-board/main.webp"}</script>
@@ -879,7 +879,7 @@
     var isCOD = payMode === 'cod';
     var codAdvance = isCOD ? getCodAdvance() : 0;
     var payAmount = isCOD ? codAdvance : currentVariant.price;
-    var orderId = 'SA-' + Date.now();
+    var orderId = '';
     var orderData = {
       name: document.getElementById('fname').value.trim(),
       phone: document.getElementById('fphone').value.trim(),
@@ -898,9 +898,11 @@
     try {
       var res = await fetch('/api/create-order', {
         method:'POST', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ amount: payAmount, orderId: orderId, customerName: orderData.name, customerEmail: orderData.email, customerPhone: orderData.phone, isCOD: isCOD }),
+        body: JSON.stringify({ orderData: orderData }),
       });
       var cfOrder = await res.json();
+      orderId = cfOrder.order_id;
+      Object.assign(orderData, cfOrder.order_data || {});
       if (!cfOrder.payment_session_id) throw new Error(cfOrder.error || 'Failed to create order');
       btn.disabled = false; btn.innerHTML = getPaymentButtonText();
       var script = document.createElement('script');
@@ -912,7 +914,7 @@
           if (result.paymentDetails) {
             var verifyRes = await fetch('/api/verify-payment', {
               method:'POST', headers:{'Content-Type':'application/json'},
-              body: JSON.stringify({ orderId: orderId, orderData: orderData }),
+              body: JSON.stringify({ orderId: orderId }),
             });
             var verifyData = await verifyRes.json();
             if (verifyData.success) {

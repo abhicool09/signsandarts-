@@ -623,12 +623,12 @@
           <div class="related-price">&#8377;2,689</div>
         </div>
       </a>
-      <a href="/" class="related-card">
-        <div class="related-img">&#128247; Add Photo</div>
+      <a href="/xerox-store-led-sign-board/" class="related-card">
+        <div class="related-img"><img src="/xerox-store-led-sign-board/main.webp" alt="Xerox Store LED Sign Board" style="width:100%;height:100%;object-fit:contain;padding:8px;"></div>
         <div class="related-body">
           <div class="related-cat">Xerox</div>
           <div class="related-name">Xerox Shop LED Sign Board — Double Sided</div>
-          <div class="related-price">&#8377;2,427</div>
+          <div class="related-price">&#8377;2,178</div>
         </div>
       </a>
     </div>
@@ -688,7 +688,7 @@
       <div class="form-group"><label>Pincode *</label><input type="text" id="fpincode" placeholder="6-digit pincode" maxlength="6"></div>
       <button class="btn-pay" id="payBtn" onclick="initiatePayment()">&#128274; Pay Securely with Cashfree</button>
       <button class="btn-cod" id="codBtn" onclick="initiatePayment('cod')">&#128666; COD: Pay &#8377;200 Advance</button>
-      <p class="secure-note">&#128274; 100% Secure &middot; UPI / Cards / Net Banking &middot; COD orders pay only &#8377;200 advance</p>
+      <p class="secure-note">&#128274; 100% Secure &middot; UPI / Cards / Net Banking &middot; COD orders pay &#8377;200 advance plus a &#8377;50 handling charge in the order total</p>
     </div>
   </div>
 </div>
@@ -827,7 +827,7 @@
     if (codBtn) codBtn.disabled = true;
     activeBtn.textContent = 'Creating order...';
     var payAmount = isCOD ? 200 : currentVariant.price;
-    var orderId = 'SA-' + Date.now();
+    var orderId = '';
     var orderData = {
       name: document.getElementById('fname').value.trim(),
       phone: document.getElementById('fphone').value.trim(),
@@ -837,17 +837,19 @@
       state: document.getElementById('fstate').value.trim(),
       pincode: document.getElementById('fpincode').value.trim(),
       items: [{ id:'medical-pharmacy-led', name:'Medical & Pharmacy LED Sign Board — Green '+currentVariant.size, price:currentVariant.price, qty:1 }],
-      total: currentVariant.price,
+      total: isCOD ? currentVariant.price + 50 : currentVariant.price,
       isCOD: isCOD,
       advancePaid: isCOD ? 200 : currentVariant.price,
-      codAmount: isCOD ? Math.max(currentVariant.price - 200, 0) : 0,
+      codAmount: isCOD ? Math.max(currentVariant.price + 50 - 200, 0) : 0,
     };
     try {
       var res = await fetch('/api/create-order', {
         method:'POST', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ amount: payAmount, orderId: orderId, customerName: orderData.name, customerEmail: orderData.email, customerPhone: orderData.phone }),
+        body: JSON.stringify({ orderData: orderData }),
       });
       var cfOrder = await res.json();
+      orderId = cfOrder.order_id;
+      Object.assign(orderData, cfOrder.order_data || {});
       if (!cfOrder.payment_session_id) throw new Error(cfOrder.error || 'Failed to create order');
       btn.disabled = false; if (codBtn) codBtn.disabled = false;
       btn.innerHTML = '&#128274; Pay Securely with Cashfree';
@@ -861,7 +863,7 @@
           if (result.paymentDetails) {
             var verifyRes = await fetch('/api/verify-payment', {
               method:'POST', headers:{'Content-Type':'application/json'},
-              body: JSON.stringify({ orderId: orderId, orderData: orderData }),
+              body: JSON.stringify({ orderId: orderId }),
             });
             var verifyData = await verifyRes.json();
             if (verifyData.success) {

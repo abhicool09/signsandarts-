@@ -81,17 +81,19 @@ async function placePixelOrder(){
   var totals=pixelTotals(),isCOD=pixelPayMode==='cod';
   var payAmount=isCOD?totals.advance:totals.onlineTotal;
   var orderTotal=isCOD?totals.codTotal:totals.onlineTotal;
-  var orderId='SA-PX-'+Date.now();
+  var orderId='';
   var orderData={name:data.name,phone:data.phone,email:data.email,address:data.address,city:data.city,state:data.state,pincode:data.pincode,items:[{id:pixelOrder.product.id,name:pixelOrder.product.name,price:pixelOrder.product.price,qty:pixelOrder.qty}],total:orderTotal,productTotal:totals.subtotal,shippingCharge:totals.shipping,isCOD:isCOD,codAdvance:isCOD?totals.advance:0,codCharge:isCOD?COD_CHARGE:0};
   var button=document.getElementById('payBtn');button.disabled=true;button.textContent='Creating order...';
   try{
-    var response=await fetch('/api/create-order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({amount:payAmount,orderId:orderId,customerName:data.name,customerEmail:data.email,customerPhone:data.phone,isCOD:isCOD})});
+    var response=await fetch('/api/create-order',{method:'POST',headers:{'Content-Type':'application/json'},body: JSON.stringify({ orderData: orderData })});
     var paymentOrder=await response.json();
+      orderId = paymentOrder.order_id;
+      Object.assign(orderData, paymentOrder.order_data || {});
     if(!paymentOrder.payment_session_id)throw new Error(paymentOrder.error||'Could not create order');
     var cashfree=Cashfree({mode:'production'});
     cashfree.checkout({paymentSessionId:paymentOrder.payment_session_id,redirectTarget:'_modal'}).then(async function(result){
       if(result.error){alert('Payment failed. Please try again or order through WhatsApp.');button.disabled=false;renderPixelSummary();return}
-      var verifyResponse=await fetch('/api/verify-payment',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({orderId:orderId,orderData:orderData})});
+      var verifyResponse=await fetch('/api/verify-payment',{method:'POST',headers:{'Content-Type':'application/json'},body: JSON.stringify({ orderId: orderId })});
       var verification=await verifyResponse.json();
       if(verification.success){window.location.href='/thank-you.html?order_id='+encodeURIComponent(orderId)+'&product='+encodeURIComponent(pixelOrder.product.name)+'&amount='+orderData.total+(isCOD?'&cod=1':'')}
       else alert('Payment received. Please WhatsApp us with Order ID: '+orderId);

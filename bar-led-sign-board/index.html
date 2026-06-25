@@ -479,16 +479,18 @@
     var isCOD = payMode==='cod';
     var payAmount = isCOD ? 200 : currentVariant.price;
     var orderTotal = isCOD ? getCodOrderTotal() : currentVariant.price;
-    var orderId='SA-'+Date.now();
+    var orderId='';
     var orderData={name:name,phone:phone,email:email,address:addr,city:city,state:state,pincode:pin,items:[{id:currentVariant.id,name:'Bar LED Sign Board - Multicolor 18x12 '+currentVariant.display,price:currentVariant.price,qty:1}],total:orderTotal,productTotal:currentVariant.price,isCOD:isCOD,codAdvance:isCOD?200:0,codCharge:isCOD?getCodCharge():0};
     try{
-      var res=await fetch('/api/create-order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({amount:payAmount,orderId:orderId,customerName:name,customerEmail:email,customerPhone:phone,isCOD:isCOD})});
+      var res=await fetch('/api/create-order',{method:'POST',headers:{'Content-Type':'application/json'},body: JSON.stringify({ orderData: orderData })});
       var data=await res.json();
+      orderId = data.order_id;
+      Object.assign(orderData, data.order_data || {});
       if(!data.payment_session_id){alert('Could not initiate payment. Please try WhatsApp order.');return;}
       var cashfree=Cashfree({mode:'production'});
       cashfree.checkout({paymentSessionId:data.payment_session_id,redirectTarget:'_modal'}).then(async function(result){
         if(result.error){alert('Payment failed: '+result.error.message);return;}
-        var verifyRes=await fetch('/api/verify-payment',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({orderId:orderId,orderData:orderData})});
+        var verifyRes=await fetch('/api/verify-payment',{method:'POST',headers:{'Content-Type':'application/json'},body: JSON.stringify({ orderId: orderId })});
         var verifyData=await verifyRes.json();
         if(verifyData.success){window.location.href='/thank-you.html?order_id='+encodeURIComponent(orderId)+'&product='+encodeURIComponent('Bar LED Sign Board - '+currentVariant.display)+'&amount='+orderData.total+(isCOD?'&cod=1':'');}
         else{alert('Payment received! WhatsApp us with Order ID: '+orderId);}

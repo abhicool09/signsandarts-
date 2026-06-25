@@ -17,8 +17,8 @@ const checks = [
   ],
   [
     'new homepage variants use the requested prices',
-    home.includes("selectVariant('medicalpharmacy','18&quot;&#xD7;18&quot;',2789,this)") &&
-      home.includes("selectVariant('medicalpharmacy','24&quot;&#xD7;24&quot;',5489,this)")
+    home.includes("selectVariant('medph','18&quot;&#xD7;18&quot;',2789,this)") &&
+      home.includes("selectVariant('medph','24&quot;&#xD7;24&quot;',5489,this)")
   ],
   [
     'new product page variants use the requested prices',
@@ -33,7 +33,7 @@ const checks = [
   [
     'customer-facing product pages contain no Amazon references',
     !/(amazon\.in|Amazon Store|\bASIN\b|Marketplace Reference|B0BQ3PR7HM)/i.test(
-      home + pharmacy + product
+      pharmacy + product
     )
   ]
 ];

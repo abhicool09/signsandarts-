@@ -493,16 +493,18 @@
     var isCOD = payMode === 'cod';
     var payAmount = isCOD ? 200 : PRODUCT_PRICE + SHIPPING_CHARGE;
     var orderTotal = isCOD ? PRODUCT_PRICE + SHIPPING_CHARGE + COD_CHARGE : PRODUCT_PRICE + SHIPPING_CHARGE;
-    var orderId = 'SA-' + Date.now();
+    var orderId = '';
     var orderData = { name: name, phone: phone, email: email, address: addr, city: city, state: state, pincode: pin, items: [{ id: 'love-neon-pink', name: 'Love Neon LED Sign — Pink', price: 400, qty: 1 }], total: orderTotal, productTotal: PRODUCT_PRICE, shippingCharge: SHIPPING_CHARGE, isCOD: isCOD, codAdvance: isCOD ? 200 : 0, codCharge: isCOD ? COD_CHARGE : 0 };
     try {
-      var res = await fetch('/api/create-order', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ amount: payAmount, orderId: orderId, customerName: name, customerEmail: email, customerPhone: phone, isCOD: isCOD }) });
+      var res = await fetch('/api/create-order', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ orderData: orderData }) });
       var data = await res.json();
+      orderId = data.order_id;
+      Object.assign(orderData, data.order_data || {});
       if (!data.payment_session_id) { alert('Could not initiate payment. Please try WhatsApp order.'); return; }
       var cashfree = Cashfree({ mode: 'production' });
       cashfree.checkout({ paymentSessionId: data.payment_session_id, redirectTarget: '_modal' }).then(async function(result) {
         if (result.error) { alert('Payment failed: ' + result.error.message); return; }
-        var verifyRes = await fetch('/api/verify-payment', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ orderId: orderId, orderData: orderData }) });
+        var verifyRes = await fetch('/api/verify-payment', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ orderId: orderId }) });
         var verifyData = await verifyRes.json();
         if (verifyData.success) {
           window.location.href = '/thank-you.html?order_id=' + encodeURIComponent(orderId) + '&product=' + encodeURIComponent('Love Neon LED Sign — Pink') + '&amount='+orderData.total+(isCOD?'&cod=1':'');

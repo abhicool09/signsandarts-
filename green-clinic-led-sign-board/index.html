@@ -13,13 +13,13 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is this board suitable for outdoor clinic signage?","acceptedAnswer":{"@type":"Answer","text":"Yes! The iron frame construction makes it weatherproof and rainproof. Built-in ventilation holes also prevent overheating during continuous use — making it suitable for regular outdoor clinic signage."}},{"@type":"Question","name":"Do I need an electrician to install?","acceptedAnswer":{"@type":"Answer","text":"No! This is completely plug & play. Just connect to any 230V socket and it glows instantly. No electrician, no wiring, no tools needed beyond a basic screwdriver for the wall mount."}},{"@type":"Question","name":"What is the difference between 18\"×18\" and 24\"×24\"?","acceptedAnswer":{"@type":"Answer","text":"The 18\"×18\" (1.5 feet) is practical for small clinics and doctor chambers. The 24\"×24\" (2 feet) is larger and more visible from greater distances — ideal for clinics on busy roads or large frontages."}},{"@type":"Question","name":"Can this board run 24 hours continuously?","acceptedAnswer":{"@type":"Answer","text":"Yes! It is specifically designed for continuous use. The energy-efficient LED technology and built-in ventilation holes keep it cool and running 24/7 without issues. LED lifespan is 30,000+ hours."}},{"@type":"Question","name":"Do you deliver pan India?","acceptedAnswer":{"@type":"Answer","text":"Yes! We deliver to every PIN code across India. Dispatch within 24 hours, delivery in 2–5 working days. Tracking link sent via SMS once dispatched."}},{"@type":"Question","name":"Will I get a GST invoice?","acceptedAnswer":{"@type":"Answer","text":"Yes! A proper GST invoice is provided with every order for input tax credit and business records."}}]}</script>
   <meta property="og:type" content="product">
   <meta property="og:site_name" content="Signs and Arts">
-  <meta property="og:title" content="Clinic LED Sign Board — Green, Double Sided 18"×18" | Signs and Arts">
+  <meta property="og:title" content="Clinic LED Sign Board — Green, Double Sided 18&quot;×18&quot; | Signs and Arts">
   <meta property="og:description" content="Buy Clinic LED Sign Board — Green, Double Sided 18x18 inch and 24x24 inch. Ultra bright green pixel LED clinic cross sign for clinics, hospitals and doctor offices. Iron frame, weatherproof, plug & play. Pan India delivery.">
   <meta property="og:url" content="https://signsandarts.in/green-clinic-led-sign-board">
   <meta property="og:image" content="https://signsandarts.in/green-clinic-led-sign-board/main.webp">
   <meta property="og:locale" content="en_IN">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Clinic LED Sign Board — Green, Double Sided 18"×18" | Signs and Arts">
+  <meta name="twitter:title" content="Clinic LED Sign Board — Green, Double Sided 18&quot;×18&quot; | Signs and Arts">
   <meta name="twitter:description" content="Buy Clinic LED Sign Board — Green, Double Sided 18x18 inch and 24x24 inch. Ultra bright green pixel LED clinic cross sign for clinics, hospitals and doctor offices. Iron frame, weatherproof, plug & play. Pan India delivery.">
   <meta name="twitter:image" content="https://signsandarts.in/green-clinic-led-sign-board/main.webp">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -685,7 +685,7 @@
     btn.textContent = 'Creating order...';
     var codAdvance = isCOD ? getCodAdvance() : 0;
     var payAmount = isCOD ? codAdvance : currentVariant.price;
-    var orderId = 'SA-' + Date.now();
+    var orderId = '';
     var orderData = {
       name: document.getElementById('fname').value.trim(),
       phone: document.getElementById('fphone').value.trim(),
@@ -706,9 +706,11 @@
     try {
       var res = await fetch('/api/create-order', {
         method:'POST', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ amount: payAmount, orderId: orderId, customerName: orderData.name, customerEmail: orderData.email, customerPhone: orderData.phone, isCOD: isCOD }),
+        body: JSON.stringify({ orderData: orderData }),
       });
       var cfOrder = await res.json();
+      orderId = cfOrder.order_id;
+      Object.assign(orderData, cfOrder.order_data || {});
       if (!cfOrder.payment_session_id) throw new Error(cfOrder.error || 'Failed to create order');
       btn.disabled = false;
       btn.innerHTML = isCOD ? '&#128666; Pay &#8377;200 Advance &amp; Place COD Order' : '&#128274; Pay Securely with Cashfree';
@@ -721,7 +723,7 @@
           if (result.paymentDetails) {
             var verifyRes = await fetch('/api/verify-payment', {
               method:'POST', headers:{'Content-Type':'application/json'},
-              body: JSON.stringify({ orderId: orderId, orderData: orderData }),
+              body: JSON.stringify({ orderId: orderId }),
             });
             var verifyData = await verifyRes.json();
             if (verifyData.success) {

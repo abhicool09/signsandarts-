@@ -685,7 +685,7 @@
     btn.textContent = 'Creating order...';
     var codAdvance = isCOD ? getCodAdvance() : 0;
     var payAmount = isCOD ? codAdvance : currentVariant.price;
-    var orderId = 'SA-' + Date.now();
+    var orderId = '';
     var orderData = {
       name: document.getElementById('fname').value.trim(),
       phone: document.getElementById('fphone').value.trim(),
@@ -706,9 +706,11 @@
     try {
       var res = await fetch('/api/create-order', {
         method:'POST', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ amount: payAmount, orderId: orderId, customerName: orderData.name, customerEmail: orderData.email, customerPhone: orderData.phone, isCOD: isCOD }),
+        body: JSON.stringify({ orderData: orderData }),
       });
       var cfOrder = await res.json();
+      orderId = cfOrder.order_id;
+      Object.assign(orderData, cfOrder.order_data || {});
       if (!cfOrder.payment_session_id) throw new Error(cfOrder.error || 'Failed to create order');
       btn.disabled = false;
       btn.innerHTML = isCOD ? '&#128666; Pay &#8377;200 Advance &amp; Place COD Order' : '&#128274; Pay Securely with Cashfree';
@@ -721,7 +723,7 @@
           if (result.paymentDetails) {
             var verifyRes = await fetch('/api/verify-payment', {
               method:'POST', headers:{'Content-Type':'application/json'},
-              body: JSON.stringify({ orderId: orderId, orderData: orderData }),
+              body: JSON.stringify({ orderId: orderId }),
             });
             var verifyData = await verifyRes.json();
             if (verifyData.success) {

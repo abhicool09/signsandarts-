@@ -1762,7 +1762,7 @@
   function getCodAdvance(total) {
     const defaultAdvance = total <= 10 ? 1 : 200;
     return cart.reduce((advance, item) => {
-      const itemAdvance = Number(item.codAdvance || 0);
+      const itemAdvance = Number(item.codAdvance || 0) * Number(item.qty || 1);
       return itemAdvance > advance ? itemAdvance : advance;
     }, defaultAdvance);
   }
@@ -1934,7 +1934,7 @@
     const codAdvance = isCOD ? getCodAdvance(onlineTotal) : 0;
     const payAmount = isCOD ? codAdvance : onlineTotal;
     const orderTotal = isCOD ? onlineTotal + COD_CHARGE : onlineTotal;
-    const orderId = 'SA-' + Date.now();
+    let orderId = '';
     const orderData = {
       name: document.getElementById('fname').value.trim(),
       phone: document.getElementById('fphone').value.trim(),
@@ -1956,16 +1956,11 @@
       const res = await fetch('/api/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          amount: payAmount,
-          orderId: orderId,
-          customerName: orderData.name,
-          customerEmail: orderData.email,
-          customerPhone: orderData.phone,
-          isCOD: isCOD,
-        }),
+        body: JSON.stringify({ orderData: orderData }),
       });
       const cfOrder = await res.json();
+      orderId = cfOrder.order_id;
+      Object.assign(orderData, cfOrder.order_data || {});
 
       if (!cfOrder.payment_session_id) {
         throw new Error(cfOrder.error || 'Failed to create order');
@@ -1997,7 +1992,7 @@
               const verifyRes = await fetch('/api/verify-payment', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ orderId: orderId, orderData: orderData }),
+                body: JSON.stringify({ orderId: orderId }),
               });
               const verifyData = await verifyRes.json();
               if (verifyData.success) {
