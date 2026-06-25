@@ -112,7 +112,25 @@ async function notifyNewOrder(orderId, orderData, isCOD) {
     `Address: ${orderData.address || ''}, ${orderData.city || ''}, ${orderData.state || ''} - ${orderData.pincode || ''}\n` +
     `Items: ${items}`;
 
-  // 1) WhatsApp to owner via CallMeBot (free)
+  // 1) WhatsApp to owner via Twilio
+  try {
+    if (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN && process.env.TWILIO_WHATSAPP_FROM && process.env.TWILIO_WHATSAPP_TO) {
+      const sid = process.env.TWILIO_ACCOUNT_SID;
+      const auth = Buffer.from(`${sid}:${process.env.TWILIO_AUTH_TOKEN}`).toString('base64');
+      const body = new URLSearchParams({
+        From: process.env.TWILIO_WHATSAPP_FROM,
+        To: process.env.TWILIO_WHATSAPP_TO,
+        Body: text,
+      }).toString();
+      await fetch(`https://api.twilio.com/2010-04-01/Accounts/${sid}/Messages.json`, {
+        method: 'POST',
+        headers: { Authorization: `Basic ${auth}`, 'Content-Type': 'application/x-www-form-urlencoded' },
+        body,
+      });
+    }
+  } catch (e) { console.error('Twilio WhatsApp alert failed:', e.message); }
+
+  // 1b) WhatsApp to owner via CallMeBot (free alternative)
   try {
     if (process.env.CALLMEBOT_PHONE && process.env.CALLMEBOT_APIKEY) {
       const u = `https://api.callmebot.com/whatsapp.php?phone=${encodeURIComponent(process.env.CALLMEBOT_PHONE)}&text=${encodeURIComponent(text)}&apikey=${encodeURIComponent(process.env.CALLMEBOT_APIKEY)}`;
