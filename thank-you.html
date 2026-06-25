@@ -308,6 +308,12 @@
         };
       })
     });
+
+    gtag('event', 'ads_conversion_Purchase_1', {
+      transaction_id: orderId,
+      value: totalValue,
+      currency: 'INR'
+    });
   }
 
   (function resumePaidOrder(attempt) {

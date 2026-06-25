@@ -2244,9 +2244,38 @@
   }
 
   // ── PRODUCT FILTER ────────────────────────────────────────────────────────
+  function forceLoadProductImage(img) {
+    if (img.complete && img.naturalWidth) return;
+    var src = img.getAttribute('src');
+    if (!src) return;
+    img.loading = 'eager';
+    img.removeAttribute('src');
+    img.setAttribute('src', src);
+  }
+
+  var filteredImageObserver = 'IntersectionObserver' in window
+    ? new IntersectionObserver(function(entries, observer) {
+        entries.forEach(function(entry) {
+          if (!entry.isIntersecting) return;
+          forceLoadProductImage(entry.target);
+          observer.unobserve(entry.target);
+        });
+      }, { rootMargin: '300px 0px' })
+    : null;
+
+  function wakeFilteredProductImages(card) {
+    card.querySelectorAll('img[loading="lazy"]').forEach(function(img) {
+      if (img.complete && img.naturalWidth) return;
+      if (filteredImageObserver) filteredImageObserver.observe(img);
+      else forceLoadProductImage(img);
+    });
+  }
+
   function fp(cat, el) {
     document.querySelectorAll('.pc').forEach(function(c){
-      c.classList.toggle('show', cat==='all' || c.dataset.cat===cat);
+      var shouldShow = cat==='all' || c.dataset.cat===cat;
+      c.classList.toggle('show', shouldShow);
+      if (shouldShow && cat !== 'all') wakeFilteredProductImages(c);
     });
     document.querySelectorAll('.fb').forEach(function(b){ b.classList.remove('active'); });
     if (el && el.classList && el.classList.contains('fb')) el.classList.add('active');
