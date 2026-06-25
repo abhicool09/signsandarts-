@@ -1,7 +1,25 @@
 var pixelPayMode='online',pixelOrder=null,COD_CHARGE=50,LOW_PRICE_SHIPPING=125;
 function formatPixelPrice(value){return Number(value).toLocaleString('en-IN')}
 function getPixelProduct(id){return (window.PIXEL_PRODUCTS||[]).find(function(item){return item.id===id})}
+function forceLoadPixelImage(img){
+  if((img.complete&&img.naturalWidth)||img.dataset.loadStarted)return;
+  var src=img.getAttribute('src');if(!src)return;
+  img.dataset.loadStarted='true';
+  img.loading='eager';img.removeAttribute('src');img.setAttribute('src',src);
+}
+function wakeNearbyPixelImages(){
+  document.querySelectorAll('.product-card:not([hidden]) .card-image img').forEach(function(img){
+    var rect=img.getBoundingClientRect();
+    if(rect.top<window.innerHeight+300&&rect.bottom>-300)forceLoadPixelImage(img);
+  });
+}
+function initPixelImages(){
+  wakeNearbyPixelImages();
+  window.addEventListener('scroll',wakeNearbyPixelImages,{passive:true});
+  window.addEventListener('resize',wakeNearbyPixelImages);
+}
 function initPixelCatalog(){
+  initPixelImages();
   document.querySelectorAll('.filter').forEach(function(button){
     button.addEventListener('click',function(){
       var filter=button.dataset.filter,count=0;
@@ -9,6 +27,7 @@ function initPixelCatalog(){
         var show=filter==='all'||card.dataset.group===filter;
         card.hidden=!show;if(show)count++;
       });
+      wakeNearbyPixelImages();
       document.querySelectorAll('.filter').forEach(function(item){item.classList.toggle('active',item===button)});
       var countEl=document.getElementById('productCount');if(countEl)countEl.textContent=count+' products';
     });
