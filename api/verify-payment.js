@@ -98,6 +98,52 @@ async function updateOrderShiprocket(orderId, srData) {
   }
 }
 
+// Alert the shop owner about a new order (WhatsApp + email). Never throws.
+async function notifyNewOrder(orderId, orderData, isCOD) {
+  const total = Number(orderData.total || 0);
+  const items = (orderData.items || []).map(i => `${i.name}${i.qty > 1 ? ' x' + i.qty : ''}`).join(', ');
+  const pay = isCOD ? `COD — Rs ${orderData.codAdvance || 200} advance paid (order total Rs ${total})` : `Online — Rs ${total} paid`;
+  const text =
+    `NEW ORDER - Signs and Arts\n` +
+    `Order ID: ${orderId}\n` +
+    `Amount: ${pay}\n` +
+    `Name: ${orderData.name || ''}\n` +
+    `Phone: ${orderData.phone || ''}\n` +
+    `Address: ${orderData.address || ''}, ${orderData.city || ''}, ${orderData.state || ''} - ${orderData.pincode || ''}\n` +
+    `Items: ${items}`;
+
+  // 1) WhatsApp to owner via CallMeBot (free)
+  try {
+    if (process.env.CALLMEBOT_PHONE && process.env.CALLMEBOT_APIKEY) {
+      const u = `https://api.callmebot.com/whatsapp.php?phone=${encodeURIComponent(process.env.CALLMEBOT_PHONE)}&text=${encodeURIComponent(text)}&apikey=${encodeURIComponent(process.env.CALLMEBOT_APIKEY)}`;
+      await fetch(u);
+    }
+  } catch (e) { console.error('WhatsApp alert failed:', e.message); }
+
+  // 2) Email via Resend
+  try {
+    if (process.env.RESEND_API_KEY) {
+      const rows = [
+        ['Order ID', orderId], ['Amount', pay], ['Name', orderData.name || ''],
+        ['Phone', orderData.phone || ''],
+        ['Address', `${orderData.address || ''}, ${orderData.city || ''}, ${orderData.state || ''} - ${orderData.pincode || ''}`],
+        ['Email', orderData.email || ''], ['Items', items],
+      ].map(([k, v]) => `<tr><td style="padding:6px 12px;color:#777;border-bottom:1px solid #eee">${k}</td><td style="padding:6px 12px;font-weight:600;border-bottom:1px solid #eee">${String(v).replace(/</g, '&lt;')}</td></tr>`).join('');
+      const html = `<div style="font-family:Arial,sans-serif;max-width:560px"><h2 style="color:#1e8a44">New Order Received</h2><table style="width:100%;border-collapse:collapse;font-size:14px">${rows}</table><p style="color:#777;font-size:12px;margin-top:16px">Signs and Arts order alert</p></div>`;
+      await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          from: process.env.ORDER_ALERT_FROM || 'Signs and Arts <onboarding@resend.dev>',
+          to: [process.env.ORDER_ALERT_EMAIL || 'hello@signsandarts.in'],
+          subject: `New Order ${orderId} - Rs ${total}`,
+          html,
+        }),
+      });
+    }
+  } catch (e) { console.error('Email alert failed:', e.message); }
+}
+
 function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || '').trim());
 }
@@ -159,6 +205,9 @@ module.exports = async (req, res) => {
 
     // ── 1b. Save order to Supabase (for customer order tracking) ─────────────
     await saveOrderToSupabase(orderId, orderData, isCOD);
+
+    // ── 1c. Alert the shop owner (WhatsApp + email) about the new order ──────
+    await notifyNewOrder(orderId, orderData, isCOD);
 
     // ── 2. Create Shiprocket Order ──────────────────────────────────────────
     let srToken;
