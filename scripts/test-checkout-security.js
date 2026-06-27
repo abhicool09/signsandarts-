@@ -112,6 +112,8 @@ async function testCatalogPricing() {
     ['dental-led', 5128],
     ['bar-led-single-indoor', 2189],
     ['tattoo-led-single-indoor', 2189],
+    ['spa-open-led-single-indoor', 2189],
+    ['hair-salon-led-single-indoor', 2189],
     ['opticals-led', 6330],
     ['love-neon-pink', 400],
     ['led-strip-rf-controller', 339],

@@ -16,6 +16,8 @@ const fixedProducts = new Map([
   ['hilight-12v-5a-adapter', { name: 'Hilight 12V 5A 60W LED Power Adapter', price: 371 }],
   ['bar-led-single-indoor', { name: 'Bar LED Sign Board - Multicolor 18x12 Single Sided Indoor', price: 2189 }],
   ['tattoo-led-single-indoor', { name: 'Tattoo LED Sign Board - Red & White 18x12 Single Sided Indoor', price: 2189 }],
+  ['spa-open-led-single-indoor', { name: 'Spa Open LED Sign Board - Blue Green White 18x12 Single Sided Indoor', price: 2189 }],
+  ['hair-salon-led-single-indoor', { name: 'Hair Salon LED Sign Board - Red White 18x12 Single Sided Indoor', price: 2189 }],
 ]);
 
 for (const product of pixelProducts) {
