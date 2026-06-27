@@ -567,6 +567,7 @@
     <a href="#products" class="ccard" onclick="fp('dental',null)"><div class="cem">&#129463;</div><div class="cnm">Dental Clinic</div><div class="cct">1 Product</div></a>
     <a href="#products" class="ccard" onclick="fp('optical',null)"><div class="cem">&#128083;</div><div class="cnm">Optical Clinic</div><div class="cct">1 Product</div></a>
     <a href="#products" class="ccard" onclick="fp('bar',null)"><div class="cem">&#127867;</div><div class="cnm">Bar &amp; Restaurant</div><div class="cct">1 Product</div></a>
+    <a href="#products" class="ccard" onclick="fp('tattoo',null)"><div class="cem">&#10022;</div><div class="cnm">Tattoo Studio</div><div class="cct">1 Product</div></a>
     <a href="#products" class="ccard" onclick="fp('decor',null)"><div class="cem">&#10024;</div><div class="cnm">Home Decor</div><div class="cct">1 Product</div></a>
     <a href="#products" class="ccard" onclick="fp('accessories',null)"><div class="cem">&#128268;</div><div class="cnm">LED Accessories</div><div class="cct">2 Products</div></a>
     <a href="/pixel-led/" class="ccard"><div class="cem">&#128161;</div><div class="cnm">Pixel LEDs</div><div class="cct">28 Products</div></a>
@@ -588,6 +589,7 @@
     <button class="fb" onclick="fp('dental',this)">Dental Clinic</button>
     <button class="fb" onclick="fp('optical',this)">Optical Clinic</button>
     <button class="fb" onclick="fp('bar',this)">Bar &amp; Restaurant</button>
+    <button class="fb" onclick="fp('tattoo',this)">Tattoo Studio</button>
     <button class="fb" onclick="fp('decor',this)">Home Decor</button>
     <button class="fb" onclick="fp('accessories',this)">LED Accessories</button>
     <button class="fb" onclick="window.location.href='/pixel-led/'">Pixel LEDs</button>
@@ -1070,7 +1072,7 @@
       <div class="pb">
         <div class="pct">Bar &amp; Restaurant</div>
         <a href="/bar-led-sign-board/" style="text-decoration:none;"><div class="pnm" style="color:#111;">Bar LED Sign Board &mdash; Multicolor</div></a>
-        <div class="pds">Eye-catching multicolor LED sign for bars, restaurants &amp; pubs. 18"&#xD7;12" with orange &amp; white beer mugs, green palm, red BAR text. Choose single sided indoor or double sided outdoor. Hook mount included.</div>
+        <div class="pds">Eye-catching multicolor LED sign for bars, restaurants &amp; pubs. 18"&#xD7;12" with orange &amp; white beer mugs, green palm, red BAR text. Single sided indoor board with hook mount included.</div>
         <div class="psps">
           <span class="stg">18"&#xD7;12"</span>
           <span class="stg">Multicolor LED</span>
@@ -1080,8 +1082,7 @@
         <div style="margin-top:.7rem;">
           <div class="variant-label">Select Variant</div>
           <div class="variant-btns">
-            <button class="vbtn active" onclick="selectVariant('bar','Single Sided - Indoor',1829,this)">Single Sided &mdash; Indoor &mdash; &#8377;1,829</button>
-            <button class="vbtn" onclick="selectVariant('bar','Double Sided - Outdoor',2287,this)">Double Sided &mdash; Outdoor &mdash; &#8377;2,287</button>
+            <button class="vbtn active" onclick="selectVariant('bar','Single Sided - Indoor',2189,this)">Single Sided &mdash; Indoor &mdash; &#8377;2,189</button>
           </div>
         </div>
       </div>
@@ -1089,10 +1090,50 @@
         <a href="/bar-led-sign-board/" style="display:block;text-align:center;font-size:.72rem;font-weight:700;color:#777;letter-spacing:1px;padding:.4rem;border:1px solid #e8e8e8;border-radius:3px;transition:all .2s;" onmouseover="this.style.borderColor='#111';this.style.color='#111'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#777'">View Full Details &rarr;</a>
       </div>
       <div class="pf">
-        <div class="ppr" id="barprice">&#8377;1,829</div>
+        <div class="ppr" id="barprice">&#8377;2,189</div>
         <div class="pbts">
-          <button class="batc" id="baratc" onclick="addToCart({id:'bar-led-single-indoor',name:'Bar LED Sign Board - Multicolor 18x12 Single Sided Indoor',price:1829,qty:1})">&#43; Add to Cart</button>
+          <button class="batc" id="baratc" onclick="addToCart({id:'bar-led-single-indoor',name:'Bar LED Sign Board - Multicolor 18x12 Single Sided Indoor',price:2189,qty:1})">&#43; Add to Cart</button>
           <a href="https://wa.me/919392878946?text=Hi%2C%20I%20want%20Bar%20LED%20Sign%20Board%2018x12" class="bwa" target="_blank">&#128242;</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- TATTOO LED SIGN BOARD -->
+    <div class="pc show" data-cat="tattoo" id="prod-tattoo">
+      <div class="pgallery" id="tattoogallery">
+        <img loading="lazy" src="/tattoo-led-sign-board/main.webp" alt="Tattoo LED Sign Board Red White 18x12" class="active" id="timg0">
+        <img loading="lazy" src="/tattoo-led-sign-board/led-on-off.webp" alt="Tattoo LED Sign Board LED On Off" id="timg1">
+        <img loading="lazy" src="/tattoo-led-sign-board/features.webp" alt="Tattoo LED Sign Board Hook Features" id="timg2">
+        <img loading="lazy" src="/tattoo-led-sign-board/lifestyle.webp" alt="Tattoo LED Sign Installed in Tattoo Studio" id="timg3">
+        <div class="bdg bnew" style="position:absolute;top:10px;left:10px;">New</div>
+      </div>
+      <button class="gallery-playbtn" onclick="openVideo('u8IeoHEtz6E')">&#9654; Watch Video</button>
+      <div class="gallery-thumbs">
+        <img loading="lazy" src="/tattoo-led-sign-board/main.webp" class="gthumb active" onclick="switchImg('tattoo',0)" alt="Main">
+        <img loading="lazy" src="/tattoo-led-sign-board/led-on-off.webp" class="gthumb" onclick="switchImg('tattoo',1)" alt="LED On Off">
+        <img loading="lazy" src="/tattoo-led-sign-board/features.webp" class="gthumb" onclick="switchImg('tattoo',2)" alt="Features">
+        <img loading="lazy" src="/tattoo-led-sign-board/lifestyle.webp" class="gthumb" onclick="switchImg('tattoo',3)" alt="Lifestyle">
+        <div class="yt-thumb" onclick="openVideo('u8IeoHEtz6E')" title="Watch Video"><span class="yt-play">&#9654;</span></div>
+      </div>
+      <div class="pb">
+        <div class="pct">Tattoo Studio</div>
+        <a href="/tattoo-led-sign-board/" style="text-decoration:none;"><div class="pnm" style="color:#111;">Tattoo LED Sign Board &mdash; Red &amp; White</div></a>
+        <div class="pds">Bold 18"&#xD7;12" LED sign for tattoo studios and parlours. Red TATTOO text with bright white oval pixel LED border, single sided indoor display and round hook mounting.</div>
+        <div class="psps">
+          <span class="stg">18"&#xD7;12"</span>
+          <span class="stg">Red &amp; White LED</span>
+          <span class="stg">Single Sided</span>
+          <span class="stg">Indoor</span>
+        </div>
+      </div>
+      <div style="padding:.5rem 1.1rem 0;">
+        <a href="/tattoo-led-sign-board/" style="display:block;text-align:center;font-size:.72rem;font-weight:700;color:#777;letter-spacing:1px;padding:.4rem;border:1px solid #e8e8e8;border-radius:3px;transition:all .2s;" onmouseover="this.style.borderColor='#111';this.style.color='#111'" onmouseout="this.style.borderColor='#e8e8e8';this.style.color='#777'">View Full Details &rarr;</a>
+      </div>
+      <div class="pf">
+        <div class="ppr">&#8377;2,189</div>
+        <div class="pbts">
+          <button class="batc" onclick="addToCart({id:'tattoo-led-single-indoor',name:'Tattoo LED Sign Board - Red & White 18x12 Single Sided Indoor',price:2189,qty:1})">&#43; Add to Cart</button>
+          <a href="https://wa.me/919392878946?text=Hi%2C%20I%20want%20Tattoo%20LED%20Sign%20Board%2018x12" class="bwa" target="_blank">&#128242;</a>
         </div>
       </div>
     </div>
@@ -2219,15 +2260,15 @@
       };
       var name = (names[pid] || pid) + ' ' + size;
       var itemId = pid === 'bar'
-        ? (size.indexOf('Double') === 0 ? 'bar-led-double-outdoor' : 'bar-led-single-indoor')
+        ? ('bar-led-single-indoor')
         : pid + '-' + size;
       atcBtn.onclick = function(){ addToCart({id: itemId, name: name, price: price, qty: 1}); };
     }
     if (pid === 'bar') {
       var card = document.getElementById('prod-bar');
       var tags = card ? card.querySelectorAll('.psps .stg') : [];
-      if (tags[2]) tags[2].textContent = size.indexOf('Double') === 0 ? 'Double Sided' : 'Single Sided';
-      if (tags[3]) tags[3].textContent = size.indexOf('Double') === 0 ? 'Outdoor' : 'Indoor';
+      if (tags[2]) tags[2].textContent = 'Single Sided';
+      if (tags[3]) tags[3].textContent = 'Indoor';
     }
     // Swap gallery images if variant image set exists
     if (variantImages[pid] && variantImages[pid][size]) {

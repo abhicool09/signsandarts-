@@ -14,8 +14,8 @@ const fixedProducts = new Map([
   ['led-strip-rf-controller', { name: 'Mini RF Remote Controller for Single Color LED Strips', price: 339 }],
   ['pan-shop-led-sign-18x12', { name: 'PAN Shop LED Sign Board 18x12 Double Sided', price: 2475 }],
   ['hilight-12v-5a-adapter', { name: 'Hilight 12V 5A 60W LED Power Adapter', price: 371 }],
-  ['bar-led-single-indoor', { name: 'Bar LED Sign Board - Multicolor 18x12 Single Sided Indoor', price: 1829 }],
-  ['bar-led-double-outdoor', { name: 'Bar LED Sign Board - Multicolor 18x12 Double Sided Outdoor', price: 2287 }],
+  ['bar-led-single-indoor', { name: 'Bar LED Sign Board - Multicolor 18x12 Single Sided Indoor', price: 2189 }],
+  ['tattoo-led-single-indoor', { name: 'Tattoo LED Sign Board - Red & White 18x12 Single Sided Indoor', price: 2189 }],
 ]);
 
 for (const product of pixelProducts) {
