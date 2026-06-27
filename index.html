@@ -2224,6 +2224,25 @@
     return true;
   }
 
+  async function verifyPaymentWithRetry(orderId, attempts = 8) {
+    let lastData = null;
+    for (let attempt = 0; attempt < attempts; attempt++) {
+      const verifyRes = await fetch('/api/verify-payment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderId: orderId }),
+      });
+      const verifyData = await verifyRes.json();
+      lastData = verifyData;
+      if (verifyRes.ok && verifyData.success) return verifyData;
+      const retryable = verifyRes.status === 400 &&
+        /not successful|verification failed/i.test(String(verifyData.error || ''));
+      if (!retryable || attempt === attempts - 1) break;
+      await new Promise(resolve => setTimeout(resolve, 4000));
+    }
+    return lastData || { error: 'Verification failed' };
+  }
+
   async function initiatePayment() {
     if (!validateForm()) return;
 
@@ -2293,12 +2312,7 @@
           }
           if (result.paymentDetails) {
             try {
-              const verifyRes = await fetch('/api/verify-payment', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ orderId: orderId }),
-              });
-              const verifyData = await verifyRes.json();
+              const verifyData = await verifyPaymentWithRetry(orderId);
               if (verifyData.success) {
                 cart = [];
                 updateCartUI();
