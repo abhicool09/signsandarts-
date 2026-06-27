@@ -76,7 +76,7 @@
 
     /* GALLERY */
     .main-img-wrap{position:relative;border-radius:var(--radius-lg);overflow:hidden;background:var(--g50);border:1px solid var(--g200);aspect-ratio:1;}
-    .main-img-wrap img{width:100%;height:100%;object-fit:cover;display:none;}
+    .main-img-wrap img{width:100%;height:100%;object-fit:contain;display:none;background:#f7f7f7;}
     .main-img-wrap img.active{display:block;}
     .zoom-window{display:none;position:absolute;top:12px;right:12px;width:42%;height:42%;min-width:150px;min-height:150px;background-repeat:no-repeat;background-color:#fff;border:2px solid #111;border-radius:8px;box-shadow:0 14px 40px rgba(0,0,0,.22);z-index:4;pointer-events:none;}
     .main-img-wrap.zooming{cursor:crosshair;}
