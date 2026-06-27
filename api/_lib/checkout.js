@@ -18,6 +18,11 @@ const fixedProducts = new Map([
   ['tattoo-led-single-indoor', { name: 'Tattoo LED Sign Board - Red & White 18x12 Single Sided Indoor', price: 2189 }],
   ['spa-open-led-single-indoor', { name: 'Spa Open LED Sign Board - Blue Green White 18x12 Single Sided Indoor', price: 2189 }],
   ['hair-salon-led-single-indoor', { name: 'Hair Salon LED Sign Board - Red White 18x12 Single Sided Indoor', price: 2189 }],
+  ['open-24-hours-led-single-indoor', { name: 'Open 24 Hours LED Sign Board - Green Red White 18x12 Single Sided Indoor', price: 2189 }],
+  ['open-close-led-open-single', { name: 'Open LED Sign Board 18x12 Single Sided Indoor', price: 2189 }],
+  ['open-close-led-close-single', { name: 'Close LED Sign Board 18x12 Single Sided Indoor', price: 2189 }],
+  ['open-close-led-combo', { name: 'Open Close LED Sign Board Combo 18x12 Single Sided Indoor', price: 3981 }],
+  ['computer-repair-led-single-indoor', { name: 'Computer Repair LED Sign Board - Green Red Blue White 18x12 Single Sided Indoor', price: 2189 }],
 ]);
 
 for (const product of pixelProducts) {
