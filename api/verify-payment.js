@@ -1,6 +1,7 @@
 const { amountsMatch, expectedPaymentAmount } = require('./_lib/checkout');
 const { getOrder, patchOrder } = require('./_lib/orders');
 const { enforceRateLimit } = require('./_lib/rate-limit');
+const { sendTwilioWhatsApp } = require('./_lib/whatsapp-alert');
 
 const PROCESSING_WINDOW_MS = 2 * 60 * 1000;
 const VERIFY_WINDOW_MS = 5 * 60 * 1000;
@@ -113,24 +114,7 @@ async function notifyNewOrder(orderId, order, isCOD) {
   if (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN &&
       process.env.TWILIO_WHATSAPP_FROM && process.env.TWILIO_WHATSAPP_TO) {
     try {
-      const sid = process.env.TWILIO_ACCOUNT_SID;
-      const auth = Buffer.from(`${sid}:${process.env.TWILIO_AUTH_TOKEN}`).toString('base64');
-      await checkedProviderFetch(
-        'Twilio',
-        `https://api.twilio.com/2010-04-01/Accounts/${sid}/Messages.json`,
-        {
-          method: 'POST',
-          headers: {
-            Authorization: `Basic ${auth}`,
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          body: new URLSearchParams({
-            From: process.env.TWILIO_WHATSAPP_FROM,
-            To: process.env.TWILIO_WHATSAPP_TO,
-            Body: text,
-          }).toString(),
-        }
-      );
+      await sendTwilioWhatsApp(text);
       results.push('Twilio');
     } catch (error) {
       console.error('Twilio WhatsApp alert failed:', error.message);

@@ -445,12 +445,40 @@
     .portfolio-desc{font-size:.88rem;color:var(--g700);line-height:1.7;margin-top:.65rem;}
     .portfolio-empty{display:none;border:1px dashed var(--g400);border-radius:var(--radius-lg);padding:1.5rem;color:var(--g600);background:#fff;}
     .portfolio-empty.show{display:block;}
+    .review-layout{display:grid;grid-template-columns:minmax(280px,.9fr) minmax(0,1.35fr);gap:1.4rem;align-items:start;}
+    .review-form{background:var(--g50);border:1px solid var(--g200);border-radius:var(--radius-lg);padding:1.35rem;box-shadow:0 1px 4px rgba(0,0,0,.04);}
+    .review-form-title{font-family:'Playfair Display',serif;font-size:1.35rem;font-weight:700;color:var(--text);margin-bottom:.9rem;}
+    .review-form .form-row{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;}
+    .review-upload{border:1.5px dashed var(--g400);border-radius:var(--radius-lg);background:#fff;padding:1rem;margin-bottom:1rem;}
+    .review-upload label{display:block;font-size:.78rem;font-weight:800;color:var(--g800);margin-bottom:.45rem;letter-spacing:.3px;}
+    .review-upload input{width:100%;font-family:'DM Sans',sans-serif;font-size:.82rem;color:var(--g800);}
+    .review-preview{display:none;margin-top:.8rem;aspect-ratio:4/3;background:#111;border-radius:var(--radius);overflow:hidden;}
+    .review-preview.has-image{display:block;}
+    .review-preview img{width:100%;height:100%;object-fit:cover;display:block;}
+    .review-submit{width:100%;background:#111;color:#fff;border:none;border-radius:var(--radius);padding:.85rem 1rem;font-family:'DM Sans',sans-serif;font-weight:800;font-size:.9rem;cursor:pointer;transition:background .2s;}
+    .review-submit:hover{background:#c9a84c;color:#111;}
+    .review-submit:disabled{background:var(--g400);color:#fff;cursor:not-allowed;}
+    .review-status{display:none;margin-top:.8rem;border-radius:var(--radius);padding:.75rem .85rem;font-size:.82rem;line-height:1.55;}
+    .review-status.show{display:block;}
+    .review-status.success{background:#eaf7ef;color:#176738;border:1px solid #bfe8cc;}
+    .review-status.error{background:#fff1f1;color:#a12828;border:1px solid #f0c2c2;}
+    .customer-reviews-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem;}
+    .review-card{background:#fff;border:1px solid var(--g200);border-radius:var(--radius-lg);overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.04);}
+    .review-photo{aspect-ratio:4/3;background:#f5f5f5;overflow:hidden;border-bottom:1px solid var(--g200);}
+    .review-photo img{width:100%;height:100%;object-fit:cover;display:block;}
+    .review-body{padding:1rem;}
+    .review-name{font-size:.95rem;font-weight:800;color:var(--text);}
+    .review-product{font-size:.72rem;color:var(--g600);font-weight:700;margin-top:.2rem;}
+    .review-description{font-size:.84rem;color:var(--g800);line-height:1.7;margin-top:.75rem;}
+    .review-empty{display:none;border:1px dashed var(--g400);border-radius:var(--radius-lg);padding:1.35rem;color:var(--g600);background:#fff;font-size:.88rem;line-height:1.7;}
+    .review-empty.show{display:block;}
     .guide-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.2rem;}
     .guide-card{display:block;border:1px solid var(--g200);border-radius:var(--radius-lg);padding:1.4rem;background:var(--g50);text-decoration:none;color:inherit;transition:border-color .2s,box-shadow .2s,transform .2s;}
     .guide-card:hover{border-color:#111;box-shadow:0 10px 24px rgba(0,0,0,.08);transform:translateY(-2px);}
     .guide-card h3{font-family:'Playfair Display',serif;font-size:1.35rem;line-height:1.25;margin:.5rem 0;color:var(--text);}
     .guide-card p{font-size:.9rem;color:var(--g700);line-height:1.7;margin-bottom:1rem;}
     .guide-link{font-size:.82rem;font-weight:800;color:#111;letter-spacing:.08em;text-transform:uppercase;}
+    @media(max-width:920px){.review-layout{grid-template-columns:1fr;}.review-form .form-row{grid-template-columns:1fr;}}
     @media(max-width:900px){.fgrid{grid-template-columns:1fr 1fr;}}
     @media(max-width:680px){nav,.bwah{display:none;}.hbg{display:flex;}.fgrid{grid-template-columns:1fr;}.trust{gap:1rem;}.form-row{grid-template-columns:1fr;}}
   </style>
@@ -483,6 +511,7 @@
       <a href="#products">Products</a>
       <a href="#hyderabad">Hyderabad</a>
       <a href="#portfolio">Portfolio</a>
+      <a href="#reviews">Reviews</a>
       <a href="#guides">Guides</a>
       <a href="#why">Why Us</a>
       <a href="#how">How to Order</a>
@@ -506,6 +535,7 @@
 <a href="#products" onclick="this.closest('.mnav').classList.remove('open')">Products</a>
 <a href="#hyderabad" onclick="this.closest('.mnav').classList.remove('open')">Hyderabad</a>
 <a href="#portfolio" onclick="this.closest('.mnav').classList.remove('open')">Portfolio</a>
+<a href="#reviews" onclick="this.closest('.mnav').classList.remove('open')">Reviews</a>
 <a href="#guides" onclick="this.closest('.mnav').classList.remove('open')">Guides</a>
 <a href="#why" onclick="this.closest('.mnav').classList.remove('open')">Why Us</a>
 <a href="#how" onclick="this.closest('.mnav').classList.remove('open')">How to Order</a>
@@ -1649,63 +1679,53 @@
 
 <!-- REVIEWS -->
 <section id="reviews" style="background:#fff;">
-  <div class="slbl">Customer Feedback</div>
-  <h2 class="stit">Notes From Recent Orders</h2>
-  <p class="ssub">Short feedback points we hear most often after delivery: easy installation, clear visibility and quick order support.</p>
-  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.4rem;" id="reviewsGrid">
-
-    <div style="background:var(--g50);border:1px solid var(--g200);border-radius:var(--radius-lg);padding:1.5rem;">
-      <div style="display:flex;align-items:center;gap:.8rem;margin-bottom:1rem;">
-        <div style="width:44px;height:44px;border-radius:50%;background:var(--blue-light);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1rem;color:var(--blue);flex-shrink:0;">R</div>
-        <div>
-          <div style="font-size:.9rem;font-weight:700;color:var(--text);">Medical Store Owner</div>
-          <div style="font-size:.75rem;color:var(--g600);">Ready-made pharmacy board</div>
+  <div class="slbl">Customer Reviews</div>
+  <h2 class="stit">Customer Sign Photos</h2>
+  <p class="ssub">Installed sign board photos and short notes from customers after delivery.</p>
+  <div class="review-layout">
+    <form class="review-form" id="reviewForm">
+      <div class="review-form-title">Share Your Installed Sign</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="reviewName">Name *</label>
+          <input type="text" id="reviewName" maxlength="80" required>
+        </div>
+        <div class="form-group">
+          <label for="reviewCity">City</label>
+          <input type="text" id="reviewCity" maxlength="80">
         </div>
       </div>
-      <div style="font-size:.72rem;color:var(--green);font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.6rem;">Customer note</div>
-      <p style="font-size:.85rem;color:var(--g800);line-height:1.7;">The board was easy to connect and the product photos matched the delivered item.</p>
-      <div style="font-size:.72rem;color:var(--g600);margin-top:.8rem;padding-top:.8rem;border-top:1px solid var(--g200);">Product &middot; Pharmacy Plus Board</div>
-    </div>
-
-    <div style="background:var(--g50);border:1px solid var(--g200);border-radius:var(--radius-lg);padding:1.5rem;">
-      <div style="display:flex;align-items:center;gap:.8rem;margin-bottom:1rem;">
-        <div style="width:44px;height:44px;border-radius:50%;background:#e8f5e9;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1rem;color:var(--green);flex-shrink:0;">S</div>
-        <div>
-          <div style="font-size:.9rem;font-weight:700;color:var(--text);">Clinic Owner</div>
-          <div style="font-size:.75rem;color:var(--g600);">Clinic LED board</div>
-        </div>
+      <div class="form-group">
+        <label for="reviewProduct">Product / Sign Type</label>
+        <input type="text" id="reviewProduct" maxlength="120" list="reviewProductList">
+        <datalist id="reviewProductList">
+          <option value="Medical Plus LED Sign Board">
+          <option value="Clinic LED Sign Board">
+          <option value="Tattoo LED Sign Board">
+          <option value="Spa Open LED Sign Board">
+          <option value="Hair Salon LED Sign Board">
+          <option value="Open 24 Hours LED Sign Board">
+          <option value="Computer Repair LED Sign Board">
+          <option value="Custom LED Sign Board">
+        </datalist>
       </div>
-      <div style="font-size:.72rem;color:var(--green);font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.6rem;">Customer note</div>
-      <p style="font-size:.85rem;color:var(--g800);line-height:1.7;">The clinic board stays visible at night and helped customers identify the entrance more easily.</p>
-      <div style="font-size:.72rem;color:var(--g600);margin-top:.8rem;padding-top:.8rem;border-top:1px solid var(--g200);">Product &middot; Clinic LED Board</div>
-    </div>
-
-    <div style="background:var(--g50);border:1px solid var(--g200);border-radius:var(--radius-lg);padding:1.5rem;">
-      <div style="display:flex;align-items:center;gap:.8rem;margin-bottom:1rem;">
-        <div style="width:44px;height:44px;border-radius:50%;background:#fce4ec;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1rem;color:var(--red);flex-shrink:0;">D</div>
-        <div>
-          <div style="font-size:.9rem;font-weight:700;color:var(--text);">Dental Clinic Team</div>
-          <div style="font-size:.75rem;color:var(--g600);">Dental LED board</div>
-        </div>
+      <div class="review-upload">
+        <label for="reviewPhoto">Sign Photo *</label>
+        <input type="file" id="reviewPhoto" accept="image/jpeg,image/png,image/webp" required>
+        <div class="review-preview" id="reviewPreview"></div>
       </div>
-      <div style="font-size:.72rem;color:var(--green);font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.6rem;">Customer note</div>
-      <p style="font-size:.85rem;color:var(--g800);line-height:1.7;">The board looked clean on the clinic front and the size was easy to understand from the listing.</p>
-      <div style="font-size:.72rem;color:var(--g600);margin-top:.8rem;padding-top:.8rem;border-top:1px solid var(--g200);">Product &middot; Dental LED Board</div>
-    </div>
-
-    <div style="background:var(--g50);border:1px solid var(--g200);border-radius:var(--radius-lg);padding:1.5rem;">
-      <div style="display:flex;align-items:center;gap:.8rem;margin-bottom:1rem;">
-        <div style="width:44px;height:44px;border-radius:50%;background:#fff3e0;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1rem;color:var(--orange);flex-shrink:0;">P</div>
-        <div>
-          <div style="font-size:.9rem;font-weight:700;color:var(--text);">Pharmacy Owner</div>
-          <div style="font-size:.75rem;color:var(--g600);">Medical plus board</div>
-        </div>
+      <div class="form-group">
+        <label for="reviewDescription">Description *</label>
+        <textarea id="reviewDescription" rows="5" maxlength="700" required></textarea>
       </div>
-      <div style="font-size:.72rem;color:var(--green);font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.6rem;">Customer note</div>
-      <p style="font-size:.85rem;color:var(--g800);line-height:1.7;">The double-sided board made sense for a road-facing shop where people pass from both directions.</p>
-      <div style="font-size:.72rem;color:var(--g600);margin-top:.8rem;padding-top:.8rem;border-top:1px solid var(--g200);">Product &middot; Medical Plus Board</div>
-    </div>
+      <button class="review-submit" id="reviewSubmit" type="submit">Submit Review</button>
+      <div class="review-status" id="reviewStatus"></div>
+    </form>
 
+    <div>
+      <div class="customer-reviews-grid" id="customerReviewsGrid"></div>
+      <div class="review-empty" id="reviewEmpty">Customer photo reviews will appear here after approval.</div>
+    </div>
   </div>
 
   <div style="margin-top:2.5rem;background:var(--blue-light);border-radius:var(--radius-lg);padding:1.5rem 2rem;display:flex;gap:2rem;flex-wrap:wrap;align-items:center;justify-content:center;text-align:center;">
@@ -2537,6 +2557,178 @@
     if (cat !== 'all') setTimeout(function(){ document.getElementById('products').scrollIntoView({behavior:'smooth'}); }, 80);
   }
 
+  var selectedReviewImage = '';
+
+  function escapeText(value) {
+    return String(value == null ? '' : value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function setReviewStatus(message, type) {
+    var status = document.getElementById('reviewStatus');
+    if (!status) return;
+    status.textContent = message;
+    status.className = 'review-status show ' + type;
+  }
+
+  function compressReviewImage(file) {
+    return new Promise(function(resolve, reject) {
+      if (!file || !/^image\/(jpeg|png|webp)$/i.test(file.type)) {
+        reject(new Error('Please upload a JPG, PNG or WebP photo.'));
+        return;
+      }
+      if (file.size > 8 * 1024 * 1024) {
+        reject(new Error('Please choose a photo below 8 MB.'));
+        return;
+      }
+
+      var reader = new FileReader();
+      reader.onerror = function() { reject(new Error('Could not read the selected photo.')); };
+      reader.onload = function(event) {
+        var img = new Image();
+        img.onerror = function() { reject(new Error('Could not prepare the selected photo.')); };
+        img.onload = function() {
+          var maxSide = 1400;
+          var scale = Math.min(1, maxSide / Math.max(img.width, img.height));
+          var canvas = document.createElement('canvas');
+          canvas.width = Math.max(1, Math.round(img.width * scale));
+          canvas.height = Math.max(1, Math.round(img.height * scale));
+          var ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+          var output = '';
+          var quality = .84;
+          for (var i = 0; i < 5; i += 1) {
+            output = canvas.toDataURL('image/webp', quality);
+            if (output.indexOf('data:image/webp') !== 0) output = canvas.toDataURL('image/jpeg', quality);
+            if (output.length < 2100000) break;
+            quality -= .12;
+          }
+
+          if (output.length >= 2300000) {
+            reject(new Error('Please choose a smaller photo.'));
+            return;
+          }
+          resolve(output);
+        };
+        img.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function renderReviewPreview(dataUrl) {
+    var preview = document.getElementById('reviewPreview');
+    if (!preview) return;
+    preview.innerHTML = dataUrl ? '<img src="' + dataUrl + '" alt="Selected sign photo preview">' : '';
+    preview.classList.toggle('has-image', Boolean(dataUrl));
+  }
+
+  function initReviewForm() {
+    var form = document.getElementById('reviewForm');
+    var photo = document.getElementById('reviewPhoto');
+    if (!form || !photo) return;
+
+    photo.addEventListener('change', function() {
+      selectedReviewImage = '';
+      renderReviewPreview('');
+      var file = photo.files && photo.files[0];
+      if (!file) return;
+      setReviewStatus('Preparing photo...', 'success');
+      compressReviewImage(file)
+        .then(function(dataUrl) {
+          selectedReviewImage = dataUrl;
+          renderReviewPreview(dataUrl);
+          setReviewStatus('Photo ready. Add your description and submit.', 'success');
+        })
+        .catch(function(error) {
+          photo.value = '';
+          setReviewStatus(error.message, 'error');
+        });
+    });
+
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+      var button = document.getElementById('reviewSubmit');
+      var payload = {
+        name: document.getElementById('reviewName').value.trim(),
+        city: document.getElementById('reviewCity').value.trim(),
+        product: document.getElementById('reviewProduct').value.trim(),
+        description: document.getElementById('reviewDescription').value.trim(),
+        imageData: selectedReviewImage,
+      };
+
+      if (!payload.imageData) {
+        setReviewStatus('Please add a sign photo.', 'error');
+        return;
+      }
+
+      button.disabled = true;
+      button.textContent = 'Submitting...';
+      fetch('/api/reviews', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      })
+        .then(function(response) {
+          return response.json().then(function(data) {
+            if (!response.ok) throw new Error(data.error || 'Could not submit review.');
+            return data;
+          });
+        })
+        .then(function() {
+          form.reset();
+          selectedReviewImage = '';
+          renderReviewPreview('');
+          setReviewStatus('Thank you. Your review is waiting for approval.', 'success');
+        })
+        .catch(function(error) {
+          setReviewStatus(error.message, 'error');
+        })
+        .finally(function() {
+          button.disabled = false;
+          button.textContent = 'Submit Review';
+        });
+    });
+  }
+
+  function renderCustomerReviews(reviews) {
+    var grid = document.getElementById('customerReviewsGrid');
+    var empty = document.getElementById('reviewEmpty');
+    if (!grid || !empty) return;
+    grid.innerHTML = reviews.map(function(review) {
+      var location = review.city ? ' - ' + escapeText(review.city) : '';
+      return '<article class="review-card">' +
+        '<div class="review-photo"><img src="' + escapeText(review.image_url) + '" alt="' + escapeText(review.product || 'Customer sign board') + ' photo" loading="lazy"></div>' +
+        '<div class="review-body">' +
+          '<div class="review-name">' + escapeText(review.name) + location + '</div>' +
+          '<div class="review-product">' + escapeText(review.product || 'LED Sign Board') + '</div>' +
+          '<p class="review-description">' + escapeText(review.description) + '</p>' +
+        '</div>' +
+      '</article>';
+    }).join('');
+    empty.classList.toggle('show', reviews.length === 0);
+  }
+
+  function loadCustomerReviews() {
+    fetch('/api/reviews')
+      .then(function(response) {
+        if (!response.ok) throw new Error('Could not load customer reviews.');
+        return response.json();
+      })
+      .then(function(data) {
+        renderCustomerReviews(Array.isArray(data.reviews) ? data.reviews : []);
+      })
+      .catch(function(error) {
+        console.warn(error.message);
+        renderCustomerReviews([]);
+      });
+  }
+
   var portfolioProjects = [
     {
       category: 'medical',
@@ -2626,6 +2818,8 @@
   }
 
   document.addEventListener('DOMContentLoaded', function() {
+    initReviewForm();
+    loadCustomerReviews();
     renderPortfolio('all');
     var gallery = document.getElementById('clinicmedicalgallery');
     var thumbs = gallery ? gallery.parentElement.querySelector('.gallery-thumbs') : null;
@@ -2647,5 +2841,6 @@
     }
   });
 </script>
+<script src="/admin-products-storefront.js"></script>
 </body>
 </html>

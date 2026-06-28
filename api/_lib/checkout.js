@@ -1,4 +1,5 @@
 const pixelProducts = require('../../pixel-led/products.json');
+const { loadPublishedProductsByIds } = require('./admin-products');
 
 const COD_CHARGE = 50;
 const LOW_PRICE_SHIPPING = 125;
@@ -84,10 +85,20 @@ function cleanText(value, field, maxLength) {
   return text;
 }
 
-function canonicalProduct(item) {
+function canonicalProduct(item, extraProducts) {
   const id = cleanText(item && item.id, 'Product ID', 120);
   const fixed = fixedProducts.get(id);
   if (fixed) return { id, name: fixed.name, price: fixed.price, codAdvance: fixed.codAdvance || 0 };
+
+  const extra = extraProducts && extraProducts.get(id);
+  if (extra) {
+    return {
+      id,
+      name: extra.name,
+      price: Number(extra.price),
+      codAdvance: Number(extra.codAdvance || extra.cod_advance || 0),
+    };
+  }
 
   const family = variantFamilies.find(entry => entry.matches(id));
   const requestedPrice = Number(item && item.price);
@@ -97,11 +108,12 @@ function canonicalProduct(item) {
   return { id, name, price: requestedPrice, codAdvance: 0 };
 }
 
-function canonicalizeOrderData(orderData) {
+function canonicalizeOrderData(orderData, options = {}) {
   if (!orderData || typeof orderData !== 'object') throw new Error('Order data is required');
   if (!Array.isArray(orderData.items) || orderData.items.length === 0 || orderData.items.length > 20) {
     throw new Error('Order must contain between 1 and 20 products');
   }
+  const extraProducts = options.extraProducts || new Map();
 
   const phone = String(orderData.phone || '').replace(/\D/g, '');
   if (phone.length !== 10) throw new Error('A valid 10-digit phone number is required');
@@ -110,7 +122,7 @@ function canonicalizeOrderData(orderData) {
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new Error('A valid email address is required');
 
   const items = orderData.items.map(item => {
-    const product = canonicalProduct(item);
+    const product = canonicalProduct(item, extraProducts);
     const qty = Number(item && item.qty);
     if (!Number.isInteger(qty) || qty < 1 || qty > 99) {
       throw new Error(`Invalid quantity for ${product.name}`);
@@ -157,6 +169,20 @@ function canonicalizeOrderData(orderData) {
   };
 }
 
+async function canonicalizeOrderDataWithCatalog(orderData) {
+  try {
+    return canonicalizeOrderData(orderData);
+  } catch (error) {
+    if (!/Unknown product or variant/i.test(String(error && error.message))) throw error;
+    const ids = Array.isArray(orderData && orderData.items)
+      ? orderData.items.map(item => item && item.id).filter(Boolean)
+      : [];
+    if (!ids.some(id => /^admin-[a-z0-9-]+$/.test(String(id)))) throw error;
+    const extraProducts = await loadPublishedProductsByIds(ids);
+    return canonicalizeOrderData(orderData, { extraProducts });
+  }
+}
+
 function orderRow(orderId, orderData, status = 'Payment Pending') {
   return {
     order_id: orderId,
@@ -191,6 +217,7 @@ function amountsMatch(actual, expected) {
 module.exports = {
   amountsMatch,
   canonicalizeOrderData,
+  canonicalizeOrderDataWithCatalog,
   expectedPaymentAmount,
   orderRow,
 };

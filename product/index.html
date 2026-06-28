@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <title>Product | Signs and Arts</title>
+  <meta name="description" content="Signs and Arts product details.">
+  <link rel="stylesheet" href="/product/styles.css">
+</head>
+<body>
+  <div class="topbar">
+    <span>Pan India Delivery</span>
+    <a href="tel:+919392878946">+91 93928 78946</a>
+  </div>
+  <header>
+    <a href="/" class="logo">
+      <strong>Signs <i>&amp;</i> Arts</strong>
+      <small>LED SIGN BOARDS - INDIA</small>
+    </a>
+    <nav>
+      <a href="/#products">Products</a>
+      <a href="/pixel-led/">Pixel LEDs</a>
+      <a href="/#contact">Contact</a>
+    </nav>
+    <a class="whatsapp" href="https://wa.me/919392878946" target="_blank" rel="noopener">WhatsApp</a>
+  </header>
+
+  <main>
+    <div class="breadcrumb"><a href="/">Home</a><span>/</span><a href="/#products">Products</a><span>/</span><b id="crumb">Product</b></div>
+    <section class="loading" id="loading">Loading product...</section>
+    <section class="product is-hidden" id="productView">
+      <div class="gallery">
+        <div class="gallery-main" id="galleryMain"></div>
+        <div class="thumbs" id="thumbs"></div>
+      </div>
+      <div class="summary">
+        <div class="badges"><span class="badge" id="badge">New</span><span class="badge gold" id="category">Product</span></div>
+        <h1 id="name"></h1>
+        <p class="lead" id="description"></p>
+        <div class="price-box"><small>Price</small><strong id="price">Rs 0</strong></div>
+        <div class="quantity">
+          <button type="button" id="minusQty">-</button>
+          <input id="qty" value="1" inputmode="numeric">
+          <button type="button" id="plusQty">+</button>
+        </div>
+        <ul class="features" id="features"></ul>
+        <div class="buy">
+          <button type="button" id="buyButton">Buy Now</button>
+          <a id="waButton" href="https://wa.me/919392878946" target="_blank" rel="noopener">WhatsApp Order</a>
+        </div>
+      </div>
+    </section>
+    <section class="details is-hidden" id="details">
+      <h2>Product Specifications</h2>
+      <table class="specs" id="specs"></table>
+    </section>
+  </main>
+
+  <footer>
+    <div><strong>Signs &amp; Arts</strong><br>Ready-made sign boards and practical LED accessories.</div>
+    <div><a href="/refund.html">Return Policy</a> &nbsp; <a href="/terms.html">Terms</a></div>
+  </footer>
+
+  <div class="modal-bg" id="checkout">
+    <div class="modal">
+      <button class="close" type="button" id="closeCheckout">&times;</button>
+      <h2>Complete Your Order</h2>
+      <div class="summary-box" id="orderSummary"></div>
+      <div class="toggle">
+        <button id="onlineMode" class="active" type="button">Pay Online</button>
+        <button id="codMode" class="cod" type="button">Cash on Delivery</button>
+      </div>
+      <div class="cod-note" id="codNote">Pay Rs 200 advance now. Rs 50 COD charge is added; balance is paid on delivery.</div>
+      <div class="form-row">
+        <label>Full Name *<input id="customerName"></label>
+        <label>Phone Number *<input id="customerPhone" maxlength="10" inputmode="numeric"></label>
+      </div>
+      <label>Email Address *<input id="customerEmail" type="email"></label>
+      <label>Delivery Address *<input id="customerAddress"></label>
+      <div class="form-row">
+        <label>City *<input id="customerCity"></label>
+        <label>State *<input id="customerState"></label>
+      </div>
+      <label>PIN Code *<input id="customerPin" maxlength="6" inputmode="numeric"></label>
+      <button class="pay" id="payButton" type="button">Pay Securely</button>
+    </div>
+  </div>
+
+  <script src="/product/app.js"></script>
+</body>
+</html>

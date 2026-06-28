@@ -1,5 +1,5 @@
 const crypto = require('crypto');
-const { canonicalizeOrderData, orderRow } = require('./_lib/checkout');
+const { canonicalizeOrderDataWithCatalog, orderRow } = require('./_lib/checkout');
 const { countRecentOrdersByPhone, createOrderDraft } = require('./_lib/orders');
 const { enforceRateLimit } = require('./_lib/rate-limit');
 
@@ -28,7 +28,7 @@ module.exports = async (req, res) => {
 
   let orderData;
   try {
-    orderData = canonicalizeOrderData(req.body && req.body.orderData);
+    orderData = await canonicalizeOrderDataWithCatalog(req.body && req.body.orderData);
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
