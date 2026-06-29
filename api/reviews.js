@@ -67,9 +67,31 @@ function objectUrl(baseUrl, bucket, path, isPublic) {
   return `${baseUrl}/storage/v1/${prefix}/${encodeURIComponent(bucket)}/${encodedPath}`;
 }
 
-async function uploadReviewPhoto(baseUrl, key, image) {
-  const imagePath = `pending/${Date.now()}-${crypto.randomBytes(8).toString('hex')}.${image.extension}`;
-  const response = await fetch(objectUrl(baseUrl, REVIEW_BUCKET, imagePath, false), {
+function isMissingBucketError(status, text) {
+  return (status === 400 || status === 404) && /bucket not found|no such bucket/i.test(text || '');
+}
+
+async function ensureReviewBucket(baseUrl, key) {
+  const response = await fetch(`${baseUrl}/storage/v1/bucket`, {
+    method: 'POST',
+    signal: AbortSignal.timeout(8000),
+    headers: headers(key),
+    body: JSON.stringify({
+      id: REVIEW_BUCKET,
+      name: REVIEW_BUCKET,
+      public: true,
+      file_size_limit: Math.floor(MAX_IMAGE_BYTES),
+      allowed_mime_types: ['image/jpeg', 'image/png', 'image/webp'],
+    }),
+  });
+  const text = await response.text();
+  if (!response.ok && !/already exists|duplicate/i.test(text || '')) {
+    throw new Error(`Create review photo bucket failed (${response.status}): ${text.slice(0, 300)}`);
+  }
+}
+
+async function uploadReviewObject(baseUrl, key, imagePath, image) {
+  return fetch(objectUrl(baseUrl, REVIEW_BUCKET, imagePath, false), {
     method: 'PUT',
     signal: AbortSignal.timeout(12000),
     headers: {
@@ -81,7 +103,23 @@ async function uploadReviewPhoto(baseUrl, key, image) {
     },
     body: image.buffer,
   });
-  await responseJson(response, 'Upload review photo');
+}
+
+async function uploadReviewPhoto(baseUrl, key, image) {
+  const imagePath = `pending/${Date.now()}-${crypto.randomBytes(8).toString('hex')}.${image.extension}`;
+  let response = await uploadReviewObject(baseUrl, key, imagePath, image);
+  let text = await response.text();
+
+  if (!response.ok && isMissingBucketError(response.status, text)) {
+    await ensureReviewBucket(baseUrl, key);
+    response = await uploadReviewObject(baseUrl, key, imagePath, image);
+    text = await response.text();
+  }
+
+  if (!response.ok) {
+    throw new Error(`Upload review photo failed (${response.status}): ${text.slice(0, 300)}`);
+  }
+
   return {
     imagePath,
     imageUrl: objectUrl(baseUrl, REVIEW_BUCKET, imagePath, true),
