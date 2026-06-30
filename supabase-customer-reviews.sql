@@ -12,6 +12,10 @@ create table if not exists public.customer_reviews (
 
 alter table public.customer_reviews enable row level security;
 
+alter table public.customer_reviews
+add column if not exists image_urls jsonb not null default '[]'::jsonb,
+add column if not exists image_paths jsonb not null default '[]'::jsonb;
+
 drop policy if exists "Public can read approved customer reviews" on public.customer_reviews;
 create policy "Public can read approved customer reviews"
 on public.customer_reviews

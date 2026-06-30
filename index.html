@@ -449,12 +449,17 @@
     .review-form{background:var(--g50);border:1px solid var(--g200);border-radius:var(--radius-lg);padding:1.35rem;box-shadow:0 1px 4px rgba(0,0,0,.04);}
     .review-form-title{font-family:'Playfair Display',serif;font-size:1.35rem;font-weight:700;color:var(--text);margin-bottom:.9rem;}
     .review-form .form-row{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;}
-    .review-upload{border:1.5px dashed var(--g400);border-radius:var(--radius-lg);background:#fff;padding:1rem;margin-bottom:1rem;}
+    .review-upload{border:1.5px dashed var(--g400);border-radius:var(--radius-lg);background:#fff;padding:1rem;margin-bottom:1rem;transition:border-color .2s,background .2s,box-shadow .2s;cursor:pointer;}
+    .review-upload.dragging{border-color:#111;background:#f8fbff;box-shadow:0 0 0 3px rgba(0,0,0,.05);}
     .review-upload label{display:block;font-size:.78rem;font-weight:800;color:var(--g800);margin-bottom:.45rem;letter-spacing:.3px;}
+    .review-upload small{display:block;color:var(--g600);font-size:.72rem;line-height:1.5;margin:.4rem 0 .7rem;}
     .review-upload input{width:100%;font-family:'DM Sans',sans-serif;font-size:.82rem;color:var(--g800);}
-    .review-preview{display:none;margin-top:.8rem;aspect-ratio:4/3;background:#111;border-radius:var(--radius);overflow:hidden;}
-    .review-preview.has-image{display:block;}
-    .review-preview img{width:100%;height:100%;object-fit:cover;display:block;}
+    .review-preview-grid{display:none;grid-template-columns:repeat(auto-fill,minmax(86px,1fr));gap:.55rem;margin-top:.8rem;}
+    .review-preview-grid.has-image{display:grid;}
+    .review-preview-item{position:relative;aspect-ratio:1;background:#111;border-radius:var(--radius);overflow:hidden;}
+    .review-preview-item img{width:100%;height:100%;object-fit:cover;display:block;}
+    .review-preview-remove{position:absolute;top:5px;right:5px;width:24px;height:24px;border:0;border-radius:50%;background:rgba(0,0,0,.72);color:#fff;cursor:pointer;font-size:.82rem;line-height:24px;}
+    .review-preview-count{font-size:.72rem;color:var(--g600);margin-top:.55rem;}
     .review-submit{width:100%;background:#111;color:#fff;border:none;border-radius:var(--radius);padding:.85rem 1rem;font-family:'DM Sans',sans-serif;font-weight:800;font-size:.9rem;cursor:pointer;transition:background .2s;}
     .review-submit:hover{background:#c9a84c;color:#111;}
     .review-submit:disabled{background:var(--g400);color:#fff;cursor:not-allowed;}
@@ -466,6 +471,10 @@
     .review-card{background:#fff;border:1px solid var(--g200);border-radius:var(--radius-lg);overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.04);}
     .review-photo{aspect-ratio:4/3;background:#f5f5f5;overflow:hidden;border-bottom:1px solid var(--g200);}
     .review-photo img{width:100%;height:100%;object-fit:cover;display:block;}
+    .review-photo-stack{display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:1fr;gap:2px;background:#fff;aspect-ratio:4/3;border-bottom:1px solid var(--g200);overflow:hidden;}
+    .review-photo-stack .review-photo{aspect-ratio:auto;border:0;position:relative;}
+    .review-photo-stack.three .review-photo:first-child{grid-row:span 2;}
+    .review-more-photos{position:absolute;inset:0;background:rgba(0,0,0,.55);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1rem;}
     .review-body{padding:1rem;}
     .review-name{font-size:.95rem;font-weight:800;color:var(--text);}
     .review-product{font-size:.72rem;color:var(--g600);font-weight:700;margin-top:.2rem;}
@@ -1709,10 +1718,12 @@
           <option value="Custom LED Sign Board">
         </datalist>
       </div>
-      <div class="review-upload">
-        <label for="reviewPhoto">Sign Photo *</label>
-        <input type="file" id="reviewPhoto" accept="image/jpeg,image/png,image/webp" required>
-        <div class="review-preview" id="reviewPreview"></div>
+      <div class="review-upload" id="reviewDropZone" tabindex="0">
+        <label for="reviewPhoto">Sign Photos *</label>
+        <small>Choose or drag up to 5 installed sign photos.</small>
+        <input type="file" id="reviewPhoto" accept="image/jpeg,image/png,image/webp" multiple>
+        <div class="review-preview-grid" id="reviewPreview"></div>
+        <div class="review-preview-count" id="reviewPhotoCount"></div>
       </div>
       <div class="form-group">
         <label for="reviewDescription">Description *</label>
@@ -2557,7 +2568,8 @@
     if (cat !== 'all') setTimeout(function(){ document.getElementById('products').scrollIntoView({behavior:'smooth'}); }, 80);
   }
 
-  var selectedReviewImage = '';
+  var selectedReviewImages = [];
+  var MAX_REVIEW_IMAGES = 5;
 
   function escapeText(value) {
     return String(value == null ? '' : value)
@@ -2621,34 +2633,96 @@
     });
   }
 
-  function renderReviewPreview(dataUrl) {
+  function renderReviewPreview(images) {
     var preview = document.getElementById('reviewPreview');
+    var count = document.getElementById('reviewPhotoCount');
     if (!preview) return;
-    preview.innerHTML = dataUrl ? '<img src="' + dataUrl + '" alt="Selected sign photo preview">' : '';
-    preview.classList.toggle('has-image', Boolean(dataUrl));
+    preview.innerHTML = images.map(function(dataUrl, index) {
+      return '<div class="review-preview-item">' +
+        '<img src="' + dataUrl + '" alt="Selected sign photo preview ' + (index + 1) + '">' +
+        '<button type="button" class="review-preview-remove" data-review-remove="' + index + '" aria-label="Remove photo">&#215;</button>' +
+      '</div>';
+    }).join('');
+    preview.classList.toggle('has-image', images.length > 0);
+    if (count) count.textContent = images.length ? images.length + ' / ' + MAX_REVIEW_IMAGES + ' photos selected' : '';
+  }
+
+  function prepareReviewFiles(fileList, append) {
+    var files = Array.prototype.slice.call(fileList || [])
+      .filter(function(file) { return /^image\/(jpeg|png|webp)$/i.test(file.type); });
+
+    if (!append) selectedReviewImages = [];
+    var remaining = MAX_REVIEW_IMAGES - selectedReviewImages.length;
+    if (!files.length) {
+      renderReviewPreview(selectedReviewImages);
+      setReviewStatus('Please upload JPG, PNG or WebP photos.', 'error');
+      return;
+    }
+    if (remaining <= 0) {
+      setReviewStatus('You can add up to ' + MAX_REVIEW_IMAGES + ' photos.', 'error');
+      return;
+    }
+    if (files.length > remaining) {
+      files = files.slice(0, remaining);
+      setReviewStatus('Only ' + MAX_REVIEW_IMAGES + ' photos can be added.', 'error');
+    } else {
+      setReviewStatus('Preparing ' + files.length + ' photo' + (files.length > 1 ? 's' : '') + '...', 'success');
+    }
+
+    Promise.all(files.map(compressReviewImage))
+      .then(function(images) {
+        selectedReviewImages = selectedReviewImages.concat(images).slice(0, MAX_REVIEW_IMAGES);
+        renderReviewPreview(selectedReviewImages);
+        setReviewStatus('Photos ready. Add your description and submit.', 'success');
+      })
+      .catch(function(error) {
+        setReviewStatus(error.message, 'error');
+      });
   }
 
   function initReviewForm() {
     var form = document.getElementById('reviewForm');
     var photo = document.getElementById('reviewPhoto');
+    var dropZone = document.getElementById('reviewDropZone');
     if (!form || !photo) return;
 
     photo.addEventListener('change', function() {
-      selectedReviewImage = '';
-      renderReviewPreview('');
-      var file = photo.files && photo.files[0];
-      if (!file) return;
-      setReviewStatus('Preparing photo...', 'success');
-      compressReviewImage(file)
-        .then(function(dataUrl) {
-          selectedReviewImage = dataUrl;
-          renderReviewPreview(dataUrl);
-          setReviewStatus('Photo ready. Add your description and submit.', 'success');
-        })
-        .catch(function(error) {
-          photo.value = '';
-          setReviewStatus(error.message, 'error');
+      prepareReviewFiles(photo.files, false);
+    });
+
+    if (dropZone) {
+      ['dragenter', 'dragover'].forEach(function(eventName) {
+        dropZone.addEventListener(eventName, function(event) {
+          event.preventDefault();
+          event.stopPropagation();
+          dropZone.classList.add('dragging');
         });
+      });
+      ['dragleave', 'drop'].forEach(function(eventName) {
+        dropZone.addEventListener(eventName, function(event) {
+          event.preventDefault();
+          event.stopPropagation();
+          dropZone.classList.remove('dragging');
+        });
+      });
+      dropZone.addEventListener('drop', function(event) {
+        prepareReviewFiles(event.dataTransfer && event.dataTransfer.files, true);
+      });
+      dropZone.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          photo.click();
+        }
+      });
+    }
+
+    document.getElementById('reviewPreview').addEventListener('click', function(event) {
+      var button = event.target.closest('[data-review-remove]');
+      if (!button) return;
+      var index = Number(button.getAttribute('data-review-remove'));
+      selectedReviewImages.splice(index, 1);
+      renderReviewPreview(selectedReviewImages);
+      setReviewStatus(selectedReviewImages.length ? 'Photo removed.' : 'Please add at least one sign photo.', selectedReviewImages.length ? 'success' : 'error');
     });
 
     form.addEventListener('submit', function(event) {
@@ -2659,11 +2733,12 @@
         city: document.getElementById('reviewCity').value.trim(),
         product: document.getElementById('reviewProduct').value.trim(),
         description: document.getElementById('reviewDescription').value.trim(),
-        imageData: selectedReviewImage,
+        imageData: selectedReviewImages[0] || '',
+        imagesData: selectedReviewImages,
       };
 
-      if (!payload.imageData) {
-        setReviewStatus('Please add a sign photo.', 'error');
+      if (!selectedReviewImages.length) {
+        setReviewStatus('Please add at least one sign photo.', 'error');
         return;
       }
 
@@ -2682,8 +2757,8 @@
         })
         .then(function() {
           form.reset();
-          selectedReviewImage = '';
-          renderReviewPreview('');
+          selectedReviewImages = [];
+          renderReviewPreview(selectedReviewImages);
           setReviewStatus('Thank you. Your review is waiting for approval.', 'success');
         })
         .catch(function(error) {
@@ -2702,8 +2777,9 @@
     if (!grid || !empty) return;
     grid.innerHTML = reviews.map(function(review) {
       var location = review.city ? ' - ' + escapeText(review.city) : '';
+      var photos = reviewPhotoUrls(review);
       return '<article class="review-card">' +
-        '<div class="review-photo"><img src="' + escapeText(review.image_url) + '" alt="' + escapeText(review.product || 'Customer sign board') + ' photo" loading="lazy"></div>' +
+        renderReviewPhotos(photos, review.product || 'Customer sign board') +
         '<div class="review-body">' +
           '<div class="review-name">' + escapeText(review.name) + location + '</div>' +
           '<div class="review-product">' + escapeText(review.product || 'LED Sign Board') + '</div>' +
@@ -2712,6 +2788,31 @@
       '</article>';
     }).join('');
     empty.classList.toggle('show', reviews.length === 0);
+  }
+
+  function reviewPhotoUrls(review) {
+    var urls = [];
+    if (Array.isArray(review.image_urls)) urls = review.image_urls;
+    else if (typeof review.image_urls === 'string' && review.image_urls) {
+      try { urls = JSON.parse(review.image_urls); } catch (error) { urls = []; }
+    }
+    if (!urls.length && review.image_url) urls = [review.image_url];
+    return urls.filter(Boolean);
+  }
+
+  function renderReviewPhotos(urls, label) {
+    if (!urls.length) return '';
+    if (urls.length === 1) {
+      return '<div class="review-photo"><img src="' + escapeText(urls[0]) + '" alt="' + escapeText(label) + ' photo" loading="lazy"></div>';
+    }
+    var visible = urls.slice(0, 3);
+    var className = urls.length === 2 ? 'review-photo-stack two' : 'review-photo-stack three';
+    return '<div class="' + className + '">' + visible.map(function(url, index) {
+      var more = index === 2 && urls.length > 3
+        ? '<div class="review-more-photos">+' + (urls.length - 3) + '</div>'
+        : '';
+      return '<div class="review-photo"><img src="' + escapeText(url) + '" alt="' + escapeText(label) + ' photo ' + (index + 1) + '" loading="lazy">' + more + '</div>';
+    }).join('') + '</div>';
   }
 
   function loadCustomerReviews() {

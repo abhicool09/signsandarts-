@@ -4,6 +4,7 @@ const { sendTwilioWhatsApp } = require('./_lib/whatsapp-alert');
 
 const REVIEW_WINDOW_MS = 60 * 60 * 1000;
 const REVIEW_LIMIT = 6;
+const MAX_REVIEW_IMAGES = 5;
 const MAX_IMAGE_BYTES = 1.6 * 1024 * 1024;
 const REVIEW_BUCKET = process.env.SUPABASE_REVIEW_BUCKET || 'review-photos';
 
@@ -48,17 +49,26 @@ function cleanText(value, limit) {
     .slice(0, limit);
 }
 
-function parseImageData(value) {
+function parseImageData(value, index) {
   const match = /^data:(image\/(?:jpeg|png|webp));base64,([A-Za-z0-9+/=\s]+)$/i.exec(String(value || ''));
-  if (!match) throw new Error('Please upload a JPG, PNG or WebP photo.');
+  if (!match) throw new Error('Please upload JPG, PNG or WebP photos only.');
 
   const contentType = match[1].toLowerCase();
   const buffer = Buffer.from(match[2].replace(/\s/g, ''), 'base64');
-  if (!buffer.length) throw new Error('Review photo is empty.');
-  if (buffer.length > MAX_IMAGE_BYTES) throw new Error('Review photo is too large. Please upload a smaller image.');
+  if (!buffer.length) throw new Error(`Review photo ${index + 1} is empty.`);
+  if (buffer.length > MAX_IMAGE_BYTES) throw new Error(`Review photo ${index + 1} is too large. Please upload a smaller image.`);
 
   const extension = contentType === 'image/jpeg' ? 'jpg' : contentType.split('/')[1];
   return { buffer, contentType, extension };
+}
+
+function parseReviewImages(payload) {
+  const values = Array.isArray(payload.imagesData) && payload.imagesData.length
+    ? payload.imagesData
+    : [payload.imageData];
+  const limited = values.filter(Boolean).slice(0, MAX_REVIEW_IMAGES);
+  if (!limited.length) throw new Error('Please upload at least one sign photo.');
+  return limited.map(parseImageData);
 }
 
 function objectUrl(baseUrl, bucket, path, isPublic) {
@@ -105,8 +115,8 @@ async function uploadReviewObject(baseUrl, key, imagePath, image) {
   });
 }
 
-async function uploadReviewPhoto(baseUrl, key, image) {
-  const imagePath = `pending/${Date.now()}-${crypto.randomBytes(8).toString('hex')}.${image.extension}`;
+async function uploadReviewPhoto(baseUrl, key, image, index) {
+  const imagePath = `pending/${Date.now()}-${index}-${crypto.randomBytes(8).toString('hex')}.${image.extension}`;
   let response = await uploadReviewObject(baseUrl, key, imagePath, image);
   let text = await response.text();
 
@@ -126,19 +136,38 @@ async function uploadReviewPhoto(baseUrl, key, image) {
   };
 }
 
+async function uploadReviewPhotos(baseUrl, key, images) {
+  const photos = [];
+  for (const [index, image] of images.entries()) {
+    photos.push(await uploadReviewPhoto(baseUrl, key, image, index));
+  }
+  return photos;
+}
+
 async function listApprovedReviews() {
   const { url, key } = supabaseConfig();
-  const response = await fetch(
-    `${url}/rest/v1/customer_reviews?status=eq.approved` +
-    '&select=id,name,city,product,description,image_url,created_at' +
-    '&order=created_at.desc&limit=24',
-    {
-      signal: AbortSignal.timeout(8000),
-      headers: headers(key),
-    }
-  );
-  const rows = await responseJson(response, 'Load customer reviews');
-  return Array.isArray(rows) ? rows : [];
+  const baseQuery = `${url}/rest/v1/customer_reviews?status=eq.approved&order=created_at.desc&limit=24`;
+  const options = {
+    signal: AbortSignal.timeout(8000),
+    headers: headers(key),
+  };
+
+  try {
+    const response = await fetch(
+      `${baseQuery}&select=id,name,city,product,description,image_url,image_urls,created_at`,
+      options
+    );
+    const rows = await responseJson(response, 'Load customer reviews');
+    return Array.isArray(rows) ? rows : [];
+  } catch (error) {
+    if (!/image_urls|schema cache|column/i.test(error.message)) throw error;
+    const fallback = await fetch(
+      `${baseQuery}&select=id,name,city,product,description,image_url,created_at`,
+      options
+    );
+    const rows = await responseJson(fallback, 'Load customer reviews');
+    return Array.isArray(rows) ? rows : [];
+  }
 }
 
 async function createPendingReview(payload) {
@@ -150,17 +179,20 @@ async function createPendingReview(payload) {
   if (name.length < 2) throw new Error('Please enter your name.');
   if (description.length < 10) throw new Error('Please write a short review description.');
 
-  const image = parseImageData(payload.imageData);
+  const images = parseReviewImages(payload);
   const { url, key } = supabaseConfig();
-  const photo = await uploadReviewPhoto(url, key, image);
+  const photos = await uploadReviewPhotos(url, key, images);
+  const mainPhoto = photos[0];
 
   const row = {
     name,
     city,
     product,
     description,
-    image_url: photo.imageUrl,
-    image_path: photo.imagePath,
+    image_url: mainPhoto.imageUrl,
+    image_path: mainPhoto.imagePath,
+    image_urls: photos.map(photo => photo.imageUrl),
+    image_paths: photos.map(photo => photo.imagePath),
     status: 'pending',
   };
 
@@ -170,6 +202,13 @@ async function createPendingReview(payload) {
     headers: headers(key, 'return=representation'),
     body: JSON.stringify(row),
   });
+  if (!response.ok) {
+    const text = await response.text();
+    if (/image_urls|image_paths|schema cache|column/i.test(text)) {
+      throw new Error('Multiple photo support needs the latest Supabase review SQL. Run the updated customer_reviews SQL, then try again.');
+    }
+    throw new Error(`Save customer review failed (${response.status}): ${text.slice(0, 300)}`);
+  }
   const rows = await responseJson(response, 'Save customer review');
   const saved = Array.isArray(rows) && rows.length ? rows[0] : row;
 
