@@ -186,12 +186,25 @@ function alreadyFulfilled(order) {
     ['Dispatched', 'Delivered', 'Cancelled'].includes(String(order.status || ''));
 }
 
+function dateOnly(date) {
+  return date.toISOString().slice(0, 10);
+}
+
+function estimatedDeliveryDate(order) {
+  const created = Date.parse(order && (order.created_at || order.updated_at));
+  const base = Number.isFinite(created) ? Math.max(created, Date.now()) : Date.now();
+  return dateOnly(new Date(base + 7 * 24 * 60 * 60 * 1000));
+}
+
 function orderResponseDetails(order) {
   return {
     total: Number(order.total || 0),
     payment_mode: order.payment_mode || '',
     cod_advance: Number(order.cod_advance || 0),
     items: Array.isArray(order.items) ? order.items : [],
+    email: order.email || '',
+    delivery_country: 'IN',
+    estimated_delivery_date: estimatedDeliveryDate(order),
   };
 }
 

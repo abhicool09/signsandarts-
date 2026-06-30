@@ -242,6 +242,9 @@
   var product = p.get('product')  || 'LED Sign Board';
   var amount  = p.get('amount');
   var isCOD   = p.get('cod') === '1';
+  var GOOGLE_CUSTOMER_REVIEWS_MERCHANT_ID = 5797950841;
+  var googleCustomerReviewsPayload = null;
+  var googleCustomerReviewsLoaded = false;
 
   document.getElementById('orderId').textContent  = orderId;
   document.getElementById('prodName').textContent = product;
@@ -317,6 +320,62 @@
     });
   }
 
+  function fallbackEstimatedDeliveryDate() {
+    var date = new Date();
+    date.setDate(date.getDate() + 7);
+    return date.toISOString().slice(0, 10);
+  }
+
+  window.renderOptIn = function() {
+    googleCustomerReviewsLoaded = true;
+    renderGoogleCustomerReviewsOptIn();
+  };
+
+  function loadGoogleCustomerReviewsScript() {
+    if (document.getElementById('googleCustomerReviewsPlatform')) {
+      renderGoogleCustomerReviewsOptIn();
+      return;
+    }
+    var script = document.createElement('script');
+    script.id = 'googleCustomerReviewsPlatform';
+    script.src = 'https://apis.google.com/js/platform.js?onload=renderOptIn';
+    script.async = true;
+    script.defer = true;
+    document.head.appendChild(script);
+  }
+
+  function renderGoogleCustomerReviewsOptIn() {
+    if (!googleCustomerReviewsPayload || googleCustomerReviewsPayload.rendered) return;
+    if (!googleCustomerReviewsLoaded || !window.gapi || !window.gapi.load) return;
+
+    window.gapi.load('surveyoptin', function() {
+      try {
+        window.gapi.surveyoptin.render({
+          merchant_id: GOOGLE_CUSTOMER_REVIEWS_MERCHANT_ID,
+          order_id: googleCustomerReviewsPayload.order_id,
+          email: googleCustomerReviewsPayload.email,
+          delivery_country: googleCustomerReviewsPayload.delivery_country,
+          estimated_delivery_date: googleCustomerReviewsPayload.estimated_delivery_date
+        });
+        googleCustomerReviewsPayload.rendered = true;
+      } catch (error) {
+        console.warn('Google Customer Reviews opt-in could not be rendered:', error.message);
+      }
+    });
+  }
+
+  function queueGoogleCustomerReviewsOptIn(verifiedOrder) {
+    if (!verifiedOrder || !verifiedOrder.email || !/^SA-/.test(orderId)) return;
+    googleCustomerReviewsPayload = {
+      order_id: String(verifiedOrder.order_id || orderId),
+      email: String(verifiedOrder.email),
+      delivery_country: String(verifiedOrder.delivery_country || 'IN'),
+      estimated_delivery_date: String(verifiedOrder.estimated_delivery_date || fallbackEstimatedDeliveryDate())
+    };
+    loadGoogleCustomerReviewsScript();
+    renderGoogleCustomerReviewsOptIn();
+  }
+
   (function resumePaidOrder(attempt) {
     if (!orderId || orderId === '—') {
       showVerificationDelayed();
@@ -347,6 +406,7 @@
           document.getElementById('prodName').textContent = product;
         }
         trackPurchaseConversion(result.data);
+        queueGoogleCustomerReviewsOptIn(result.data);
         return;
       }
       if (attempt < 2) {
