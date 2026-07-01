@@ -8,6 +8,7 @@
 
   var categoryLabels = {
     medical: 'Medical / Pharmacy',
+    clinic: 'Clinic',
     xerox: 'Xerox / Stationery',
     dental: 'Dental Clinic',
     optical: 'Optical Clinic',

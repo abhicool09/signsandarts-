@@ -70,6 +70,13 @@ const variantFamilies = [
     },
   },
   {
+    matches: id => id === 'neuro-plus' || /^neuroplus(?:-|$)/.test(id),
+    variants: {
+      2689: 'Neuro Plus LED Sign Board - Red White 18x18',
+      5489: 'Neuro Plus LED Sign Board - Red White 24x24',
+    },
+  },
+  {
     matches: id => id === 'pharmacy-plus' || /^pharmacy-(?:18|24)/.test(id),
     variants: {
       2689: 'Pharmacy Plus LED Sign Board - Green 18x18',
@@ -81,6 +88,13 @@ const variantFamilies = [
     variants: {
       2689: 'Optical Plus LED Sign Board - Red White 18x18',
       5489: 'Optical Plus LED Sign Board - Red White 24x24',
+    },
+  },
+  {
+    matches: id => id === 'dental-plus' || /^dentalplus(?:-|$)/.test(id),
+    variants: {
+      2689: 'Dental Plus LED Sign Board - Red White 18x18',
+      5489: 'Dental Plus LED Sign Board - Red White 24x24',
     },
   },
 ];
