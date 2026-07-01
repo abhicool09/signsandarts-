@@ -76,6 +76,13 @@ const variantFamilies = [
       5489: 'Pharmacy Plus LED Sign Board - Green 24x24',
     },
   },
+  {
+    matches: id => id === 'optical-plus' || /^opticalplus(?:-|$)/.test(id),
+    variants: {
+      2689: 'Optical Plus LED Sign Board - Red White 18x18',
+      5489: 'Optical Plus LED Sign Board - Red White 24x24',
+    },
+  },
 ];
 
 function cleanText(value, field, maxLength) {

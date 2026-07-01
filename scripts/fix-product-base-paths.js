@@ -15,6 +15,7 @@ const productDirectories = [
   'medical-pharmacy-led-sign-board',
   'medical-plus-led-sign-board',
   'medical-red-led-sign-board',
+  'optical-plus-led-sign-board',
   'opticals-led-sign-board',
   'pan-shop-led-sign-board',
   'pharmacy-plus-led-sign',
