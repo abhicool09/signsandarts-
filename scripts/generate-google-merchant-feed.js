@@ -4,6 +4,7 @@ const path = require('path');
 const root = path.resolve(__dirname, '..');
 const site = 'https://signsandarts.in';
 const outputPath = path.join(root, 'google-merchant-feed.xml');
+const csvOutputPath = path.join(root, 'google-merchant-feed.csv');
 const pixelProducts = require(path.join(root, 'pixel-led', 'products.json'));
 
 const categories = {
@@ -589,6 +590,72 @@ const staticItems = [
   }),
 ];
 
+const specialtyPlusProducts = [
+  {
+    slug: 'ent-led-sign-board',
+    title: 'ENT LED Sign Board',
+    description: 'Buy ENT LED Sign Board in red and white for ENT clinics, doctor offices and specialty consultation rooms. Double-sided pixel LED board with iron frame, weatherproof build and plug-and-play installation.',
+  },
+  {
+    slug: 'doctor-led-sign-board',
+    title: 'Doctor LED Sign Board',
+    description: 'Buy Doctor LED Sign Board in red and white for doctor clinics, consultation rooms, family clinics and medical offices. Double-sided pixel LED board with iron frame, weatherproof build and plug-and-play installation.',
+  },
+  {
+    slug: 'orthopedic-led-sign-board',
+    title: 'Orthopedic LED Sign Board',
+    description: 'Buy Orthopedic LED Sign Board in red and white for orthopedic clinics, bone specialists, hospitals and doctor offices. Double-sided pixel LED board with iron frame, weatherproof build and plug-and-play installation.',
+  },
+  {
+    slug: 'emergency-led-sign-board',
+    title: 'Emergency LED Sign Board',
+    description: 'Buy Emergency LED Sign Board in red and white for hospitals, emergency entrances, clinics and 24-hour medical facilities. Double-sided pixel LED board with iron frame, weatherproof build and plug-and-play installation.',
+  },
+  {
+    slug: 'hospital-led-sign-board',
+    title: 'Hospital LED Sign Board',
+    description: 'Buy Hospital LED Sign Board in red and white for hospitals, clinics, nursing homes and medical entrances. Double-sided pixel LED board with iron frame, weatherproof build and plug-and-play installation.',
+  },
+  {
+    slug: 'homeo-led-sign-board',
+    title: 'Homeo LED Sign Board',
+    description: 'Buy Homeo LED Sign Board in red and white for homeopathy clinics, homeo doctors and alternative medicine clinics. Double-sided pixel LED board with iron frame, weatherproof build and plug-and-play installation.',
+  },
+];
+
+const specialtyPlusItems = specialtyPlusProducts.flatMap(product => [
+  item({
+    id: `sa-${product.slug}-18x18`,
+    title: `${product.title} 18x18 inch`,
+    description: `${product.description} 18x18 inch size, COD and pan-India delivery.`,
+    slug: `${product.slug}/`,
+    image: `${product.slug}/main.webp`,
+    additionalImages: [
+      `${product.slug}/size.webp`,
+      `${product.slug}/features.webp`,
+      `${product.slug}/overview.webp`,
+    ],
+    price: 2889,
+    itemGroupId: `sa-${product.slug}`,
+    size: '18x18 inch',
+  }),
+  item({
+    id: `sa-${product.slug}-24x24`,
+    title: `${product.title} 24x24 inch`,
+    description: `${product.description} 24x24 inch size for stronger roadside visibility, COD and pan-India delivery.`,
+    slug: `${product.slug}/`,
+    image: `${product.slug}/main.webp`,
+    additionalImages: [
+      `${product.slug}/features.webp`,
+      `${product.slug}/overview.webp`,
+      `${product.slug}/front.webp`,
+    ].filter(imagePath => fs.existsSync(path.join(root, imagePath))),
+    price: 5489,
+    itemGroupId: `sa-${product.slug}`,
+    size: '24x24 inch',
+  }),
+]);
+
 function cleanPixelTitle(value, sourceId) {
   return `${String(value)
     .replace(/["']/g, '')
@@ -613,7 +680,7 @@ const pixelItems = pixelProducts.map(product => item({
   size: product.spacing,
 }));
 
-const products = [...staticItems, ...pixelItems];
+const products = [...staticItems, ...specialtyPlusItems, ...pixelItems];
 
 function escapeXml(value) {
   return String(value == null ? '' : value)
@@ -690,4 +757,55 @@ ${products.map(renderItem).join('')}  </channel>
 `;
 
 fs.writeFileSync(outputPath, xml, 'utf8');
-console.log(`Generated ${products.length} products in ${path.relative(root, outputPath)}`);
+
+function escapeCsv(value) {
+  return `"${String(value == null ? '' : value).replace(/"/g, '""')}"`;
+}
+
+function renderCsv(productsToRender) {
+  const headers = [
+    'id',
+    'title',
+    'description',
+    'link',
+    'image_link',
+    'additional_image_link',
+    'additional_image_link',
+    'additional_image_link',
+    'availability',
+    'price',
+    'brand',
+    'condition',
+    'mpn',
+    'google_product_category',
+    'product_type',
+    'item_group_id',
+    'size',
+  ];
+  const rows = productsToRender.map(product => {
+    const additionalImages = product.additionalImages || [];
+    return [
+      product.id,
+      product.title,
+      product.description,
+      product.link,
+      product.imageLink,
+      additionalImages[0] || '',
+      additionalImages[1] || '',
+      additionalImages[2] || '',
+      product.availability,
+      product.price,
+      product.brand,
+      product.condition,
+      product.mpn,
+      product.googleProductCategory,
+      product.productType,
+      product.itemGroupId,
+      product.size,
+    ].map(escapeCsv).join(',');
+  });
+  return `${headers.join(',')}\n${rows.join('\n')}\n`;
+}
+
+fs.writeFileSync(csvOutputPath, renderCsv(products), 'utf8');
+console.log(`Generated ${products.length} products in ${path.relative(root, outputPath)} and ${path.relative(root, csvOutputPath)}`);

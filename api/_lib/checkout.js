@@ -97,6 +97,48 @@ const variantFamilies = [
       5489: 'Dental Plus LED Sign Board - Red White 24x24',
     },
   },
+  {
+    matches: id => id === 'ent-led' || /^entled(?:-|$)/.test(id),
+    variants: {
+      2889: 'ENT LED Sign Board - Red White 18x18',
+      5489: 'ENT LED Sign Board - Red White 24x24',
+    },
+  },
+  {
+    matches: id => id === 'doctor-led' || /^doctorled(?:-|$)/.test(id),
+    variants: {
+      2889: 'Doctor LED Sign Board - Red White 18x18',
+      5489: 'Doctor LED Sign Board - Red White 24x24',
+    },
+  },
+  {
+    matches: id => id === 'orthopedic-led' || /^orthopedicled(?:-|$)/.test(id),
+    variants: {
+      2889: 'Orthopedic LED Sign Board - Red White 18x18',
+      5489: 'Orthopedic LED Sign Board - Red White 24x24',
+    },
+  },
+  {
+    matches: id => id === 'emergency-led' || /^emergencyled(?:-|$)/.test(id),
+    variants: {
+      2889: 'Emergency LED Sign Board - Red White 18x18',
+      5489: 'Emergency LED Sign Board - Red White 24x24',
+    },
+  },
+  {
+    matches: id => id === 'hospital-led' || /^hospitalled(?:-|$)/.test(id),
+    variants: {
+      2889: 'Hospital LED Sign Board - Red White 18x18',
+      5489: 'Hospital LED Sign Board - Red White 24x24',
+    },
+  },
+  {
+    matches: id => id === 'homeo-led' || /^homeoled(?:-|$)/.test(id),
+    variants: {
+      2889: 'Homeo LED Sign Board - Red White 18x18',
+      5489: 'Homeo LED Sign Board - Red White 24x24',
+    },
+  },
 ];
 
 function cleanText(value, field, maxLength) {
