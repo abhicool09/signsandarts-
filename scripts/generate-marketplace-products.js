@@ -126,7 +126,7 @@ function page(product) {
         <p class="lead">${escapeHtml(product.description)}</p>
         <div class="price-box"><small>Price</small><strong>&#8377;${product.price.toLocaleString('en-IN')}</strong></div>
         <ul class="features">${product.features.map(feature => `<li>${escapeHtml(feature)}</li>`).join('')}</ul>
-        <div class="buy"><button onclick="openCheckout()">Buy Now - &#8377;${product.price.toLocaleString('en-IN')}</button><a href="https://wa.me/919392878946?text=${encodeURIComponent(`Hi, I want to order ${product.name}`)}" target="_blank">WhatsApp Order</a></div>
+        <div class="buy"><button onclick="openCheckout()">Buy Now - &#8377;${product.price.toLocaleString('en-IN')}</button><a href="https://wa.me/919392878946?text=${encodeURIComponent(`Hi, I want more info about ${product.name}`)}" target="_blank">Get More Info on WhatsApp</a></div>
       </div>
     </section>
     <section class="details"><h2>Product Specifications</h2><table class="specs">${product.specs.map(([label, value]) => `<tr><td>${escapeHtml(label)}</td><td>${escapeHtml(value)}</td></tr>`).join('')}</table></section>

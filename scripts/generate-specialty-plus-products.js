@@ -237,7 +237,7 @@ function page(product, imageNames) {
           <li>Pixel LED brightness with plug-and-play power</li>
           <li>Hook mounting with nut and bolt hardware</li>
         </ul>
-        <div class="buy"><button id="buyBtn" onclick="openCheckout()">Buy Now - &#8377;${money(variants[0].price)}</button><a href="https://wa.me/919392878946?text=${encodeURIComponent(`Hi, I want to order ${product.name}`)}" target="_blank">WhatsApp Order</a></div>
+        <div class="buy"><button id="buyBtn" onclick="openCheckout()">Buy Now - &#8377;${money(variants[0].price)}</button><a href="https://wa.me/919392878946?text=${encodeURIComponent(`Hi, I want more info about ${product.name}`)}" target="_blank">Get More Info on WhatsApp</a></div>
       </div>
     </section>
     <section class="details">

@@ -110,7 +110,7 @@
 
     var whatsapp = document.createElement('a');
     whatsapp.className = 'bwa';
-    whatsapp.href = 'https://wa.me/919392878946?text=' + encodeURIComponent('Hi, I want to order ' + product.name);
+    whatsapp.href = 'https://wa.me/919392878946?text=' + encodeURIComponent('Hi, I want more info about ' + product.name);
     whatsapp.target = '_blank';
     whatsapp.rel = 'noopener';
     whatsapp.innerHTML = '&#128242;';

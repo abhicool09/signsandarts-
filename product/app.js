@@ -76,7 +76,7 @@
       var value = Array.isArray(spec) ? spec[1] : spec.value;
       return '<tr><td>' + escapeHtml(label) + '</td><td>' + escapeHtml(value) + '</td></tr>';
     }).join('');
-    el('waButton').href = 'https://wa.me/919392878946?text=' + encodeURIComponent('Hi, I want to order ' + product.name);
+    el('waButton').href = 'https://wa.me/919392878946?text=' + encodeURIComponent('Hi, I want more info about ' + product.name);
     renderImages(images);
     el('loading').classList.add('is-hidden');
     el('productView').classList.remove('is-hidden');
