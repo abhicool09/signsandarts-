@@ -79,7 +79,7 @@ const staticItems = [
   item({
     id: 'sa-clinic-led-sign-board-18x18',
     title: 'Clinic LED Sign Board 18x18 inch',
-    description: 'Buy Clinic Plus LED Sign Board, red and white double sided 18x18 inch pixel LED cross sign for clinics, hospitals and doctor offices. Weatherproof, plug and play.',
+    description: 'Buy Clinic Plus LED Sign Board 18x18 inch in red and white. Use it for clinic entrances, doctor offices, hospitals and medical storefronts. Double-sided pixel LED cross sign with weatherproof iron frame, hook mounting and 230V plug-and-play power for roadside visibility.',
     slug: 'clinic-led-sign-board',
     image: 'clinic-led-sign-board/main.webp',
     additionalImages: [
@@ -94,7 +94,7 @@ const staticItems = [
   item({
     id: 'sa-clinic-led-sign-board-24x24',
     title: 'Clinic LED Sign Board 24x24 inch',
-    description: 'Buy Clinic Plus LED Sign Board, red and white double sided 24x24 inch pixel LED cross sign for clinics, hospitals and doctor offices. Weatherproof, plug and play.',
+    description: 'Buy Clinic Plus LED Sign Board 24x24 inch in red and white. Larger double-sided clinic cross board for better road visibility at clinics, hospitals and doctor offices. Pixel LED lighting, weatherproof iron frame, hook mounting and 230V plug-and-play installation.',
     slug: 'clinic-led-sign-board',
     image: 'clinic-led-sign-board/main-24.webp',
     additionalImages: [
@@ -139,7 +139,7 @@ const staticItems = [
   item({
     id: 'sa-clinic-medical-led-sign-board',
     title: 'Clinic Medical LED Sign Board',
-    description: 'Buy Clinic Medical LED Sign Board 24x18 inch. Flashing green and red pixel LED sign for clinics, medical shops and drug stores. Double sided, waterproof and storefront ready.',
+    description: 'Buy Clinic Medical LED Sign Board 24x18 inch in green and red. Use for clinics, medical shops, drug stores and hospital entrances. Double-sided flashing pixel LED display with CLINIC and MEDICAL text, waterproof storefront-ready frame, wall mounting and plug-and-play power.',
     slug: 'clinic-medical-led-sign-board',
     image: 'clinic-medical-led-sign-board/main.webp',
     additionalImages: [
@@ -211,7 +211,7 @@ const staticItems = [
   item({
     id: 'sa-green-clinic-led-sign-board-18x18',
     title: 'Green Clinic LED Sign Board 18x18 inch',
-    description: 'Buy green Clinic LED Sign Board 18x18 inch. Double sided bright green pixel LED clinic cross sign for clinics, hospitals and doctor offices. Weatherproof and plug and play.',
+    description: 'Buy Green Clinic LED Sign Board 18x18 inch. Use this bright green double-sided pixel LED clinic cross for clinic entrances, hospitals, doctor offices and roadside medical signage. Weatherproof iron frame, hook mounting, 230V plug-and-play power and pan-India delivery.',
     slug: 'green-clinic-led-sign-board',
     image: 'green-clinic-led-sign-board/main.webp',
     additionalImages: [
@@ -226,7 +226,7 @@ const staticItems = [
   item({
     id: 'sa-green-clinic-led-sign-board-24x24',
     title: 'Green Clinic LED Sign Board 24x24 inch',
-    description: 'Buy green Clinic LED Sign Board 24x24 inch. Double sided bright green pixel LED clinic cross sign for clinics, hospitals and doctor offices. Weatherproof and plug and play.',
+    description: 'Buy Green Clinic LED Sign Board 24x24 inch. Larger bright green double-sided pixel LED clinic cross for better visibility outside clinics, hospitals and doctor offices. Weatherproof iron frame, hook mounting, 230V plug-and-play power, COD and pan-India delivery.',
     slug: 'green-clinic-led-sign-board',
     image: 'green-clinic-led-sign-board/main.webp',
     additionalImages: [
@@ -297,7 +297,7 @@ const staticItems = [
   item({
     id: 'sa-medical-pharmacy-led-sign-board-18x18',
     title: 'Medical Pharmacy LED Sign Board 18x18 inch',
-    description: 'Buy green Medical and Pharmacy LED Sign Board 18x18 inch. Double sided flashing pixel LEDs, weatherproof iron frame, plug and play, COD and pan-India delivery.',
+    description: 'Buy Medical Pharmacy LED Sign Board 18x18 inch in green. Use for medical stores, pharmacies, drug stores and clinic counters. Double-sided flashing pixel LED board with MEDICAL and PHARMACY text, weatherproof iron frame, hook mounting, plug-and-play power, COD and pan-India delivery.',
     slug: 'medical-pharmacy-led-sign-board',
     image: 'medical-pharmacy-led-sign-board/main.webp',
     additionalImages: [
@@ -312,7 +312,7 @@ const staticItems = [
   item({
     id: 'sa-medical-pharmacy-led-sign-board-24x24',
     title: 'Medical Pharmacy LED Sign Board 24x24 inch',
-    description: 'Buy green Medical and Pharmacy LED Sign Board 24x24 inch. Double sided flashing pixel LEDs, weatherproof iron frame, plug and play, COD and pan-India delivery.',
+    description: 'Buy Medical Pharmacy LED Sign Board 24x24 inch in green. Larger double-sided board for medical shops, pharmacies, drug stores and roadside storefronts. Flashing pixel LEDs, MEDICAL and PHARMACY text, weatherproof iron frame, hook mounting, plug-and-play power, COD and pan-India delivery.',
     slug: 'medical-pharmacy-led-sign-board',
     image: 'medical-pharmacy-led-sign-board/main-24.webp',
     additionalImages: [
@@ -327,7 +327,7 @@ const staticItems = [
   item({
     id: 'sa-medical-plus-led-sign-board-18x18',
     title: 'Medical Plus LED Sign Board 18x18 inch',
-    description: 'Buy Medical Plus LED Sign Board 18x18 inch in green. Double sided 9mm Pixel LED board with 30000+ hour LEDs, weatherproof iron frame and 230V plug-and-play installation.',
+    description: 'Buy Medical Plus LED Sign Board 18x18 inch in green. Use for medical stores, pharmacies, clinics and rural health dispensaries. Double-sided 9mm pixel LED cross with 30000+ hour LEDs, weatherproof iron frame, hook mounting and 230V plug-and-play installation.',
     slug: 'medical-plus-led-sign-board',
     image: 'medical-plus-led-sign-board/main.webp',
     additionalImages: [
@@ -342,7 +342,7 @@ const staticItems = [
   item({
     id: 'sa-medical-plus-led-sign-board-24x24',
     title: 'Medical Plus LED Sign Board 24x24 inch',
-    description: 'Buy Medical Plus LED Sign Board 24x24 inch in green. Double sided 9mm Pixel LED board with 30000+ hour LEDs, weatherproof iron frame and 230V plug-and-play installation.',
+    description: 'Buy Medical Plus LED Sign Board 24x24 inch in green. Larger double-sided 9mm pixel LED medical cross for high visibility outside medical shops, pharmacies and clinics. 30000+ hour LEDs, weatherproof iron frame, hook mounting and 230V plug-and-play installation.',
     slug: 'medical-plus-led-sign-board',
     image: 'medical-plus-led-sign-board/main-24.webp',
     additionalImages: [
@@ -357,7 +357,7 @@ const staticItems = [
   item({
     id: 'sa-medical-red-led-sign-board-18x18',
     title: 'Medical Red LED Sign Board 18x18 inch',
-    description: 'Buy Medical LED Sign Board 18x18 inch in red and green. Bright red MEDICAL letters with green pixel LED cross for medical shops, pharmacies and clinics.',
+    description: 'Buy Medical LED Sign Board 18x18 inch in red and green. Use for medical shops, pharmacies, clinics and drug stores. Bright red MEDICAL letters with green pixel LED cross, double-sided display, weatherproof frame, hook mounting and plug-and-play power.',
     slug: 'medical-red-led-sign-board',
     image: 'medical-red-led-sign-board/main.webp',
     additionalImages: [
@@ -372,7 +372,7 @@ const staticItems = [
   item({
     id: 'sa-medical-red-led-sign-board-24x24',
     title: 'Medical Red LED Sign Board 24x24 inch',
-    description: 'Buy Medical LED Sign Board 24x24 inch in red and green. Bright red MEDICAL letters with green pixel LED cross for medical shops, pharmacies and clinics.',
+    description: 'Buy Medical LED Sign Board 24x24 inch in red and green. Larger double-sided medical store sign for better road visibility at pharmacies, clinics and drug stores. Bright red MEDICAL letters, green pixel LED cross, weatherproof frame, hook mounting and plug-and-play power.',
     slug: 'medical-red-led-sign-board',
     image: 'medical-red-led-sign-board/main.webp',
     additionalImages: [
