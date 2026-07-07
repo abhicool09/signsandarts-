@@ -6,6 +6,7 @@ const {
 } = require('../api/_lib/checkout');
 const createOrder = require('../api/create-order');
 const verifyPayment = require('../api/verify-payment');
+const replacementRequest = require('../api/replacement-request');
 const { take } = require('../api/_lib/rate-limit');
 
 function request(body, ip = '203.0.113.10') {
@@ -528,6 +529,122 @@ async function testConcurrentStaleFulfillmentCreatesOneShipment() {
   assert.strictEqual(shiprocketCreates, 1);
 }
 
+async function testReplacementRequestCreatesReturnAndReplacement() {
+  const data = canonicalizeOrderData(customerOrder({ id: 'opticals-led', price: 6330 }));
+  const databaseOrder = {
+    order_id: 'SA-REPLACE-6006',
+    name: data.name,
+    phone: data.phone,
+    email: data.email,
+    address: data.address,
+    city: data.city,
+    state: data.state,
+    pincode: data.pincode,
+    items: data.items,
+    total: data.total,
+    payment_mode: 'Online',
+    cod_advance: 0,
+    status: 'Delivered',
+    updated_at: new Date(0).toISOString(),
+  };
+  const createdReturns = [];
+  const createdReplacements = [];
+
+  global.fetch = async (url, options = {}) => {
+    const value = String(url);
+    if (value.includes('/rest/v1/orders?order_id=eq.') && (!options.method || options.method === 'GET')) {
+      return new Response(JSON.stringify([databaseOrder]), { status: 200 });
+    }
+    if (value.endsWith('/external/auth/login')) {
+      return new Response(JSON.stringify({ token: 'shiprocket-token' }), { status: 200 });
+    }
+    if (value.includes('/v1/external/orders?')) {
+      return new Response(JSON.stringify({ data: [] }), { status: 200 });
+    }
+    if (value.endsWith('/external/orders/create/return')) {
+      createdReturns.push(JSON.parse(options.body));
+      return new Response(JSON.stringify({
+        order_id: 170872392,
+        shipment_id: 170411259,
+        status: 'RETURN PENDING',
+        status_code: 21,
+      }), { status: 200 });
+    }
+    if (value.endsWith('/external/orders/create/adhoc')) {
+      createdReplacements.push(JSON.parse(options.body));
+      return new Response(JSON.stringify({
+        order_id: 170872393,
+        shipment_id: 170411260,
+      }), { status: 200 });
+    }
+    throw new Error(`Unexpected URL: ${url}`);
+  };
+
+  const res = response();
+  await replacementRequest(request({
+    orderId: databaseOrder.order_id,
+    phone: databaseOrder.phone,
+    reason: 'not_working',
+    issueDetails: 'Adapter does not power on',
+    replacementOnlyAccepted: true,
+  }, '203.0.113.61'), res);
+
+  assert.strictEqual(res.code, 200);
+  assert.strictEqual(res.body.success, true);
+  assert.strictEqual(res.body.return_order_id, 'RET-SA-REPLACE-6006');
+  assert.strictEqual(res.body.replacement_order_id, 'RPL-SA-REPLACE-6006');
+  assert.strictEqual(createdReturns.length, 1);
+  assert.strictEqual(createdReplacements.length, 1);
+  assert.strictEqual(createdReturns[0].pickup_phone, databaseOrder.phone);
+  assert.strictEqual(createdReturns[0].shipping_customer_name, 'Signs and Arts');
+  assert.strictEqual(createdReturns[0].order_items[0].return_reason, "Item defective or doesn't work");
+  assert.strictEqual(createdReturns[0].payment_method, 'PREPAID');
+  assert.strictEqual(createdReplacements[0].billing_phone, databaseOrder.phone);
+  assert.strictEqual(createdReplacements[0].payment_method, 'Prepaid');
+  assert.match(createdReplacements[0].order_items[0].name, /\(Replacement\)$/);
+}
+
+async function testReplacementRequestRejectsWrongPhoneBeforeShiprocket() {
+  const data = canonicalizeOrderData(customerOrder({ id: 'opticals-led', price: 6330 }));
+  const databaseOrder = {
+    order_id: 'SA-REPLACE-7007',
+    name: data.name,
+    phone: data.phone,
+    email: data.email,
+    address: data.address,
+    city: data.city,
+    state: data.state,
+    pincode: data.pincode,
+    items: data.items,
+    total: data.total,
+    payment_mode: 'Online',
+    cod_advance: 0,
+    status: 'Delivered',
+    updated_at: new Date(0).toISOString(),
+  };
+  let shiprocketCalls = 0;
+
+  global.fetch = async (url) => {
+    const value = String(url);
+    if (value.includes('/rest/v1/orders?order_id=eq.')) {
+      return new Response(JSON.stringify([databaseOrder]), { status: 200 });
+    }
+    if (value.includes('shiprocket')) shiprocketCalls += 1;
+    throw new Error(`Unexpected URL: ${url}`);
+  };
+
+  const res = response();
+  await replacementRequest(request({
+    orderId: databaseOrder.order_id,
+    phone: '9000000000',
+    reason: 'damaged_product',
+    replacementOnlyAccepted: true,
+  }, '203.0.113.62'), res);
+
+  assert.strictEqual(res.code, 404);
+  assert.strictEqual(shiprocketCalls, 0);
+}
+
 function testRateLimiter() {
   const key = `test-${Date.now()}-${Math.random()}`;
   assert.strictEqual(take(key, 2, 60000).allowed, true);
@@ -561,6 +678,8 @@ async function main() {
     await testConcurrentVerificationCreatesOneShipment();
     await testShiprocketRecoveryAvoidsDuplicateCreation();
     await testConcurrentStaleFulfillmentCreatesOneShipment();
+    await testReplacementRequestCreatesReturnAndReplacement();
+    await testReplacementRequestRejectsWrongPhoneBeforeShiprocket();
     console.log('CHECKOUT_SECURITY_TESTS=PASS');
   } finally {
     global.fetch = originalFetch;

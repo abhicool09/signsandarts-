@@ -4,6 +4,7 @@
     "api/create-order.js": { "maxDuration": 20 },
     "api/verify-payment.js": { "maxDuration": 60 },
     "api/order-status.js": { "maxDuration": 20 },
+    "api/replacement-request.js": { "maxDuration": 60 },
     "api/reviews.js": { "maxDuration": 30 },
     "api/test-whatsapp-alert.js": { "maxDuration": 20 }
   },
@@ -11,6 +12,8 @@
     { "source": "/admin", "destination": "/admin/index.html" },
     { "source": "/product/:slug", "destination": "/product/index.html?slug=:slug" },
     { "source": "/products/:slug", "destination": "/product/index.html?slug=:slug" },
+    { "source": "/replacement", "destination": "/replacement.html" },
+    { "source": "/returns", "destination": "/replacement.html" },
     { "source": "/thank-you", "destination": "/thank-you.html" }
   ]
 }

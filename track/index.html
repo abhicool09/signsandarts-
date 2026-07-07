@@ -48,6 +48,7 @@
     .step.done::before{background:#1e8a44}
     .cancel{background:#fcebeb;color:#a32d2d;text-align:center;padding:14px;border-radius:8px;font-weight:700}
     .wa{display:inline-block;background:#25D366;color:#fff;text-decoration:none;font-weight:700;padding:.7rem 1rem;border-radius:6px;margin-top:12px;text-align:center;width:100%;box-sizing:border-box}
+    .replace{display:inline-block;background:#111;color:#fff;text-decoration:none;font-weight:700;padding:.7rem 1rem;border-radius:6px;margin-top:10px;text-align:center;width:100%;box-sizing:border-box}
     .track-link{display:inline-block;margin-top:10px;font-weight:700}
   </style>
 </head>
@@ -70,6 +71,7 @@
       <div id="out"></div>
     </div>
 
+    <p class="sub" style="text-align:center;font-size:.88rem">Received a damaged or not working product? <a href="/replacement.html">Create a replacement request</a>.</p>
     <p class="sub" style="text-align:center;font-size:.88rem">Can't find your order? <a href="https://wa.me/919392878946">Message us on WhatsApp</a> with your Order ID.</p>
   </main>
 
@@ -123,6 +125,7 @@
       if (o.tracking_number) html += '<div class="row"><span>Tracking No.</span><span>' + esc(o.tracking_number) + '</span></div>';
       html += '</div>';
       if (o.tracking_url) html += '<a class="track-link" href="' + esc(o.tracking_url) + '" target="_blank" rel="noopener">Track shipment with courier &rarr;</a>';
+      html += '<a class="replace" href="/replacement.html?order_id=' + encodeURIComponent(o.order_id) + '&phone=' + encodeURIComponent(document.getElementById('ph').value.trim()) + '">Create replacement request</a>';
       html += '<a class="wa" href="https://wa.me/919392878946?text=Order%20' + encodeURIComponent(o.order_id) + '" target="_blank">Ask about this order on WhatsApp</a>';
       out.innerHTML = html;
     }
