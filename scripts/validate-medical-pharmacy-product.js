@@ -4,6 +4,20 @@ const home = fs.readFileSync('index.html', 'utf8');
 const pharmacy = fs.readFileSync('pharmacy-plus-led-sign/index.html', 'utf8');
 const product = fs.readFileSync('medical-pharmacy-led-sign-board/index.html', 'utf8');
 
+function walkHtml(directory, files = []) {
+  for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+    if (entry.name === '.git' || entry.name === '.claude' || entry.name === 'node_modules') continue;
+    const fullPath = `${directory}/${entry.name}`;
+    if (entry.isDirectory()) walkHtml(fullPath, files);
+    else if (entry.isFile() && entry.name.endsWith('.html')) files.push(fullPath);
+  }
+  return files;
+}
+
+const customerHtml = walkHtml('.')
+  .map(file => fs.readFileSync(file, 'utf8'))
+  .join('\n');
+
 const checks = [
   [
     'existing Pharmacy Plus homepage price is restored',
@@ -31,9 +45,9 @@ const checks = [
       product.includes('Medical & Pharmacy LED Sign Board')
   ],
   [
-    'customer-facing product pages contain no Amazon references',
+    'customer-facing pages contain no Amazon marketplace references',
     !/(amazon\.in|Amazon Store|\bASIN\b|Marketplace Reference|B0BQ3PR7HM)/i.test(
-      pharmacy + product
+      customerHtml
     )
   ]
 ];

@@ -254,7 +254,8 @@
     .related-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1.2rem;}
     .related-card{border:1px solid var(--g200);border-radius:var(--radius-lg);overflow:hidden;transition:all .25s;cursor:pointer;}
     .related-card:hover{border-color:var(--black);box-shadow:0 8px 30px rgba(0,0,0,.1);transform:translateY(-3px);}
-    .related-img{height:150px;background:var(--g50);display:flex;align-items:center;justify-content:center;font-size:.75rem;color:var(--g600);border-bottom:1px solid var(--g200);}
+    .related-img{height:150px;background:var(--g50);display:flex;align-items:center;justify-content:center;font-size:.75rem;color:var(--g600);border-bottom:1px solid var(--g200);overflow:hidden;}
+    .related-img img{width:100%;height:100%;object-fit:contain;padding:8px;}
     .related-body{padding:.8rem;}
     .related-cat{font-size:.62rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:.3rem;}
     .related-name{font-size:.85rem;font-weight:700;color:var(--black);line-height:1.3;margin-bottom:.5rem;}
